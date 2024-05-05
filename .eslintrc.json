@@ -1,0 +1,7 @@
+{
+  "extends": ["@remix-run/eslint-config", "plugin:drizzle/recommended"],
+  "plugins": ["drizzle"],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "warn"
+  }
+}

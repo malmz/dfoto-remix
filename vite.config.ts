@@ -3,8 +3,18 @@ import { installGlobals } from "@remix-run/node";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-installGlobals();
+installGlobals({ nativeFetch: true });
 
 export default defineConfig({
-  plugins: [remix(), tsconfigPaths()],
+  build: {
+    target: "ES2022",
+  },
+  plugins: [
+    remix({
+      future: {
+        unstable_singleFetch: true,
+      },
+    }),
+    tsconfigPaths(),
+  ],
 });
