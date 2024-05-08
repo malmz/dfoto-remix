@@ -1,7 +1,7 @@
 import { defineConfig } from 'drizzle-kit';
 
 export default defineConfig({
-  schema: './lib/schema.server.ts',
+  schema: './app/lib/schema.server.ts',
   out: './migrations',
   driver: 'pg',
   dbCredentials: {

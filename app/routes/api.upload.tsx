@@ -11,6 +11,11 @@ import { z } from 'zod';
 import { uploadsPath } from '~/lib/storage.server';
 import sharp from 'sharp';
 import path from 'node:path';
+import type { InferInsertModel } from 'drizzle-orm';
+import type { image } from '~/lib/schema.server';
+import exif from 'exif-reader';
+import type { Serializable } from '@remix-run/react/future/single-fetch';
+import { authenticator } from '~/lib/auth.server';
 
 const imageTypes = ['image/jpeg', 'image/png'];
 
@@ -20,6 +25,10 @@ const schema = z.object({
 });
 
 export async function action({ request }: ActionFunctionArgs) {
+  const user = await authenticator.isAuthenticated(request, {
+    failureRedirect: '/login',
+  });
+
   const uploadHandler = composeUploadHandlers(
     createFileUploadHandler({
       directory: uploadsPath,
@@ -37,13 +46,14 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const insertdata = await Promise.all(
     submission.value.files.map(async (file, i) => {
-      const metadata = await sharp(file.stream()).metadata();
-      const exif_data = metadata.exif ? exif(metadata.exif) : null;
+      const filepath = path.join(uploadsPath, file.name);
+      const metadata = await sharp(filepath).metadata();
+      const exif_data = metadata.exif ? exif(metadata.exif) : (null as any);
       const taken_at =
         exif_data?.Image?.DateTime ?? new Date(file.lastModified) ?? new Date();
 
       return {
-        album_id: data.album,
+        album_id: submission.value.id,
         mimetype: file.type,
         taken_by: user.id,
         taken_by_name: user.name ?? user.email ?? null,
