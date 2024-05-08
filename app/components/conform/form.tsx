@@ -1,101 +1,57 @@
 import React from 'react';
 import { cn } from '~/lib/utils';
-import { getInputProps, type FieldMetadata } from '@conform-to/react';
+import { type FieldMetadata } from '@conform-to/react';
 import { Label } from '../ui/label';
-import type * as LabelPrimitive from '@radix-ui/react-label';
-import { Slot } from '@radix-ui/react-slot';
 
-const FormFieldContext = React.createContext<FieldMetadata>(
-  {} as FieldMetadata
-);
-
-export function useField() {
-  return React.useContext(FormFieldContext);
+interface ErrorConformProps extends React.HTMLAttributes<HTMLDivElement> {
+  meta: FieldMetadata<any>;
 }
-
-interface FormFieldProps extends React.HTMLAttributes<HTMLDivElement> {
-  field: FieldMetadata;
-}
-export const FormField = React.forwardRef<HTMLDivElement, FormFieldProps>(
-  ({ className, ...props }, ref) => {
-    return (
-      <FormFieldContext.Provider value={props.field}>
-        <div ref={ref} className={cn('space-y-2', className)} {...props}></div>
-      </FormFieldContext.Provider>
-    );
-  }
-);
-FormField.displayName = 'FormField';
-
-export const FormError = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
-  const field = React.useContext(FormFieldContext);
+export function ErrorConform({ meta, className, ...props }: ErrorConformProps) {
   return (
     <div
-      ref={ref}
+      id={meta.errorId}
       className={cn('text-sm font-medium text-destructive', className)}
-      id={field.errorId}
       {...props}
-    ></div>
+    >
+      {meta.errors}
+    </div>
   );
-});
-FormError.displayName = 'FormError';
+}
 
-export const FormLabel = React.forwardRef<
-  React.ElementRef<typeof LabelPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
->(({ className, ...props }, ref) => {
-  const field = React.useContext(FormFieldContext);
-
+interface LabelConformProps extends React.ComponentProps<typeof Label> {
+  meta: FieldMetadata<any>;
+}
+export function LabelConform({ meta, className, ...props }: LabelConformProps) {
   return (
     <Label
-      ref={ref}
-      className={cn(field.errors && 'text-destructive', className)}
-      htmlFor={field.id}
+      htmlFor={meta.id}
+      className={cn(meta.errors && 'text-destructive', className)}
       {...props}
-    />
+    ></Label>
   );
-});
-FormLabel.displayName = 'FormLabel';
+}
 
-export const FormDescription = React.forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
->(({ className, ...props }, ref) => {
-  const field = React.useContext(FormFieldContext);
-
+interface DescriptionConformProps
+  extends React.HTMLAttributes<HTMLParagraphElement> {
+  meta: FieldMetadata<any>;
+}
+export function DescriptionConform({
+  meta,
+  className,
+  ...props
+}: DescriptionConformProps) {
   return (
     <p
-      ref={ref}
-      id={field.descriptionId}
+      id={meta.descriptionId}
       className={cn('text-sm text-muted-foreground', className)}
       {...props}
     />
   );
-});
-FormDescription.displayName = 'FormDescription';
+}
 
-/* export const FormControl = React.forwardRef<
-  React.ElementRef<typeof Slot>,
-  React.ComponentPropsWithoutRef<typeof Slot>
->(({ ...props }, ref) => {
-  const field = React.useContext(FormFieldContext);
-  return (
-    <Slot
-      ref={ref}
-      id={field.id}
-      // @ts-ignore
-      name={field.name}
-      aria-describedby={
-        !field.valid
-          ? `${field.errorId} ${field.descriptionId}`
-          : field.descriptionId
-      }
-      aria-invalid={!field.valid ? true : undefined}
-      {...props}
-    />
-  );
-});
-FormControl.displayName = 'FormControl'; */
+export function FormField({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLParagraphElement>) {
+  return <div className={cn('space-y-2', className)} {...props}></div>;
+}

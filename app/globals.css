@@ -50,6 +50,16 @@
 }
 
 @layer base {
+  :root {
+    --font-sans: Inter;
+    font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */
+  }
+  @supports (font-variation-settings: normal) {
+    :root {
+      --font-sans: InterVariable;
+    }
+  }
+
   * {
     @apply border-border;
   }

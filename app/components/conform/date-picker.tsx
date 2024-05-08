@@ -15,6 +15,7 @@ export function DatePickerConform({ meta }: { meta: FieldMetadata<Date> }) {
   return (
     <div>
       <input
+        id={meta.id}
         className='sr-only'
         aria-hidden
         tabIndex={-1}
@@ -33,7 +34,7 @@ export function DatePickerConform({ meta }: { meta: FieldMetadata<Date> }) {
             ref={triggerRef}
             variant={'outline'}
             className={cn(
-              'w-64 justify-start text-left font-normal focus:ring-2 focus:ring-stone-950 focus:ring-offset-2',
+              'flex w-full justify-start text-left font-normal focus:ring-2 focus:ring-stone-950 focus:ring-offset-2',
               !control.value && 'text-muted-foreground'
             )}
           >

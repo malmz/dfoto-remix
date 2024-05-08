@@ -7,7 +7,7 @@ export const TextareaConform = ({
   meta,
   ...props
 }: {
-  meta: FieldMetadata<string>;
+  meta: FieldMetadata<string | null>;
 } & ComponentProps<typeof Textarea>) => {
   return <Textarea {...getTextareaProps(meta)} {...props} />;
 };

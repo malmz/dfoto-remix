@@ -12,17 +12,18 @@ import {
 import { Button } from '~/components/ui/button';
 import { toast } from 'sonner';
 
-type Props = {
+interface Props {
+  formId?: string;
   album: {
     id: number;
     published: boolean;
   };
-};
-export function PublishButton({ album }: Props) {
+}
+export function PublishButton({ formId, album }: Props) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant='outline'>
+        <Button variant='outline' type='button'>
           {album.published ? 'Avpublicera' : 'Publicera'}
         </Button>
       </AlertDialogTrigger>
@@ -39,7 +40,14 @@ export function PublishButton({ album }: Props) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Avbryt</AlertDialogCancel>
-          <AlertDialogAction>Fortsätt</AlertDialogAction>
+          <AlertDialogAction
+            type='submit'
+            name='intent'
+            form={formId}
+            value={album.published ? 'unpublish' : 'publish'}
+          >
+            Fortsätt
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

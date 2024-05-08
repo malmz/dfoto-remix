@@ -1,22 +1,27 @@
 import { Button } from '~/components/ui/button';
-import { Input } from '~/components/ui/input';
-import { Label } from '~/components/ui/label';
 import { PublishButton } from './publish-button';
-import { Textarea } from '~/components/ui/textarea';
-import { DateInput } from './date-input';
 import { Separator } from '~/components/ui/separator';
 import { ImageTable } from './image-table';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import { getAlbum } from '~/lib/data.server';
-import { Form, redirect, useActionData, useLoaderData } from '@remix-run/react';
+import { Form, json, useActionData, useLoaderData } from '@remix-run/react';
 import { z } from 'zod';
 import { parseWithZod } from '@conform-to/zod';
-import { createAlbum, updateAlbum } from '~/lib/actions.server';
-import { useForm } from '@conform-to/react';
-import { FormError, FormField, FormLabel } from '~/components/conform/form';
+import { updateAlbum } from '~/lib/actions.server';
+import { getFormProps, getInputProps, useForm } from '@conform-to/react';
+import {
+  ErrorConform,
+  FormField,
+  LabelConform,
+} from '~/components/conform/form';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
-import { FormInput } from '~/components/conform/input';
+import { InputConform } from '~/components/conform/input';
+import { TextareaConform } from '~/components/conform/textarea';
+import { DatePickerConform } from '~/components/conform/date-picker';
+import { getSession } from '~/lib/session.server';
+import { useIsSubmitting } from '~/lib/utils';
+import { StatusButton } from '~/components/conform/status-button';
 
 const schema = z.object({
   id: z.number(),
@@ -36,69 +41,69 @@ export async function loader({ params }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  const session = await getSession(request.headers.get('cookie'));
   const formData = await request.formData();
   const submission = parseWithZod(formData, { schema });
 
   if (submission.status !== 'success') {
-    return submission.reply();
+    return json(submission.reply());
   }
 
   const { id, ...data } = submission.value;
 
   await updateAlbum(id, data);
+  return json(submission.reply());
 }
 
-export default function Page({ params }: { params: { id: string } }) {
+export default function Page() {
   const { album } = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
   const [form, fields] = useForm({
+    id: 'album-form',
     lastResult,
-    defaultValue: album,
+    defaultValue: {
+      id: album.id,
+      name: album.name,
+      description: album.description,
+      start_at: album.start_at,
+    },
     onValidate({ formData }) {
       return parseWithZod(formData, { schema });
     },
     shouldValidate: 'onBlur',
   });
 
-  useEffect(() => {
-    if (form.status === 'success') {
-      toast('Sparat');
-    }
-  });
-
   return (
     <>
       <div className='container mt-8 flex max-w-prose flex-col gap-4'>
         <h1 className='text-3xl font-extrabold tracking-tight'>{album.name}</h1>
-        <Form method='post' id={form.id} onSubmit={form.onSubmit}>
-          <input type='hidden' name='id' defaultValue={album.id} />
-
-          <FormField field={fields.name}>
-            <FormLabel>Namn</FormLabel>
-            <FormInput type='text'></FormInput>
-            <FormError></FormError>
+        <Form
+          method='post'
+          className='flex flex-col gap-4'
+          {...getFormProps(form)}
+        >
+          <input {...getInputProps(fields.id, { type: 'hidden' })} />
+          <FormField>
+            <LabelConform meta={fields.name}>Titel</LabelConform>
+            <InputConform meta={fields.name} type='text' />
+            <ErrorConform meta={fields.name} />
           </FormField>
 
-          <FormField field={fields.description}>
-            <FormLabel>Beskrivning</FormLabel>
-
-            <Textarea></Textarea>
-            <FormError></FormError>
+          <FormField>
+            <LabelConform meta={fields.description}>Beskrivning</LabelConform>
+            <TextareaConform meta={fields.description} />
+            <ErrorConform meta={fields.description} />
           </FormField>
 
-          <FormField field={fields.start_at}>
-            <FormLabel>Namn</FormLabel>
-            <DateInput
-              name='date'
-              id='date'
-              defaultValue={album.start_at}
-            ></DateInput>
-            <FormError></FormError>
+          <FormField>
+            <LabelConform meta={fields.start_at}>Datum</LabelConform>
+            <DatePickerConform meta={fields.start_at} />
+            <ErrorConform meta={fields.start_at} />
           </FormField>
 
           <div className='flex justify-between items-center'>
-            <Button type='submit'>Spara</Button>
-            <PublishButton album={album}></PublishButton>
+            <StatusButton type='submit'>Spara</StatusButton>
+            <PublishButton formId={form.id} album={album}></PublishButton>
           </div>
         </Form>
       </div>

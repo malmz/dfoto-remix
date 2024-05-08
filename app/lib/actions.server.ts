@@ -1,6 +1,6 @@
 import { and, asc, eq, isNull, sql, type InferInsertModel } from 'drizzle-orm';
 import { db } from './db.server';
-import { album, image, type CreateAlbum } from './schema';
+import { album, image, type CreateAlbum } from './schema.server';
 
 export async function createAlbum(data: CreateAlbum) {
   await db.insert(album).values(data);

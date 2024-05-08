@@ -1,4 +1,6 @@
-import { InferInsertModel, InferSelectModel, relations } from 'drizzle-orm';
+import type { Serializable } from '@remix-run/react/future/single-fetch';
+import type { InferInsertModel, InferSelectModel } from 'drizzle-orm';
+import { relations } from 'drizzle-orm';
 import {
   boolean,
   date,
@@ -9,7 +11,7 @@ import {
   text,
   timestamp,
 } from 'drizzle-orm/pg-core';
-import { Exif } from 'exif-reader';
+import type { Exif } from 'exif-reader';
 
 export const album = pgTable('album', {
   id: serial('id').primaryKey(),
@@ -40,7 +42,7 @@ export type CreateAlbum = Omit<
 export const image = pgTable('image', {
   id: serial('id').primaryKey(),
   legacy_id: text('legacy_id').unique(),
-  exif_data: jsonb('exif_data').$type<Exif>(),
+  exif_data: jsonb('exif_data').$type<Serializable>(),
   mimetype: text('mimetype'),
   album_id: integer('album_id')
     .references(() => album.id)

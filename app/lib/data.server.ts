@@ -1,6 +1,6 @@
 import { and, asc, desc, eq, sql } from 'drizzle-orm';
 import { db } from './db.server';
-import { album, image } from './schema';
+import { album, image } from './schema.server';
 
 export async function getAlbums(page: number, limit: number) {
   const albums = await db.query.album.findMany({

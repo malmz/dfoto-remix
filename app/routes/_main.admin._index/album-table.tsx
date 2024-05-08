@@ -4,7 +4,7 @@ import { DataTable } from '~/components/data-table';
 import { Input } from '~/components/ui/input';
 import { useState } from 'react';
 import { columns } from './columns';
-import type { Album } from '~/lib/schema';
+import type { Album } from '~/lib/schema.server';
 import { Button } from '~/components/ui/button';
 import { Link } from '@remix-run/react';
 

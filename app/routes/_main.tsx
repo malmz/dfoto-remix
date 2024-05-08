@@ -21,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
+import { ThemeSwitcher } from '~/components/theme-switcher';
 
 function UserProfile() {
   const { session } = useLoaderData<typeof loader>();
@@ -81,7 +82,6 @@ function Header() {
     <header className='flex h-16 items-center justify-between gap-4 border-b px-4 md:px-6'>
       <nav className='flex items-center gap-6'>
         <Link to='/'>
-          {/* <Camera className="h-6 w-6 text-primary"></Camera> */}
           <img
             src={logo}
             width='100'
@@ -105,9 +105,6 @@ function Header() {
         </NavLink>
       </nav>
       <div className='flex items-center gap-2'>
-        <form action='' className='flex items-center gap-2'>
-          <Input type='search' placeholder='Sök...' className=''></Input>
-        </form>
         <UserProfile></UserProfile>
       </div>
     </header>
@@ -132,7 +129,7 @@ function Footer() {
         Vi ses genom kameralinsen!
       </p>
       <div className='flex items-center gap-2'>
-        {/*  <ThemeSwitcher></ThemeSwitcher> */}
+        <ThemeSwitcher></ThemeSwitcher>
         <Tooltip>
           <TooltipTrigger asChild>
             <Button variant='ghost' size='icon' asChild>

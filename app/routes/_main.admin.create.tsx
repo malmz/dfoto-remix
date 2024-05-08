@@ -1,13 +1,14 @@
-'use client';
-
-import { Input } from '~/components/ui/input';
 import { z } from 'zod';
-import { useForm } from '@conform-to/react';
+import { getFormProps, useForm } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { redirect, type ActionFunctionArgs } from '@remix-run/node';
 import { createAlbum } from '~/lib/actions.server';
 import { Form, Link, useActionData } from '@remix-run/react';
-import { FormError, FormField, FormLabel } from '~/components/conform/form';
+import {
+  ErrorConform,
+  FormField,
+  LabelConform,
+} from '~/components/conform/form';
 import {
   Card,
   CardContent,
@@ -17,7 +18,9 @@ import {
   CardTitle,
 } from '~/components/ui/card';
 import { Button } from '~/components/ui/button';
-import { FormInput } from '~/components/conform/input';
+import { InputConform } from '~/components/conform/input';
+import { DatePickerConform } from '~/components/conform/date-picker';
+import { TextareaConform } from '~/components/conform/textarea';
 
 const schema = z.object({
   name: z.string().min(1, {
@@ -55,7 +58,7 @@ export default function Page() {
   });
   return (
     <div className='container mt-8 flex flex-col gap-4'>
-      <Form method='post' id={form.id} onSubmit={form.onSubmit}>
+      <Form method='post' {...getFormProps(form)}>
         <Card className='max-w-screen-md mx-auto'>
           <CardHeader>
             <CardTitle>Skapa nytt album</CardTitle>
@@ -63,23 +66,23 @@ export default function Page() {
               Fyll i namn och datum för arrangemanget
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <FormField field={fields.name}>
-              <FormLabel>Titel</FormLabel>
-              <FormInput type='text' />
-              <FormError />
+          <CardContent className='space-y-4'>
+            <FormField>
+              <LabelConform meta={fields.name}>Titel</LabelConform>
+              <InputConform type='text' meta={fields.name} />
+              <ErrorConform meta={fields.name} />
             </FormField>
 
-            <FormField field={fields.description}>
-              <FormLabel>Beskrivning</FormLabel>
-              <FormInput type='text' />
-              <FormError />
+            <FormField>
+              <LabelConform meta={fields.description}>Beskrivning</LabelConform>
+              <TextareaConform meta={fields.description} />
+              <ErrorConform meta={fields.description} />
             </FormField>
 
-            <FormField field={fields.start_at}>
-              <FormLabel>Datum</FormLabel>
-              <FormInput type='date' />
-              <FormError />
+            <FormField>
+              <LabelConform meta={fields.start_at}>Datum</LabelConform>
+              <DatePickerConform meta={fields.start_at} />
+              <ErrorConform meta={fields.start_at} />
             </FormField>
           </CardContent>
           <CardFooter className='gap-4 justify-between'>
