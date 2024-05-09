@@ -2,7 +2,7 @@ import { DataTable } from '~/components/data-table';
 import { Input } from '~/components/ui/input';
 import { useState } from 'react';
 import { createColumns } from './columns';
-import { Image } from '~/lib/schema.server';
+import type { Image } from '~/lib/schema.server';
 import { UploadButton } from './upload-button';
 
 type Props = {

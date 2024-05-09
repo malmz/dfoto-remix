@@ -22,6 +22,7 @@ import { DatePickerConform } from '~/components/conform/date-picker';
 import { getSession } from '~/lib/session.server';
 import { useIsSubmitting } from '~/lib/utils';
 import { StatusButton } from '~/components/conform/status-button';
+import { authenticator } from '~/lib/auth.server';
 
 const schema = z.object({
   id: z.number(),
@@ -41,7 +42,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  const session = await getSession(request.headers.get('cookie'));
+  const session = await authenticator.isAuthenticated(request)
   const formData = await request.formData();
   const submission = parseWithZod(formData, { schema });
 

@@ -7,12 +7,15 @@ import { getImagePath } from '~/lib/storage.server';
 import { createReadStream } from 'node:fs';
 import { stat } from 'node:fs/promises';
 import { assertResponse } from '~/lib/utils';
+import { authenticator } from '~/lib/auth.server';
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+  const session = authenticator.isAuthenticated(request);
+
   const id = Number(params.id);
   assertResponse(!Number.isNaN(id), 'Invalid image id');
 
-  const data = await getImage(id);
+  const data = await getImage(id, !!session);
   assertResponse(data, 'Image not found', { status: 404 });
 
   const imagePath = getImagePath(data.image);
