@@ -1,6 +1,6 @@
 import { Button, ButtonProps } from '~/components/ui/button';
 import { Loader2 } from 'lucide-react';
-import { useId, useRef } from 'react';
+import { useEffect, useId, useRef } from 'react';
 import { toast } from 'sonner';
 import { getFormProps, useForm } from '@conform-to/react';
 import { useFetcher } from '@remix-run/react';
@@ -12,19 +12,27 @@ interface Props extends ButtonProps {
 export function UploadButton({ children, albumId, ...props }: Props) {
   const id = useId();
   const formRef = useRef<HTMLFormElement>(null);
-  const fetcher = useFetcher();
+  const fetcher = useFetcher<typeof action>();
+
+  useEffect(() => {
+    if (fetcher.data?.status === 'success') {
+      toast('Upload successful');
+      formRef.current?.reset();
+    }
+  }, [fetcher.data]);
 
   return (
     <fetcher.Form
+      ref={formRef}
       action='/api/upload'
       method='post'
       encType='multipart/form-data'
     >
       <Button asChild {...props}>
         <label htmlFor={id}>
-          {fetcher.state === 'submitting' ? (
+          {fetcher.state !== 'idle' && (
             <Loader2 className='mr-2 h-4 w-4 animate-spin'></Loader2>
-          ) : null}
+          )}
           {children}
         </label>
       </Button>

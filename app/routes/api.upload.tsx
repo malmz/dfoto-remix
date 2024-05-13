@@ -4,20 +4,18 @@ import {
   unstable_createFileUploadHandler as createFileUploadHandler,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData,
-  json,
   type ActionFunctionArgs,
   NodeOnDiskFile,
+  json,
 } from '@remix-run/node';
 import { z } from 'zod';
 import { commitUpload, uploadsPath } from '~/lib/storage.server';
 import sharp from 'sharp';
-import path from 'node:path';
 import type { InferInsertModel } from 'drizzle-orm';
 import { image } from '~/lib/schema.server';
 import exif from 'exif-reader';
-import type { Serializable } from '@remix-run/react/future/single-fetch';
-import { authenticator } from '~/lib/auth.server';
 import { db } from '~/lib/db.server';
+import { ensureRole } from '~/lib/auth.server';
 
 const imageTypes = ['image/jpeg', 'image/png'];
 
@@ -29,11 +27,7 @@ const schema = z.object({
 });
 
 export async function action({ request }: ActionFunctionArgs) {
-  const session = await authenticator.isAuthenticated(request, {
-    failureRedirect: '/login',
-  });
-
-  const user = session.user!;
+  const { claims } = await ensureRole(['write:image'])(request);
 
   const uploadHandler = composeUploadHandlers(
     createFileUploadHandler({
@@ -47,8 +41,11 @@ export async function action({ request }: ActionFunctionArgs) {
   const submission = parseWithZod(formData, { schema });
 
   if (submission.status !== 'success') {
-    console.log(submission.reply());
-    return new Response('Bad Request', { status: 400 });
+    return json(
+      submission.reply({
+        hideFields: ['files'],
+      })
+    );
   }
 
   const insertdata = await Promise.all(
@@ -61,10 +58,10 @@ export async function action({ request }: ActionFunctionArgs) {
       return {
         album_id: submission.value.id,
         mimetype: file.type,
-        taken_by: user.id,
-        taken_by_name: user.name ?? user.email ?? null,
+        taken_by: claims?.sub,
+        taken_by_name: claims?.name ?? claims?.email ?? null,
         taken_at,
-        created_by: user.id,
+        created_by: claims?.sub,
         exif_data,
       } satisfies InferInsertModel<typeof image>;
     })
@@ -84,5 +81,5 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   });
 
-  return new Response('Created', { status: 201 });
+  return json(submission.reply({ hideFields: ['files'], resetForm: true }));
 }

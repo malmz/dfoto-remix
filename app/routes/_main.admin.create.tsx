@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { getFormProps, useForm } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
-import { redirect, type ActionFunctionArgs } from '@remix-run/node';
+import { json, redirect, type ActionFunctionArgs } from '@remix-run/node';
 import { createAlbum } from '~/lib/actions.server';
 import { Form, Link, useActionData } from '@remix-run/react';
 import {
@@ -21,6 +21,12 @@ import { Button } from '~/components/ui/button';
 import { InputConform } from '~/components/conform/input';
 import { DatePickerConform } from '~/components/conform/date-picker';
 import { TextareaConform } from '~/components/conform/textarea';
+import { ensureRole } from '~/lib/auth.server';
+import { BreadcrumbLink } from '~/components/ui/breadcrumb';
+
+export const handle = {
+  breadcrumb: () => ({ to: '/admin/create', title: 'Create' }),
+};
 
 const schema = z.object({
   name: z.string().min(1, {
@@ -31,8 +37,7 @@ const schema = z.object({
 });
 
 export async function action({ request }: ActionFunctionArgs) {
-  console.log('action');
-
+  await ensureRole(['write:album'])(request);
   const formData = await request.formData();
   const submission = parseWithZod(formData, { schema });
 
@@ -40,8 +45,8 @@ export async function action({ request }: ActionFunctionArgs) {
     return submission.reply();
   }
 
-  await createAlbum(submission.value);
-  return redirect('/admin');
+  const [{ id }] = await createAlbum(submission.value);
+  return redirect(`/admin/${id}`);
 }
 
 export default function Page() {
@@ -86,10 +91,10 @@ export default function Page() {
             </FormField>
           </CardContent>
           <CardFooter className='gap-4 justify-between'>
+            <Button type='submit'>Skapa</Button>
             <Button asChild variant='secondary'>
               <Link to='/admin'>Tillbaka</Link>
             </Button>
-            <Button type='submit'>Skapa</Button>
           </CardFooter>
         </Card>
       </Form>

@@ -1,31 +1,34 @@
-import { Button } from '~/components/ui/button';
 import { PublishButton } from './publish-button';
 import { Separator } from '~/components/ui/separator';
-import { ImageTable } from './image-table';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import { getAlbum } from '~/lib/data.server';
-import { Form, json, useActionData, useLoaderData } from '@remix-run/react';
+import { json, useFetcher, useLoaderData } from '@remix-run/react';
 import { z } from 'zod';
 import { parseWithZod } from '@conform-to/zod';
-import { updateAlbum } from '~/lib/actions.server';
+import { setPubishedStatus, updateAlbum } from '~/lib/actions.server';
 import { getFormProps, getInputProps, useForm } from '@conform-to/react';
 import {
   ErrorConform,
   FormField,
   LabelConform,
 } from '~/components/conform/form';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { InputConform } from '~/components/conform/input';
 import { TextareaConform } from '~/components/conform/textarea';
 import { DatePickerConform } from '~/components/conform/date-picker';
-import { getSession } from '~/lib/session.server';
-import { useIsSubmitting } from '~/lib/utils';
 import { StatusButton } from '~/components/conform/status-button';
-import { authenticator } from '~/lib/auth.server';
+import { ensureRole } from '~/lib/auth.server';
+import { DataTable } from '~/components/data-table';
+import { Input } from '~/components/ui/input';
+import { createColumns } from './columns';
+import type { Image } from '~/lib/schema.server';
+import { UploadButton } from './upload-button';
+import type { CrumbHandle } from '~/components/dynamic-breadcrum';
 
 const schema = z.object({
   id: z.number(),
+  published: z.boolean(),
   name: z.string().min(1, {
     message: 'Titel kan inte vara tom',
   }),
@@ -33,7 +36,15 @@ const schema = z.object({
   start_at: z.date(),
 });
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export const handle: CrumbHandle<typeof loader> = {
+  breadcrumb: (match) => ({
+    to: `/admin/${match.data.album.id}`,
+    title: match.data.album.name,
+  }),
+};
+
+export async function loader({ request, params }: LoaderFunctionArgs) {
+  await ensureRole(['read:album'])(request);
   const album = await getAlbum(Number(params.id), true);
   if (!album) {
     throw new Response('Not found', { status: 404 });
@@ -42,28 +53,43 @@ export async function loader({ params }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  const session = await authenticator.isAuthenticated(request)
   const formData = await request.formData();
-  const submission = parseWithZod(formData, { schema });
+  switch (formData.get('intent')) {
+    case 'publish': {
+      await ensureRole(['publish:album'])(request);
+      const submission = parseWithZod(formData, { schema });
+      if (submission.status !== 'success') {
+        return json(submission.reply());
+      }
+      await setPubishedStatus(submission.value.id, !submission.value.published);
+      return json(submission.reply());
+    }
 
-  if (submission.status !== 'success') {
-    return json(submission.reply());
+    case 'save': {
+      await ensureRole(['write:album'])(request);
+      const submission = parseWithZod(formData, { schema });
+      if (submission.status !== 'success') {
+        return json(submission.reply());
+      }
+      const { id, ...data } = submission.value;
+      await updateAlbum(id, data);
+      return json(submission.reply());
+    }
+
+    default:
+      throw new Error('Invalid intent');
   }
-
-  const { id, ...data } = submission.value;
-
-  await updateAlbum(id, data);
-  return json(submission.reply());
 }
 
 export default function Page() {
   const { album } = useLoaderData<typeof loader>();
-  const lastResult = useActionData<typeof action>();
+  const fetcher = useFetcher<typeof action>();
   const [form, fields] = useForm({
     id: 'album-form',
-    lastResult,
+    lastResult: fetcher.data,
     defaultValue: {
       id: album.id,
+      published: album.published,
       name: album.name,
       description: album.description,
       start_at: album.start_at,
@@ -71,19 +97,27 @@ export default function Page() {
     onValidate({ formData }) {
       return parseWithZod(formData, { schema });
     },
+    shouldDirtyConsider: () => true,
     shouldValidate: 'onBlur',
   });
+
+  useEffect(() => {
+    if (form.status === 'success') {
+      toast.success('Sparat');
+    }
+  }, [form.status]);
 
   return (
     <>
       <div className='container mt-8 flex max-w-prose flex-col gap-4'>
         <h1 className='text-3xl font-extrabold tracking-tight'>{album.name}</h1>
-        <Form
+        <fetcher.Form
           method='post'
           className='flex flex-col gap-4'
           {...getFormProps(form)}
         >
           <input {...getInputProps(fields.id, { type: 'hidden' })} />
+          <input {...getInputProps(fields.published, { type: 'hidden' })} />
           <FormField>
             <LabelConform meta={fields.name}>Titel</LabelConform>
             <InputConform meta={fields.name} type='text' />
@@ -103,15 +137,25 @@ export default function Page() {
           </FormField>
 
           <div className='flex justify-between items-center'>
-            <StatusButton type='submit'>Spara</StatusButton>
-            <PublishButton formId={form.id} album={album}></PublishButton>
+            <StatusButton
+              type='submit'
+              name='intent'
+              value='save'
+              disabled={!form.dirty}
+            >
+              Spara
+            </StatusButton>
+            <PublishButton
+              formId={form.id}
+              album={album}
+              dirty={form.dirty}
+            ></PublishButton>
           </div>
-        </Form>
+        </fetcher.Form>
       </div>
       <Separator className='mx-auto mt-12 max-w-prose'></Separator>
       <div className='container mt-8 flex flex-col gap-4'>
         <h2 className='text-3xl font-extrabold tracking-tight'>Bilder</h2>
-
         <ImageTable
           albumId={album.id}
           thumbnailId={album.thumbnail_id}
@@ -119,5 +163,42 @@ export default function Page() {
         ></ImageTable>
       </div>
     </>
+  );
+}
+
+type Props = {
+  albumId: number;
+  thumbnailId: number | null;
+  data: Image[];
+};
+export function ImageTable({ albumId, thumbnailId, data }: Props) {
+  const [filter, setFilter] = useState('');
+  const mappedData = data.map((image) => ({
+    ...image,
+    thumbnail: image.id === thumbnailId,
+  }));
+
+  return (
+    <div>
+      <div className='flex items-center justify-between gap-4 py-4'>
+        <Input
+          type='search'
+          placeholder='Sök'
+          value={filter ?? ''}
+          onChange={(event) => setFilter(event.target.value)}
+          className='max-w-sm'
+        ></Input>
+        <UploadButton variant='outline' size='sm' albumId={albumId}>
+          Ladda upp bilder
+        </UploadButton>
+      </div>
+      <DataTable
+        filter={filter}
+        onFilterChange={setFilter}
+        columns={createColumns()}
+        data={mappedData}
+        sortDesc={true}
+      ></DataTable>
+    </div>
   );
 }

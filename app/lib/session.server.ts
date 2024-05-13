@@ -1,16 +1,37 @@
-import { createCookieSessionStorage } from "@remix-run/node";
+import {
+  createCookie,
+  createCookieSessionStorage,
+  createFileSessionStorage,
+} from '@remix-run/node';
+import { join } from 'path';
+import { storagePath } from './storage.server';
 
 // export the whole sessionStorage object
-export let sessionStorage = createCookieSessionStorage({
+/*export const sessionStorage = createCookieSessionStorage({
   cookie: {
-    name: "session", // use any name you want here
-    sameSite: "lax", // this helps with CSRF
-    path: "/", // remember to add this so the cookie will work in all routes
+    name: 'session', // use any name you want here
+    sameSite: 'lax', // this helps with CSRF
+    path: '/', // remember to add this so the cookie will work in all routes
     httpOnly: true, // for security reasons, make this cookie http only
     secrets: [process.env.COOKIE_SECRET!], // replace this with an actual secret
-    secure: process.env.NODE_ENV === "production", // enable this in prod only
+    secure: process.env.NODE_ENV === 'production', // enable this in prod only
   },
+}); */
+
+const sessionDir = join(storagePath, 'sessions');
+
+const cookie = createCookie('session', {
+  sameSite: 'lax',
+  path: '/',
+  httpOnly: true,
+  secrets: [process.env.COOKIE_SECRET!],
+  secure: process.env.NODE_ENV === 'production',
+});
+
+export const sessionStorage = createFileSessionStorage({
+  dir: sessionDir,
+  cookie,
 });
 
 // you can also export the methods individually for your own usage
-export let { getSession, commitSession, destroySession } = sessionStorage;
+export const { getSession, commitSession, destroySession } = sessionStorage;

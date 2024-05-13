@@ -2,6 +2,7 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import postgres from 'postgres';
 import * as schema from './schema.server';
+import { remember } from '@epic-web/remember';
 
 async function runMigrations() {
   if (process.env.MIGRATE) {
@@ -14,5 +15,7 @@ async function runMigrations() {
 
 await runMigrations();
 
-const queryClient = postgres(process.env.DATABASE_URL ?? '');
-export const db = drizzle(queryClient, { schema });
+export const db = remember('drizzle', () => {
+  const queryClient = postgres(process.env.DATABASE_URL ?? '');
+  return drizzle(queryClient, { schema });
+});

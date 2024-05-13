@@ -57,14 +57,14 @@ export function SortButton<TData, TValue>({
   );
 }
 
-type Props<TData, TValue> = {
+interface Props<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   sortBy?: keyof TData;
   sortDesc?: boolean;
   filter?: string;
   onFilterChange?: (filter: string) => void;
-};
+}
 export function DataTable<TData, TValue>({
   data,
   columns,

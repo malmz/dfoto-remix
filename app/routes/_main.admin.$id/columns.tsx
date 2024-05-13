@@ -1,7 +1,6 @@
 'use client';
 
 import { SortButton } from '~/components/data-table';
-import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import { Checkbox } from '~/components/ui/checkbox';
 import {
@@ -12,8 +11,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
-import { Album, Image as ImageType } from '~/lib/schema.server';
-import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import type { Image as ImageType } from '~/lib/schema.server';
+import type { ColumnDef } from '@tanstack/react-table';
+import { createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { Check, Link as LinkIcon, MoreHorizontal, Trash2 } from 'lucide-react';
 import { extension } from 'mime-types';

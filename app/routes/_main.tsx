@@ -1,4 +1,11 @@
-import { Form, Link, NavLink, Outlet, useLoaderData } from '@remix-run/react';
+import {
+  Form,
+  Link,
+  NavLink,
+  Outlet,
+  json,
+  useLoaderData,
+} from '@remix-run/react';
 import { CircleUser, Mail } from 'lucide-react';
 import { Input } from '~/components/ui/input';
 import dataLogo from '~/assets/images/datalogo.svg';
@@ -11,7 +18,7 @@ import {
 import { Button } from '~/components/ui/button';
 import logo from '~/assets/icon.svg';
 import type { LoaderFunctionArgs } from '@remix-run/node';
-import { authenticator } from '~/lib/auth.server';
+import { logto } from '~/lib/auth.server';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,9 +30,17 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { ThemeSwitcher } from '~/components/theme-switcher';
 
+export async function loader({ request }: LoaderFunctionArgs) {
+  const context = await logto.getContext({
+    getAccessToken: false,
+    fetchUserInfo: true,
+  })(request);
+
+  return json({ user: context.userInfo });
+}
+
 function UserProfile() {
-  const { session } = useLoaderData<typeof loader>();
-  const user = session?.user;
+  const { user } = useLoaderData<typeof loader>();
 
   return (
     <>
@@ -38,7 +53,7 @@ function UserProfile() {
               className='overflow-hidden rounded-full'
             >
               <Avatar>
-                <AvatarImage src={user.image}></AvatarImage>
+                <AvatarImage src={user.picture ?? undefined}></AvatarImage>
                 <AvatarFallback className='uppercase'>
                   {user.name?.slice(0, 2) ?? <CircleUser className='h-5 w-5' />}
                 </AvatarFallback>
@@ -60,14 +75,14 @@ function UserProfile() {
             )}
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Form action='/auth/logout' method='POST'>
+              <Form action='/auth/sign-out'>
                 <button type='submit'>Sign out</button>
               </Form>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (
-        <Form action='/auth/keycloak'>
+        <Form action='/auth/sign-in'>
           <Button variant='outline' type='submit'>
             Sign in
           </Button>
@@ -145,11 +160,6 @@ function Footer() {
       </div>
     </footer>
   );
-}
-
-export async function loader({ request }: LoaderFunctionArgs) {
-  const session = await authenticator.isAuthenticated(request);
-  return { session };
 }
 
 export default function Layout() {

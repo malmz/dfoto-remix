@@ -1,43 +1,80 @@
-import { Authenticator } from 'remix-auth';
-import { KeycloakStrategy } from 'remix-keycloak';
+import { redirect } from '@remix-run/node';
 import { sessionStorage } from './session.server';
-import { gravatarUrl } from './utils';
+import { makeLogtoRemix } from '@logto/remix';
+import { remember } from '@epic-web/remember';
 
-export type Session = {
-  user?: {
-    id: string;
-    name: string;
-    email: string;
-    image: string;
-  };
-};
+export const resource = 'https://dfoto.se';
+export const scopes = [
+  'write:album',
+  'read:album',
+  'delete:album',
+  'publish:album',
+  'write:image',
+  'delete:image',
+] as const;
 
-// Create an instance of the authenticator, pass a generic with what your
-// strategies will return and will be stored in the session
-export const authenticator = new Authenticator<Session>(sessionStorage);
+export type Role = (typeof scopes)[number];
 
-let keycloakStrategy = new KeycloakStrategy(
-  {
-    useSSL: true,
-    domain: process.env.KEYCLOAK_DOMAIN!,
-    realm: process.env.KEYCLOAK_REALM!,
-    clientID: process.env.KEYCLOAK_CLIENT_ID!,
-    clientSecret: process.env.KEYCLOAK_CLIENT_SECRET!,
-    callbackURL: process.env.KEYCLOAK_CALLBACK_URL!,
-  },
-  async ({ accessToken, refreshToken, extraParams, profile }) => {
-    console.log({ accessToken, refreshToken, extraParams, profile });
-
-    const user = {
-      id: profile.id,
-      name: profile.displayName,
-      email: profile._json.email,
-      image:
-        profile.photos?.[0].value ?? (await gravatarUrl(profile._json.email)),
-    };
-
-    return { user };
-  }
+export const logto = remember('logto', () =>
+  makeLogtoRemix(
+    {
+      endpoint: process.env.LOGTO_ENDPOINT!,
+      appId: process.env.LOGTO_APP_ID!,
+      appSecret: process.env.LOGTO_APP_SECRET!,
+      baseUrl: process.env.BASE_URL!,
+      resources: [resource],
+      scopes: scopes as unknown as string[],
+    },
+    { sessionStorage }
+  )
 );
 
-authenticator.use(keycloakStrategy);
+export function ensureRole(
+  roles: Role[],
+  params?: Parameters<(typeof logto)['getContext']>
+) {
+  return async (request: Request) => {
+    const ctx = await logto.getContext({
+      getAccessToken: true,
+      resource: resource,
+      ...params,
+    })(request);
+    if (!ctx.isAuthenticated) {
+      throw redirect('/login');
+    }
+
+    for (const role of roles) {
+      if (!ctx.scopes?.includes(role)) {
+        throw new Response(`unauthorized: missing role: ${role}`, {
+          status: 401,
+        });
+      }
+    }
+    return ctx;
+  };
+}
+
+export function checkRole(
+  roles: Role[],
+  params?: Parameters<(typeof logto)['getContext']>
+) {
+  return async (request: Request) => {
+    const ctx = await logto.getContext({
+      getAccessToken: true,
+      resource: resource,
+      ...params,
+    })(request);
+
+    if (!ctx.isAuthenticated) {
+      return { ...ctx, passed: false };
+    }
+
+    for (const r of roles) {
+      if (!ctx.scopes?.includes(r)) {
+        return { ...ctx, passed: false };
+      }
+    }
+
+    return { ...ctx, passed: true };
+  };
+}
