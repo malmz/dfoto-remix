@@ -1,8 +1,8 @@
-import { Button, ButtonProps } from '~/components/ui/button';
+import type { ButtonProps } from '~/components/ui/button';
+import { Button } from '~/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { useEffect, useId, useRef } from 'react';
 import { toast } from 'sonner';
-import { getFormProps, useForm } from '@conform-to/react';
 import { useFetcher } from '@remix-run/react';
 import type { action } from '../api.upload';
 
