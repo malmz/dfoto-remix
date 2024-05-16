@@ -4,7 +4,7 @@ import {
   createFileSessionStorage,
 } from '@remix-run/node';
 import { join } from 'path';
-import { storagePath } from './storage.server';
+import { storagePath } from './storage/paths';
 
 // export the whole sessionStorage object
 /*export const sessionStorage = createCookieSessionStorage({

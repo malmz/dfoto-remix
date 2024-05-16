@@ -145,7 +145,7 @@ function ImageCarousel({
                             className='overflow-hidden rounded-lg'
                           >
                             <img
-                              src={`/api/image/${img.id}`}
+                              src={`/api/image/${img.id}?thumbnail`}
                               width={96}
                               height={96}
                               alt='fotografi'
@@ -182,21 +182,21 @@ export default function Page() {
             <span>{albumName}</span>
           </Link>
         </Button>
-        <InfoDrawer image={image}></InfoDrawer>
+        {/* <InfoDrawer image={image}></InfoDrawer> */}
       </div>
       <div className='mx-auto my-2 max-w-screen-lg px-8'>
         <img
-          src={`/api/image/${image.id}`}
-          width={800}
-          height={384}
+          src={`/api/image/${image.id}?preview`}
+          width={1200}
+          height={800}
           alt='fotografi'
-          className='h-96 w-full object-contain'
+          className='w-full object-contain rounded-md'
         />
       </div>
       <div className='mx-auto my-2 flex w-full max-w-screen-lg justify-center'>
         <ImageCarousel albumId={albumId} imageId={image.id}></ImageCarousel>
       </div>
-      <div className='mx-auto my-2 hidden w-full max-w-screen-lg px-8 sm:block'>
+      <div className='mx-auto my-2 w-full max-w-screen-lg px-8'>
         <Card>
           <CardHeader>
             <CardTitle>Info</CardTitle>

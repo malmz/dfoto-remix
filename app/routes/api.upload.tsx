@@ -9,13 +9,14 @@ import {
   json,
 } from '@remix-run/node';
 import { z } from 'zod';
-import { commitUpload, uploadsPath } from '~/lib/storage.server';
 import sharp from 'sharp';
 import type { InferInsertModel } from 'drizzle-orm';
 import { image } from '~/lib/schema.server';
 import exif from 'exif-reader';
 import { db } from '~/lib/db.server';
 import { ensureRole } from '~/lib/auth.server';
+import { uploadsPath } from '~/lib/storage/paths';
+import { commitUpload } from '~/lib/storage/image';
 
 const imageTypes = ['image/jpeg', 'image/png'];
 

@@ -11,6 +11,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from './ui/breadcrumb';
+import { Fragment } from 'react/jsx-runtime';
 
 export type CrumbHandle<D = unknown> = {
   breadcrumb: (
@@ -55,12 +56,12 @@ export function DynamicBreadcrum() {
               match.handle.breadcrumb(match, match.pathname === pathname)
           )
           .map((match, i) => (
-            <>
+            <Fragment key={match.id}>
               {i !== 0 && <BreadcrumbSeparator></BreadcrumbSeparator>}
-              <BreadcrumbItem key={match.id}>
+              <BreadcrumbItem>
                 <Crumb match={match}></Crumb>
               </BreadcrumbItem>
-            </>
+            </Fragment>
           ))}
       </BreadcrumbList>
     </Breadcrumb>

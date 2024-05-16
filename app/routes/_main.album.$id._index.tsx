@@ -1,4 +1,4 @@
-import { LoaderFunctionArgs } from '@remix-run/node';
+import type { LoaderFunctionArgs } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 import { AutoGrid } from '~/components/autogrid';
 import { getAlbum } from '~/lib/data.server';
@@ -30,10 +30,12 @@ export default function Page() {
             className='overflow-hidden rounded-lg'
           >
             <img
-              src={`/api/image/${image.id}`}
+              src={`/api/image/${image.id}?thumbnail`}
               width='300'
               height='200'
               alt=''
+              decoding='async'
+              loading='lazy'
               className='aspect-[3/2] object-cover transition-transform hover:scale-105'
             ></img>
           </Link>

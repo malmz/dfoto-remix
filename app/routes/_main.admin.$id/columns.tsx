@@ -1,5 +1,3 @@
-'use client';
-
 import { SortButton } from '~/components/data-table';
 import { Button } from '~/components/ui/button';
 import { Checkbox } from '~/components/ui/checkbox';
@@ -16,7 +14,6 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { Check, Link as LinkIcon, MoreHorizontal, Trash2 } from 'lucide-react';
-import { extension } from 'mime-types';
 import { Link } from '@remix-run/react';
 
 type ItemType = ImageType & { thumbnail: boolean };
@@ -87,22 +84,19 @@ export function createColumns() {
       id: 'picture',
       header: 'Picture',
       cell: (info) => (
-        <Link to={''}>
-          <img
-            src={`/api/image/${info.row.original.id}`}
-            width='150'
-            height='100'
-            alt=''
-            className='aspect-[3/2] object-cover'
-          ></img>
-        </Link>
+        <img
+          src={`/api/image/${info.row.original.id}?thumbnail`}
+          width='150'
+          height='100'
+          alt=''
+          className='aspect-[3/2] object-cover rounded-md'
+        ></img>
       ),
       enableSorting: false,
     }),
 
     cb.accessor('mimetype', {
       header: (info) => <SortButton column={info.column}>Filtyp</SortButton>,
-      cell: (info) => extension(info.getValue()),
     }),
     cb.accessor('taken_at', {
       header: (info) => <SortButton column={info.column}>Tagen vid</SortButton>,

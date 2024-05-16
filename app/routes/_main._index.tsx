@@ -8,20 +8,23 @@ import { Input } from '~/components/ui/input';
 import { getAlbums, getPagesCount } from '~/lib/data.server';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const queryParams = (new URL (request.url)).searchParams;
-  if (queryParams.get("page") === '1') throw redirect('/');
-  const page = Math.max(queryParams.get("page") ? parseInt(queryParams.get("page")!) : 1, 1);
-  const albums = getAlbums(page - 1, 28, queryParams.get("q")!);
-  const totalPages = await getPagesCount(28, queryParams.get("q")!);
+  const queryParams = new URL(request.url).searchParams;
+  if (queryParams.get('page') === '1') throw redirect('/');
+  const page = Math.max(
+    queryParams.get('page') ? parseInt(queryParams.get('page')!) : 1,
+    1
+  );
+  const albums = getAlbums(page - 1, 28, queryParams.get('q')!);
+  const totalPages = await getPagesCount(28, queryParams.get('q')!);
   return {
     page,
     totalPages,
-    albums
+    albums,
   };
 };
 
 export default function Page() {
-  const { totalPages, albums } = useLoaderData<typeof loader>();
+  const { totalPages, albums, page } = useLoaderData<typeof loader>();
 
   return (
     <>
@@ -41,7 +44,7 @@ export default function Page() {
           </AutoGrid>
         </Suspense>
       </div>
-      <Paginator page={1} totalPages={totalPages} className='mt-3' />
+      <Paginator page={page} totalPages={totalPages} className='mt-3' />
     </>
   );
 }
