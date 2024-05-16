@@ -7,6 +7,7 @@ import { cn } from '~/lib/utils';
 import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { Calendar } from '../ui/calendar';
+import { sv } from 'date-fns/locale';
 
 export function DatePickerConform({ meta }: { meta: FieldMetadata<Date> }) {
   const triggerRef = React.useRef<HTMLButtonElement>(null);
@@ -40,7 +41,7 @@ export function DatePickerConform({ meta }: { meta: FieldMetadata<Date> }) {
           >
             <CalendarIcon className='mr-2 h-4 w-4' />
             {control.value ? (
-              format(control.value, 'PPP')
+              format(control.value, 'PPP', { locale: sv })
             ) : (
               <span>Pick a date</span>
             )}
