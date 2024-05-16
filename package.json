@@ -7,7 +7,8 @@
     "build": "remix vite:build",
     "dev": "remix vite:dev",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
-    "start": "dotenvx run -- remix-serve ./build/server/index.js",
+    "serve": "dotenvx run -- remix-serve ./build/server/index.js",
+    "start": "remix-serve ./build/server/index.js",
     "typecheck": "tsc",
     "dk": "drizzle-kit"
   },

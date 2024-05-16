@@ -1,0 +1,13 @@
+build
+node_modules
+storage
+.vscode
+.env
+.eslintrc.json
+.gitignore
+.node-version
+.prettierrc
+components.json
+Dockerfile
+drizzle.config.ts
+README.md

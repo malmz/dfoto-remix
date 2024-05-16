@@ -1,6 +1,6 @@
-# Welcome to Remix + Vite!
+# Nya DFoto, på riktigt nu faktiskt!
 
-📖 See the [Remix docs](https://remix.run/docs) and the [Remix Vite docs](https://remix.run/docs/en/main/future/vite) for details on supported features.
+Gammla DFoto är rätt najs men byggd med gammal react och mongodb. Nu kommer spännande ny server side rendering och postgres. Sidan är skriven i remix med styles från shadcn/ui.
 
 ## Development
 
@@ -23,14 +23,3 @@ Then run the app in production mode:
 ```sh
 npm start
 ```
-
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-- `build/server`
-- `build/client`
