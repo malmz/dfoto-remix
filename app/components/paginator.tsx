@@ -6,7 +6,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "./ui/pagination";
+} from './ui/pagination';
 
 interface Props extends React.ComponentProps<typeof Pagination> {
   page: number;
@@ -23,12 +23,12 @@ export function Paginator({ page, totalPages, ...props }: Props) {
         {page > 1 ? (
           <PaginationItem>
             <PaginationPrevious
-              href={page === 2 ? "/" : `/page/${page - 1}`}
+              to={page === 2 ? '/' : `/?page=${page - 1}`}
             ></PaginationPrevious>
           </PaginationItem>
         ) : null}
         <PaginationItem>
-          <PaginationLink href="/" isActive={page === 1}>
+          <PaginationLink to='/' isActive={page === 1}>
             1
           </PaginationLink>
         </PaginationItem>
@@ -39,21 +39,21 @@ export function Paginator({ page, totalPages, ...props }: Props) {
         ) : null}
         {page <= totalPages - 2 ? (
           <PaginationItem>
-            <PaginationLink href={`/page/${left}`} isActive={page === left}>
+            <PaginationLink to={`/?page=${left}`} isActive={page === left}>
               {left}
             </PaginationLink>
           </PaginationItem>
         ) : null}
         {totalPages > 2 ? (
           <PaginationItem>
-            <PaginationLink href={`/page/${middle}`} isActive={page === middle}>
+            <PaginationLink to={`/?page=${middle}`} isActive={page === middle}>
               {middle}
             </PaginationLink>
           </PaginationItem>
         ) : null}
         {page >= 3 ? (
           <PaginationItem>
-            <PaginationLink href={`/page/${right}`} isActive={page === right}>
+            <PaginationLink to={`/?page=${right}`} isActive={page === right}>
               {right}
             </PaginationLink>
           </PaginationItem>
@@ -66,7 +66,7 @@ export function Paginator({ page, totalPages, ...props }: Props) {
         {totalPages > 1 ? (
           <PaginationItem>
             <PaginationLink
-              href={`/page/${totalPages}`}
+              to={`/?page=${totalPages}`}
               isActive={page === totalPages}
             >
               {totalPages}
@@ -75,7 +75,7 @@ export function Paginator({ page, totalPages, ...props }: Props) {
         ) : null}
         {page < totalPages ? (
           <PaginationItem>
-            <PaginationNext href={`/page/${page + 1}`}></PaginationNext>
+            <PaginationNext to={`/?page=${page + 1}`}></PaginationNext>
           </PaginationItem>
         ) : null}
       </PaginationContent>
