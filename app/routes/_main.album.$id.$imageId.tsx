@@ -18,20 +18,12 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '~/components/ui/carousel';
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from '~/components/ui/drawer';
 import { getImage } from '~/lib/data.server';
 import type { AlbumLoader } from './_main.album.$id';
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const albumId = Number(params.id);
   const imageId = Number(params.imageId);
-  //const album = getAlbum(albumId);
   const image = await getImage(imageId);
   if (!image) throw new Response('Not found', { status: 404 });
   return {
@@ -40,48 +32,6 @@ export async function loader({ params }: LoaderFunctionArgs) {
     imageId,
     albumId,
   };
-}
-
-function InfoDrawer({
-  image,
-}: {
-  image: {
-    taken_by_name: string | null;
-    taken_at: Date;
-    mimetype: string | null;
-    exif_data: any | null;
-  };
-}) {
-  return (
-    <>
-      <Drawer>
-        <DrawerTrigger asChild>
-          <Button variant='outline' size='sm' className='sm:hidden'>
-            Image info
-          </Button>
-        </DrawerTrigger>
-        <DrawerContent>
-          <DrawerHeader>
-            <DrawerTitle>Info</DrawerTitle>
-          </DrawerHeader>
-          <div className='mx-auto grid max-w-md grid-cols-2 gap-2 p-4 py-8 text-sm'>
-            <span>Fotograf</span>
-            <span>{image.taken_by_name}</span>
-            <span>Tagen vid</span>
-            <span>{format(image.taken_at, 'PPP, pp', { locale: sv })}</span>
-            <span>Format</span>
-            <span>{image.mimetype}</span>
-            <span>Märke</span>
-            <span>{image.exif_data?.Image?.Make}</span>
-            <span>Model</span>
-            <span>{image.exif_data?.Image?.Model}</span>
-            <span>Lins</span>
-            <span>{image.exif_data?.Photo?.LensModel}</span>
-          </div>
-        </DrawerContent>
-      </Drawer>
-    </>
-  );
 }
 
 function ImageCarousel({
@@ -182,7 +132,6 @@ export default function Page() {
             <span>{albumName}</span>
           </Link>
         </Button>
-        {/* <InfoDrawer image={image}></InfoDrawer> */}
       </div>
       <div className='mx-auto my-2 max-w-screen-lg px-8'>
         <img
