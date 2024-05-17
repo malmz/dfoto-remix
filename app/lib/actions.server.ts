@@ -1,4 +1,4 @@
-import { and, asc, eq, isNull, sql, type InferInsertModel } from 'drizzle-orm';
+import { and, asc, eq, isNull } from 'drizzle-orm';
 import { db } from './db.server';
 import { album, image, type CreateAlbum } from './schema.server';
 import { deleteImageFiles } from './storage/image';

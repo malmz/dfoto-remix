@@ -7,7 +7,6 @@ import {
   useLoaderData,
 } from '@remix-run/react';
 import { CircleUser, Mail } from 'lucide-react';
-import { Input } from '~/components/ui/input';
 import dataLogo from '~/assets/images/datalogo.svg';
 import { getYear } from 'date-fns';
 import {

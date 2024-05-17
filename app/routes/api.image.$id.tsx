@@ -7,19 +7,8 @@ import { getPreviewStream } from '~/lib/storage/preview';
 import { getImageStream } from '~/lib/storage/image';
 import type { ImageStream } from '~/lib/storage/types';
 import { extension } from 'mime-types';
-import { z } from 'zod';
-import { getParams, getParamsOrFail } from 'remix-params-helper';
 
 const ensure = true;
-
-const pathSchema = z.object({
-  id: z.number(),
-});
-
-const querySchema = z.object({
-  thumbnail: z.string().optional(),
-  preview: z.string().optional(),
-});
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const { passed } = await checkRole(['read:album'])(request);
