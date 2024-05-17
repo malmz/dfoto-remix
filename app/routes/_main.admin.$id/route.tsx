@@ -3,6 +3,7 @@ import { Separator } from '~/components/ui/separator';
 import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
+  type MetaFunction,
 } from '@remix-run/node';
 import { getAlbum } from '~/lib/data.server';
 import { useFetcher, useLoaderData } from '@remix-run/react';
@@ -39,6 +40,10 @@ const updateSchema = z.object({
   description: z.string(),
   start_at: z.date(),
 });
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => [
+  { title: data ? `🔒DFoto - ${data.album.name}` : undefined },
+];
 
 export const handle: CrumbHandle<typeof loader> = {
   breadcrumb: (match) => ({

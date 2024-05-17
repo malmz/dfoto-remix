@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { redirect, type ActionFunctionArgs } from '@remix-run/node';
+import {
+  redirect,
+  type ActionFunctionArgs,
+  type MetaFunction,
+} from '@remix-run/node';
 import { createAlbum } from '~/lib/actions.server';
 import { Form, Link, useActionData } from '@remix-run/react';
 import {
@@ -17,6 +21,8 @@ import { FormError, FormField, FormLabel } from '~/components/form/form';
 import { FormInput } from '~/components/form/input';
 import { FormTextarea } from '~/components/form/textarea';
 import { FormDatePicker } from '~/components/form/date-picker';
+
+export const meta: MetaFunction = () => [{ title: '🔒DFoto - Skapa nytt' }];
 
 export const handle = {
   breadcrumb: () => ({ to: '/admin/create', title: 'Create' }),

@@ -1,8 +1,11 @@
+import type { MetaFunction } from '@remix-run/node';
 import { Outlet } from '@remix-run/react';
 import {
   DynamicBreadcrum,
   type CrumbHandle,
 } from '~/components/dynamic-breadcrum';
+
+export const meta: MetaFunction = () => [{ title: '🔒DFoto - Admin' }];
 
 export const handle: CrumbHandle = {
   breadcrumb: (_, current) =>

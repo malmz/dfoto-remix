@@ -5,12 +5,14 @@ import {
   Scripts,
   ScrollRestoration,
 } from '@remix-run/react';
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction, MetaFunction } from '@remix-run/node';
 import styles from './globals.css?url';
 import { TooltipProvider } from './components/ui/tooltip';
 import { cn } from './lib/utils';
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from './components/ui/sonner';
+
+export const meta: MetaFunction = () => [{ title: 'DFoto' }];
 
 export const links: LinksFunction = () => [
   { rel: 'preconnect', href: 'https://rsms.me/' },
