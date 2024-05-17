@@ -1,14 +1,7 @@
 import { z } from 'zod';
-import { getFormProps, useForm } from '@conform-to/react';
-import { parseWithZod } from '@conform-to/zod';
 import { redirect, type ActionFunctionArgs } from '@remix-run/node';
 import { createAlbum } from '~/lib/actions.server';
 import { Form, Link, useActionData } from '@remix-run/react';
-import {
-  ErrorConform,
-  FormField,
-  LabelConform,
-} from '~/components/conform/form';
 import {
   Card,
   CardContent,
@@ -18,10 +11,12 @@ import {
   CardTitle,
 } from '~/components/ui/card';
 import { Button } from '~/components/ui/button';
-import { InputConform } from '~/components/conform/input';
-import { DatePickerConform } from '~/components/conform/date-picker';
-import { TextareaConform } from '~/components/conform/textarea';
 import { ensureRole } from '~/lib/auth.server';
+import { getFormData } from 'remix-params-helper';
+import { FormError, FormField, FormLabel } from '~/components/form/form';
+import { FormInput } from '~/components/form/input';
+import { FormTextarea } from '~/components/form/textarea';
+import { FormDatePicker } from '~/components/form/date-picker';
 
 export const handle = {
   breadcrumb: () => ({ to: '/admin/create', title: 'Create' }),
@@ -37,32 +32,21 @@ const schema = z.object({
 
 export async function action({ request }: ActionFunctionArgs) {
   await ensureRole(['write:album'])(request);
-  const formData = await request.formData();
-  const submission = parseWithZod(formData, { schema });
-
-  if (submission.status !== 'success') {
-    return submission.reply();
+  const result = await getFormData(request, schema);
+  if (!result.success) {
+    return result;
   }
 
-  const [{ id }] = await createAlbum(submission.value);
-  return redirect(`/admin/${id}`);
+  const [{ id }] = await createAlbum(result.data);
+  throw redirect(`/admin/${id}`);
 }
 
 export default function Page() {
   const lastResult = useActionData<typeof action>();
-  const [form, fields] = useForm({
-    lastResult,
-    onValidate({ formData }) {
-      return parseWithZod(formData, { schema });
-    },
-    onSubmit(event, context) {
-      console.log({ event, context });
-    },
-    shouldValidate: 'onBlur',
-  });
+  const errors = lastResult?.errors;
   return (
     <div className='container mt-8 flex flex-col gap-4'>
-      <Form method='post' {...getFormProps(form)}>
+      <Form method='post'>
         <Card className='max-w-screen-md mx-auto'>
           <CardHeader>
             <CardTitle>Skapa nytt album</CardTitle>
@@ -72,21 +56,21 @@ export default function Page() {
           </CardHeader>
           <CardContent className='space-y-4'>
             <FormField>
-              <LabelConform meta={fields.name}>Titel</LabelConform>
-              <InputConform type='text' meta={fields.name} />
-              <ErrorConform meta={fields.name} />
+              <FormLabel>Titel</FormLabel>
+              <FormInput type='text' name='name' required />
+              {errors && <FormError>{errors.name}</FormError>}
             </FormField>
 
             <FormField>
-              <LabelConform meta={fields.description}>Beskrivning</LabelConform>
-              <TextareaConform meta={fields.description} />
-              <ErrorConform meta={fields.description} />
+              <FormLabel>Beskrivning</FormLabel>
+              <FormTextarea name='description' />
+              {errors && <FormError>{errors.description}</FormError>}
             </FormField>
 
             <FormField>
-              <LabelConform meta={fields.start_at}>Datum</LabelConform>
-              <DatePickerConform meta={fields.start_at} />
-              <ErrorConform meta={fields.start_at} />
+              <FormLabel>Datum</FormLabel>
+              <FormDatePicker name='start_at' />
+              {errors && <FormError>{errors.start_at}</FormError>}
             </FormField>
           </CardContent>
           <CardFooter className='gap-4 justify-between'>

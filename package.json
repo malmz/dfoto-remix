@@ -13,8 +13,6 @@
     "dk": "drizzle-kit"
   },
   "dependencies": {
-    "@conform-to/react": "^1.1.3",
-    "@conform-to/zod": "^1.1.3",
     "@epic-web/remember": "^1.0.2",
     "@logto/remix": "^2.1.9",
     "@radix-ui/react-alert-dialog": "^1.0.5",
