@@ -1,4 +1,3 @@
-import type { Serializable } from '@remix-run/react/future/single-fetch';
 import type { InferInsertModel, InferSelectModel } from 'drizzle-orm';
 import { relations } from 'drizzle-orm';
 import {
@@ -12,6 +11,7 @@ import {
   timestamp,
 } from 'drizzle-orm/pg-core';
 import type { Exif } from 'exif-reader';
+import type { Jsonify } from '@remix-run/server-runtime/dist/jsonify';
 
 export const album = pgTable('album', {
   id: serial('id').primaryKey(),
@@ -26,7 +26,8 @@ export const album = pgTable('album', {
     .notNull(),
   modified_at: timestamp('modified_at', { withTimezone: true })
     .defaultNow()
-    .notNull(),
+    .notNull()
+    .$onUpdateFn(() => new Date()),
 });
 
 export const albumRelation = relations(album, ({ many }) => ({
@@ -42,7 +43,7 @@ export type CreateAlbum = Omit<
 export const image = pgTable('image', {
   id: serial('id').primaryKey(),
   legacy_id: text('legacy_id').unique(),
-  exif_data: jsonb('exif_data').$type<Serializable>(),
+  exif_data: jsonb('exif_data').$type<Jsonify<Exif>>(),
   mimetype: text('mimetype'),
   album_id: integer('album_id')
     .references(() => album.id)

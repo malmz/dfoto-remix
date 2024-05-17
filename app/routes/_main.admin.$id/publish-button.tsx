@@ -12,14 +12,13 @@ import {
 import { Button } from '~/components/ui/button';
 
 interface Props {
-  formId?: string;
-  dirty: boolean;
+  form?: string;
   album: {
     id: number;
     published: boolean;
   };
 }
-export function PublishButton({ formId, album, dirty }: Props) {
+export function PublishButton({ form, album }: Props) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -35,18 +34,13 @@ export function PublishButton({ formId, album, dirty }: Props) {
           </AlertDialogTitle>
           <AlertDialogDescription>
             Ändringar du gjort sparas inte automatisk innan publicering. Va
-            säker på att du spara innan.{' '}
-            {dirty && (
-              <span className='font-semibold text-destructive'>
-                Du har osparade ändringar!
-              </span>
-            )}
+            säker på att du spara innan.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Avbryt</AlertDialogCancel>
           <AlertDialogAction
-            form={formId}
+            form={form}
             type='submit'
             name='intent'
             value='publish'

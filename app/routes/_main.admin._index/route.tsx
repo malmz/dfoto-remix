@@ -1,52 +1,55 @@
 import { Link, useLoaderData } from '@remix-run/react';
 import { getAllAlbums } from '~/lib/data.server';
 import { ensureRole } from '~/lib/auth.server';
-import type { LoaderFunctionArgs } from '@remix-run/node';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import { Input } from '~/components/ui/input';
 import { useState } from 'react';
 import { Button } from '~/components/ui/button';
-import { DataTable, SortButton } from '~/components/data-table';
-import { Badge } from '~/components/ui/badge';
-import type { Album } from '~/lib/schema.server';
-import type { ColumnDef } from '@tanstack/react-table';
-import { createColumnHelper } from '@tanstack/react-table';
-import { format } from 'date-fns';
+import { DataTable } from '~/components/data-table';
+import { columns } from './columns';
+import { deleteAlbum, setPubishedStatus } from '~/lib/actions.server';
+import { getParams } from 'remix-params-helper';
+import { z } from 'zod';
 
-const cb = createColumnHelper<Album>();
+export async function action({ request }: ActionFunctionArgs) {
+  const formData = await request.formData();
+  switch (formData.get('intent')) {
+    case 'publish': {
+      await ensureRole(['publish:album'])(request);
+      const result = getParams(
+        formData,
+        z.object({
+          id: z.number(),
+          published: z.boolean(),
+        })
+      );
+      if (!result.success) {
+        return result;
+      }
 
-export const columns = [
-  cb.accessor('name', {
-    header: 'Namn',
-    cell: (info) => (
-      <Link
-        className='font-medium underline underline-offset-4'
-        to={`/admin/${info.row.original.id}`}
-      >
-        {info.getValue()}
-      </Link>
-    ),
-  }),
-  cb.accessor('description', {
-    header: 'Beskrivning',
-  }),
-  cb.accessor('published', {
-    header: ({ column }) => <SortButton column={column}>Status</SortButton>,
-    cell: (info) =>
-      info.getValue() ? (
-        <Badge variant='secondary'>Published</Badge>
-      ) : (
-        <Badge variant='outline'>Draft</Badge>
-      ),
-  }),
-  cb.accessor('start_at', {
-    header: ({ column }) => <SortButton column={column}>Datum</SortButton>,
-    cell: (info) => (
-      <span className='text-nowrap'>
-        {format(info.getValue(), 'yyyy-MM-dd')}
-      </span>
-    ),
-  }),
-] satisfies ColumnDef<Album, any>[];
+      await setPubishedStatus(result.data.id, !result.data.published);
+
+      return { success: true } as const;
+    }
+    case 'delete': {
+      await ensureRole(['delete:album'])(request);
+      const result = getParams(
+        formData,
+        z.object({
+          id: z.number(),
+        })
+      );
+      if (!result.success) {
+        return result;
+      }
+
+      await deleteAlbum(result.data.id);
+      return { success: true } as const;
+    }
+    default:
+      throw new Error(`Invalid intent: ${formData.get('intent')}`);
+  }
+}
 
 export async function loader({ request }: LoaderFunctionArgs) {
   await ensureRole(['read:album'])(request);

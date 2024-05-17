@@ -1,52 +1,15 @@
 import { SortButton } from '~/components/data-table';
-import { Button } from '~/components/ui/button';
 import { Checkbox } from '~/components/ui/checkbox';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '~/components/ui/dropdown-menu';
 import type { Image as ImageType } from '~/lib/schema.server';
 import type { ColumnDef } from '@tanstack/react-table';
 import { createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
-import { Check, Link as LinkIcon, MoreHorizontal, Trash2 } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { Link } from '@remix-run/react';
+import { RowActions } from './row-actions';
 
 type ItemType = ImageType & { thumbnail: boolean };
 const cb = createColumnHelper<ItemType>();
-
-function RowActions() {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant='ghost' className='h-8 w-8 p-0'>
-          <span className='sr-only'>Öppna meny</span>
-          <MoreHorizontal className='h-4 w-4' />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align='end'>
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuSeparator></DropdownMenuSeparator>
-        <DropdownMenuItem onClick={async () => {}}>
-          <Check className='mr-2 h-4 w-4'></Check>
-          <span>Sätt som omslag</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <LinkIcon className='mr-2 h-4 w-4'></LinkIcon>
-          <span>Kopiera länk</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem className='text-destructive'>
-          <Trash2 className='mr-2 h-4 w-4'></Trash2>
-          <span>Ta bort</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
 
 export function createColumns() {
   return [
@@ -116,7 +79,12 @@ export function createColumns() {
     }),
     cb.display({
       id: 'actions',
-      cell: (info) => <RowActions></RowActions>,
+      cell: (info) => (
+        <RowActions
+          id={info.row.original.id}
+          album_id={info.row.original.album_id}
+        ></RowActions>
+      ),
       enableSorting: false,
       enableHiding: false,
     }),

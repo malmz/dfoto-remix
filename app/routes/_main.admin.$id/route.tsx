@@ -1,23 +1,20 @@
 import { PublishButton } from './publish-button';
 import { Separator } from '~/components/ui/separator';
-import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
-import { getAlbum } from '~/lib/data.server';
-import { json, useFetcher, useLoaderData } from '@remix-run/react';
-import { z } from 'zod';
-import { parseWithZod } from '@conform-to/zod';
-import { setPubishedStatus, updateAlbum } from '~/lib/actions.server';
-import { getFormProps, getInputProps, useForm } from '@conform-to/react';
 import {
-  ErrorConform,
-  FormField,
-  LabelConform,
-} from '~/components/conform/form';
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+} from '@remix-run/node';
+import { getAlbum } from '~/lib/data.server';
+import { useFetcher, useLoaderData } from '@remix-run/react';
+import { z } from 'zod';
+import {
+  deleteImage,
+  setPubishedStatus,
+  setThumbnail,
+  updateAlbum,
+} from '~/lib/actions.server';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { InputConform } from '~/components/conform/input';
-import { TextareaConform } from '~/components/conform/textarea';
-import { DatePickerConform } from '~/components/conform/date-picker';
-import { StatusButton } from '~/components/conform/status-button';
 import { ensureRole } from '~/lib/auth.server';
 import { DataTable } from '~/components/data-table';
 import { Input } from '~/components/ui/input';
@@ -25,8 +22,15 @@ import { createColumns } from './columns';
 import type { Image } from '~/lib/schema.server';
 import { UploadButton } from './upload-button';
 import type { CrumbHandle } from '~/components/dynamic-breadcrum';
+import { getParams } from 'remix-params-helper';
+import { FormError, FormField, FormLabel } from '~/components/form/form';
+import { FormInput } from '~/components/form/input';
+import { FormTextarea } from '~/components/form/textarea';
+import { Loader2 } from 'lucide-react';
+import { Button } from '~/components/ui/button';
+import { FormDatePicker } from '~/components/form/date-picker';
 
-const schema = z.object({
+const updateSchema = z.object({
   id: z.number(),
   published: z.boolean(),
   name: z.string().min(1, {
@@ -57,99 +61,117 @@ export async function action({ request }: ActionFunctionArgs) {
   switch (formData.get('intent')) {
     case 'publish': {
       await ensureRole(['publish:album'])(request);
-      const submission = parseWithZod(formData, { schema });
-      if (submission.status !== 'success') {
-        return json(submission.reply());
+      const result = getParams(
+        formData,
+        z.object({
+          id: z.number(),
+          published: z.boolean(),
+        })
+      );
+      if (!result.success) {
+        return result;
       }
-      await setPubishedStatus(submission.value.id, !submission.value.published);
-      return json(submission.reply());
+
+      await setPubishedStatus(result.data.id, !result.data.published);
+      return { success: true } as const;
     }
 
     case 'save': {
       await ensureRole(['write:album'])(request);
-      const submission = parseWithZod(formData, { schema });
-      if (submission.status !== 'success') {
-        return json(submission.reply());
+      const result = getParams(formData, updateSchema);
+      if (!result.success) {
+        return result;
       }
-      const { id, ...data } = submission.value;
+
+      const { id, ...data } = result.data;
       await updateAlbum(id, data);
-      return json(submission.reply());
+      return { success: true } as const;
+    }
+
+    case 'thumbnail': {
+      await ensureRole(['write:album'])(request);
+      const result = getParams(
+        formData,
+        z.object({ id: z.number(), album_id: z.number() })
+      );
+      if (!result.success) {
+        return result;
+      }
+
+      await setThumbnail(result.data.album_id, result.data.id);
+      return { success: true } as const;
+    }
+
+    case 'delete': {
+      await ensureRole(['delete:image'])(request);
+      const result = getParams(formData, z.object({ id: z.number() }));
+      if (!result.success) {
+        return result;
+      }
+      await deleteImage(result.data.id);
+      return { success: true } as const;
     }
 
     default:
-      throw new Error('Invalid intent');
+      throw new Error(`Invalid intent: ${formData.get('intent')}`);
   }
 }
 
 export default function Page() {
   const { album } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
-  const [form, fields] = useForm({
-    id: 'album-form',
-    lastResult: fetcher.data,
-    defaultValue: {
-      id: album.id,
-      published: album.published,
-      name: album.name,
-      description: album.description,
-      start_at: album.start_at,
-    },
-    onValidate({ formData }) {
-      return parseWithZod(formData, { schema });
-    },
-    shouldDirtyConsider: () => true,
-    shouldValidate: 'onBlur',
-  });
+  const error = fetcher.data?.success ? undefined : fetcher.data?.errors;
 
   useEffect(() => {
-    if (form.status === 'success') {
+    if (fetcher.data?.success) {
       toast.success('Sparat');
     }
-  }, [form.status]);
+  }, [fetcher.data?.success]);
 
   return (
     <>
       <div className='container mt-8 flex max-w-prose flex-col gap-4'>
         <h1 className='text-3xl font-extrabold tracking-tight'>{album.name}</h1>
         <fetcher.Form
+          id='album-form'
           method='post'
           className='flex flex-col gap-4'
-          {...getFormProps(form)}
         >
-          <input {...getInputProps(fields.id, { type: 'hidden' })} />
-          <input {...getInputProps(fields.published, { type: 'hidden' })} />
+          <input name='id' type='hidden' defaultValue={album.id} />
+          <input
+            name='published'
+            type='hidden'
+            defaultValue={String(album.published)}
+          />
           <FormField>
-            <LabelConform meta={fields.name}>Titel</LabelConform>
-            <InputConform meta={fields.name} type='text' />
-            <ErrorConform meta={fields.name} />
+            <FormLabel>Titel</FormLabel>
+            <FormInput type='text' name='name' defaultValue={album.name} />
+            {error && <FormError>{error.name}</FormError>}
           </FormField>
 
           <FormField>
-            <LabelConform meta={fields.description}>Beskrivning</LabelConform>
-            <TextareaConform meta={fields.description} />
-            <ErrorConform meta={fields.description} />
+            <FormLabel>Beskrivning</FormLabel>
+            <FormTextarea
+              name='description'
+              defaultValue={album.description ?? ''}
+            />
+            {error && <FormError>{error.description}</FormError>}
           </FormField>
 
           <FormField>
-            <LabelConform meta={fields.start_at}>Datum</LabelConform>
-            <DatePickerConform meta={fields.start_at} />
-            <ErrorConform meta={fields.start_at} />
+            <FormLabel>Datum</FormLabel>
+            <FormDatePicker name='start_at' defaultValue={album.start_at} />
+            {error && <FormError>{error.start_at}</FormError>}
           </FormField>
 
           <div className='flex justify-between items-center'>
-            <StatusButton
-              type='submit'
-              name='intent'
-              value='save'
-              disabled={!form.dirty}
-            >
+            <Button type='submit' name='intent' value='save'>
+              {fetcher.state !== 'idle' && (
+                <Loader2 className='mr-2 h-4 w-4 animate-spin'></Loader2>
+              )}
               Spara
-            </StatusButton>
-            <PublishButton
-              formId={form.id}
-              album={album}
-              dirty={form.dirty}
-            ></PublishButton>
+            </Button>
+            <PublishButton form='album-form' album={album}></PublishButton>
           </div>
         </fetcher.Form>
       </div>

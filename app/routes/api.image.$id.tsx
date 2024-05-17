@@ -7,8 +7,19 @@ import { getPreviewStream } from '~/lib/storage/preview';
 import { getImageStream } from '~/lib/storage/image';
 import type { ImageStream } from '~/lib/storage/types';
 import { extension } from 'mime-types';
+import { z } from 'zod';
+import { getParams, getParamsOrFail } from 'remix-params-helper';
 
 const ensure = true;
+
+const pathSchema = z.object({
+  id: z.number(),
+});
+
+const querySchema = z.object({
+  thumbnail: z.string().optional(),
+  preview: z.string().optional(),
+});
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const { passed } = await checkRole(['read:album'])(request);
@@ -24,14 +35,17 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const preview = query.get('preview') != null;
 
   assertResponse(!(thumbnail && preview), 'Invalid query parameters');
-
   let imageStream: ImageStream;
-  if (thumbnail) {
-    imageStream = await getThumbnailStream(data.image, ensure);
-  } else if (preview) {
-    imageStream = await getPreviewStream(data.image, ensure);
-  } else {
-    imageStream = await getImageStream(data.image, ensure);
+  try {
+    if (thumbnail) {
+      imageStream = await getThumbnailStream(data.image, ensure);
+    } else if (preview) {
+      imageStream = await getPreviewStream(data.image, ensure);
+    } else {
+      imageStream = await getImageStream(data.image, ensure);
+    }
+  } catch (error) {
+    return new Response('Not found', { status: 404 });
   }
 
   const ext = data.image.mimetype ? extension(data.image.mimetype) || '' : '';

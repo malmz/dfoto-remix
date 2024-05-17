@@ -7,7 +7,7 @@ import { dirname } from 'node:path';
 import { ImageError, type ImageRecord, type ImageStream } from './types';
 import { safeStat } from './utils';
 import { getLegacyImageStream } from './legacy';
-import { stat, mkdir, rename } from 'node:fs/promises';
+import { stat, mkdir, rename, rm } from 'node:fs/promises';
 import { createOptimized } from './optimizer';
 import { getImagePath, getPreviewPath, getThumbnailPath } from './paths';
 
@@ -42,8 +42,23 @@ export async function getImageStream(
 }
 
 export async function commitUpload(stagePath: string, image: ImageRecord) {
-  const path = getImagePath(image);
-  await mkdir(dirname(path), { recursive: true });
-  await rename(stagePath, path);
-  createOptimized(path, getThumbnailPath(image), getPreviewPath(image));
+  const imagePath = getImagePath(image);
+  const thumbnailPath = getThumbnailPath(image);
+  const previewPath = getPreviewPath(image);
+  await mkdir(dirname(imagePath), { recursive: true });
+  await rename(stagePath, imagePath);
+  mkdir(dirname(thumbnailPath), { recursive: true });
+  mkdir(dirname(previewPath), { recursive: true });
+  createOptimized(imagePath, getThumbnailPath(image), getPreviewPath(image));
+}
+
+export async function deleteImageFiles(image: ImageRecord) {
+  const imagePath = getImagePath(image);
+  const thumbnailPath = getThumbnailPath(image);
+  const previewPath = getPreviewPath(image);
+  await Promise.all(
+    [imagePath, thumbnailPath, previewPath].map((path) =>
+      rm(path, { force: true })
+    )
+  );
 }

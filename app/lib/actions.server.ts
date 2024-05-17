@@ -1,17 +1,18 @@
 import { and, asc, eq, isNull, sql, type InferInsertModel } from 'drizzle-orm';
 import { db } from './db.server';
 import { album, image, type CreateAlbum } from './schema.server';
+import { deleteImageFiles } from './storage/image';
 
 export async function createAlbum(data: CreateAlbum) {
   return await db.insert(album).values(data).returning({ id: album.id });
 }
 
 export async function updateAlbum(id: number, data: CreateAlbum) {
-  const moreData: Partial<InferInsertModel<typeof album>> = {
-    ...data,
-    modified_at: new Date(),
-  };
-  await db.update(album).set(moreData).where(eq(album.id, id));
+  await db.update(album).set(data).where(eq(album.id, id));
+}
+
+export async function setThumbnail(id: number, thumbnail_id: number) {
+  await db.update(album).set({ thumbnail_id }).where(eq(album.id, id));
 }
 
 // NOTE: This function lets indirectly set the thumbnail of an album if empty.
@@ -38,4 +39,13 @@ export async function setPubishedStatus(id: number, published: boolean) {
 
     await db.update(album).set({ published }).where(eq(album.id, id));
   });
+}
+
+export async function deleteAlbum(id: number) {
+  await db.delete(album).where(eq(album.id, id));
+}
+
+export async function deleteImage(id: number) {
+  const [data] = await db.delete(image).where(eq(image.id, id)).returning();
+  deleteImageFiles(data);
 }
