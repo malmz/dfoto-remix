@@ -91,6 +91,7 @@ export function DataTable<TData, TValue>({
       fuzzy: fuzzyFilter,
     },
     state: { sorting, globalFilter: filter },
+    autoResetPageIndex: false,
   });
   return (
     <div className='space-y-4'>
