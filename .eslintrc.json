@@ -1,5 +1,10 @@
 {
-  "extends": ["@remix-run/eslint-config", "plugin:drizzle/recommended"],
+  "extends": [
+    "@remix-run/eslint-config",
+    "@remix-run/eslint-config/node",
+    "plugin:react-hooks/recommended",
+    "plugin:drizzle/recommended"
+  ],
   "plugins": ["drizzle"],
   "rules": {
     "@typescript-eslint/no-unused-vars": "warn"
