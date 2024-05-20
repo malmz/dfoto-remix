@@ -30,8 +30,19 @@ export const album = pgTable('album', {
     .$onUpdateFn(() => new Date()),
 });
 
-export const albumRelation = relations(album, ({ many }) => ({
+export const legacyAlbum = pgTable('legacy_album', {
+  id: text('id').primaryKey(),
+  album_id: integer('album_id')
+    .references(() => album.id)
+    .notNull(),
+});
+
+export const albumRelation = relations(album, ({ many, one }) => ({
   images: many(image),
+  legacy: one(legacyAlbum, {
+    fields: [album.id],
+    references: [legacyAlbum.album_id],
+  }),
 }));
 
 export type Album = InferSelectModel<typeof album>;
@@ -46,7 +57,7 @@ export const image = pgTable('image', {
   exif_data: jsonb('exif_data').$type<Jsonify<Exif>>(),
   mimetype: text('mimetype'),
   album_id: integer('album_id')
-    .references(() => album.id)
+    .references(() => album.id, { onDelete: 'cascade' })
     .notNull(),
   taken_by: text('taken_by'),
   taken_by_name: text('taken_by_name'),
@@ -59,12 +70,24 @@ export const image = pgTable('image', {
     .notNull(),
 });
 
+export const legacyImage = pgTable('legacy_image', {
+  id: text('id').primaryKey(),
+  image_id: integer('image_id')
+    .references(() => image.id)
+    .notNull(),
+  filepath: text('filepath').notNull(),
+});
+
 export type Image = InferSelectModel<typeof image>;
 
 export const imageRelation = relations(image, ({ one, many }) => ({
   album: one(album, {
     fields: [image.album_id],
     references: [album.id],
+  }),
+  legacy: one(legacyImage, {
+    fields: [image.id],
+    references: [legacyImage.image_id],
   }),
   tags: many(tag),
 }));
@@ -82,9 +105,20 @@ export const tag = pgTable('tag', {
     .notNull(),
 });
 
+export const legacyTag = pgTable('legacy_tag', {
+  id: text('id').primaryKey(),
+  tag_id: integer('tag_id')
+    .references(() => tag.id)
+    .notNull(),
+});
+
 export const tagRelation = relations(tag, ({ one }) => ({
   image: one(image, {
     fields: [tag.image_id],
     references: [image.id],
+  }),
+  legacy: one(legacyTag, {
+    fields: [tag.id],
+    references: [legacyTag.tag_id],
   }),
 }));
