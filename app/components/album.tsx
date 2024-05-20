@@ -6,7 +6,7 @@ type Props = {
   album: {
     id: number;
     name: string;
-    created_at: Date;
+    start_at: Date;
     legacy_id: string | null;
     thumbnail_id: number | null;
   };
@@ -29,7 +29,7 @@ export function Album({ album }: Props) {
       <div className='flex flex-wrap justify-between px-2 text-sm'>
         <span className='font-medium leading-none'>{album.name}</span>
         <span className='text-xs text-muted-foreground'>
-          {formatRelative(album.created_at, new Date(), {
+          {formatRelative(album.start_at, new Date(), {
             locale: sv,
             weekStartsOn: 1,
           })}
