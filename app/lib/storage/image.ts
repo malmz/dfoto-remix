@@ -3,13 +3,20 @@ import {
   writeReadableStreamToWritable,
 } from '@remix-run/node';
 import { createReadStream, createWriteStream } from 'node:fs';
-import { dirname } from 'node:path';
+import { dirname, join } from 'node:path';
 import { ImageError, type ImageRecord, type ImageStream } from './types';
 import { safeStat } from './utils';
 import { getLegacyImageStream } from './legacy';
 import { stat, mkdir, rename, rm } from 'node:fs/promises';
 import { createOptimized } from './optimizer';
-import { getImagePath, getPreviewPath, getThumbnailPath } from './paths';
+import {
+  getImagePath,
+  getPreviewPath,
+  getThumbnailPath,
+  imagePath,
+  previewPath,
+  thumbnailPath,
+} from './paths';
 
 export async function ensureImage(image: ImageRecord) {
   const path = getImagePath(image);
@@ -59,6 +66,18 @@ export async function deleteImageFiles(image: ImageRecord) {
   await Promise.all(
     [imagePath, thumbnailPath, previewPath].map((path) =>
       rm(path, { force: true })
+    )
+  );
+}
+
+export async function deleteAlbumFiles(albumId: number) {
+  const albumImagePath = join(imagePath, albumId.toString());
+  const albumThumbnailPath = join(thumbnailPath, albumId.toString());
+  const albumPreviewPath = join(previewPath, albumId.toString());
+
+  await Promise.all(
+    [albumImagePath, albumThumbnailPath, albumPreviewPath].map((path) =>
+      rm(path, { force: true, recursive: true })
     )
   );
 }

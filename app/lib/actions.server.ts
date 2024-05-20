@@ -1,7 +1,7 @@
 import { and, asc, eq, isNull } from 'drizzle-orm';
 import { db } from './db.server';
 import { album, image, type CreateAlbum } from './schema.server';
-import { deleteImageFiles } from './storage/image';
+import { deleteAlbumFiles, deleteImageFiles } from './storage/image';
 
 export async function createAlbum(data: CreateAlbum) {
   return await db.insert(album).values(data).returning({ id: album.id });
@@ -43,6 +43,7 @@ export async function setPubishedStatus(id: number, published: boolean) {
 
 export async function deleteAlbum(id: number) {
   await db.delete(album).where(eq(album.id, id));
+  await deleteAlbumFiles(id);
 }
 
 export async function deleteImage(id: number) {
