@@ -14,14 +14,9 @@ import {
   setThumbnail,
   updateAlbum,
 } from '~/lib/actions.server';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { toast } from 'sonner';
 import { ensureRole } from '~/lib/auth.server';
-import { DataTable } from '~/components/data-table';
-import { Input } from '~/components/ui/input';
-import { createColumns } from './columns';
-import type { Image } from '~/lib/schema.server';
-import { UploadButton } from './upload-button';
 import type { CrumbHandle } from '~/components/dynamic-breadcrum';
 import { getParams } from 'remix-params-helper';
 import { FormError, FormField, FormLabel } from '~/components/form/form';
@@ -30,6 +25,7 @@ import { FormTextarea } from '~/components/form/textarea';
 import { Loader2 } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import { FormDatePicker } from '~/components/form/date-picker';
+import { ImageTable } from './table';
 
 const updateSchema = z.object({
   id: z.number(),
@@ -183,6 +179,7 @@ export default function Page() {
       <Separator className='mx-auto mt-12 max-w-prose'></Separator>
       <div className='container mt-8 flex flex-col gap-4'>
         <h2 className='text-3xl font-extrabold tracking-tight'>Bilder</h2>
+
         <ImageTable
           albumId={album.id}
           thumbnailId={album.thumbnail_id}
@@ -190,42 +187,5 @@ export default function Page() {
         ></ImageTable>
       </div>
     </>
-  );
-}
-
-type Props = {
-  albumId: number;
-  thumbnailId: number | null;
-  data: Image[];
-};
-export function ImageTable({ albumId, thumbnailId, data }: Props) {
-  const [filter, setFilter] = useState('');
-  const mappedData = data.map((image) => ({
-    ...image,
-    thumbnail: image.id === thumbnailId,
-  }));
-
-  return (
-    <div>
-      <div className='flex items-center justify-between gap-4 py-4'>
-        <Input
-          type='search'
-          placeholder='Sök'
-          value={filter ?? ''}
-          onChange={(event) => setFilter(event.target.value)}
-          className='max-w-sm'
-        ></Input>
-        <UploadButton variant='outline' size='sm' albumId={albumId}>
-          Ladda upp bilder
-        </UploadButton>
-      </div>
-      <DataTable
-        filter={filter}
-        onFilterChange={setFilter}
-        columns={createColumns()}
-        data={mappedData}
-        sortDesc={true}
-      ></DataTable>
-    </div>
   );
 }

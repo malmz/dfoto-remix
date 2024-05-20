@@ -1,15 +1,12 @@
-import { Link, useLoaderData } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
 import { getAllAlbums } from '~/lib/data.server';
 import { ensureRole } from '~/lib/auth.server';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
-import { Input } from '~/components/ui/input';
 import { useState } from 'react';
-import { Button } from '~/components/ui/button';
-import { DataTable } from '~/components/data-table';
-import { columns } from './columns';
 import { deleteAlbum, setPubishedStatus } from '~/lib/actions.server';
 import { getParams } from 'remix-params-helper';
 import { z } from 'zod';
+import { AlbumTable } from './table';
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
@@ -63,28 +60,7 @@ export default function Admin() {
   return (
     <div className='container mt-4 flex flex-col gap-4'>
       <h1 className='text-3xl font-extrabold tracking-tight'>Album</h1>
-      <div>
-        <div className='flex items-center justify-between gap-4 py-4'>
-          <Input
-            type='search'
-            placeholder='Sök'
-            value={filter ?? ''}
-            onChange={(event) => setFilter(event.target.value)}
-            className='max-w-sm'
-          ></Input>
-          <Button variant='outline' size='sm'>
-            <Link to='/admin/create'>Skapa nytt album</Link>
-          </Button>
-        </div>
-        <DataTable
-          filter={filter}
-          onFilterChange={setFilter}
-          columns={columns}
-          data={albums}
-          sortBy='start_at'
-          sortDesc={true}
-        ></DataTable>
-      </div>
+      <AlbumTable data={albums} />
     </div>
   );
 }

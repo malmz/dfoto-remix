@@ -15,7 +15,7 @@ export function UploadButton({ children, albumId, ...props }: Props) {
   const fetcher = useFetcher<typeof action>();
 
   useEffect(() => {
-    if (fetcher.data?.status === 'success') {
+    if (fetcher.data?.success) {
       toast('Upload successful');
       formRef.current?.reset();
     }
@@ -39,9 +39,7 @@ export function UploadButton({ children, albumId, ...props }: Props) {
       <input
         onChange={(event) => {
           const files = event.target.files;
-          if (!files) {
-            return;
-          }
+          if (!files) return;
           fetcher.submit(event.currentTarget.form);
         }}
         id={id}

@@ -4,9 +4,9 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { Link } from '@remix-run/react';
-import { SortButton } from '~/components/data-table';
 import { RowActions } from './row-actions';
 import { Checkbox } from '~/components/ui/checkbox';
+import { SortButton } from '~/components/table/sort';
 
 const cb = createColumnHelper<Album>();
 
