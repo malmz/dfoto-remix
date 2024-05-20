@@ -16,3 +16,5 @@ export async function getLegacyImageStream(
     size: null,
   };
 }
+
+export async function getLocalLegacyImageStream(image: ImageRecord) {}

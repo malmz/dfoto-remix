@@ -5,6 +5,7 @@ export const storagePath = process.env.STORAGE_PATH ?? './storage';
 export const imagePath = join(storagePath, 'images');
 export const thumbnailPath = join(storagePath, 'thumbnails');
 export const previewPath = join(storagePath, 'previews');
+export const legacyPath = join(storagePath, 'legacy');
 export const uploadsPath = join(storagePath, 'uploads');
 
 export function getImagePath(image: {
