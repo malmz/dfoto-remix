@@ -3,7 +3,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Button } from '../ui/button';
 import { cn } from '~/lib/utils';
 import { CalendarIcon } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, parse } from 'date-fns';
 import { Calendar } from '../ui/calendar';
 import { sv } from 'date-fns/locale';
 import { useField } from './form';
@@ -26,7 +26,10 @@ export function FormDatePicker({ name, defaultValue, ...props }: Props) {
         aria-describedby={errorId}
         tabIndex={-1}
         name={name}
-        defaultValue={defaultValue?.toISOString() ?? ''}
+        value={value ? format(value, 'yyyy-MM-dd') : ''}
+        onChange={(e) =>
+          setValue(parse(e.target.value, 'yyyy-MM-dd', new Date()))
+        }
         onFocus={() => {
           triggerRef.current?.focus();
         }}
