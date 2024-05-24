@@ -40,7 +40,7 @@ export function ensureRole(
       ...params,
     })(request);
     if (!ctx.isAuthenticated) {
-      throw redirect('/auth/login');
+      throw redirect('/auth/sign-in');
     }
 
     for (const role of roles) {
