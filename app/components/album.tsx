@@ -1,6 +1,5 @@
 import { Link } from '@remix-run/react';
-import { formatRelative } from 'date-fns';
-import { sv } from 'date-fns/locale';
+import { format } from 'date-fns';
 
 type Props = {
   album: {
@@ -29,10 +28,7 @@ export function Album({ album }: Props) {
       <div className='flex flex-wrap justify-between px-2 text-sm'>
         <span className='font-medium leading-none'>{album.name}</span>
         <span className='text-xs text-muted-foreground'>
-          {formatRelative(album.start_at, new Date(), {
-            locale: sv,
-            weekStartsOn: 1,
-          })}
+          {format(album.start_at, 'yyyy-MM-dd')}
         </span>
       </div>
     </Link>
