@@ -131,7 +131,7 @@ export default function Page() {
 
   return (
     <>
-      <div className='container mt-8 flex max-w-prose flex-col gap-4'>
+      <div className='px-4 mt-8 mx-auto w-full max-w-prose flex flex-col gap-4'>
         <h1 className='text-3xl font-extrabold tracking-tight'>{album.name}</h1>
         <fetcher.Form
           id='album-form'
@@ -177,7 +177,7 @@ export default function Page() {
         </fetcher.Form>
       </div>
       <Separator className='mx-auto mt-12 max-w-prose'></Separator>
-      <div className='container mt-8 flex flex-col gap-4'>
+      <div className='mx-auto px-4 w-full mt-8 flex flex-col gap-4'>
         <h2 className='text-3xl font-extrabold tracking-tight'>Bilder</h2>
 
         <ImageTable

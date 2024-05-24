@@ -15,7 +15,7 @@ export const handle: CrumbHandle = {
 export default function Layout() {
   return (
     <>
-      <div className='h-14 px-8 flex items-center'>
+      <div className='h-14 px-4 flex items-center'>
         <DynamicBreadcrum></DynamicBreadcrum>
       </div>
       <Outlet></Outlet>

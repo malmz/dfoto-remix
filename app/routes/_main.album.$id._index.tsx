@@ -16,7 +16,7 @@ export default function Page() {
 
   return (
     <div className='mt-8'>
-      <div className='mx-auto mb-8 w-full max-w-6xl px-8'>
+      <div className='mx-auto mb-8 w-full max-w-6xl px-4'>
         <h1 className='text-4xl font-extrabold tracking-tight lg:text-5xl'>
           {album.name}
         </h1>
