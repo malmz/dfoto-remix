@@ -56,7 +56,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export default function Admin() {
   const { albums } = useLoaderData<typeof loader>();
-  const [filter, setFilter] = useState('');
   return (
     <div className='container mt-4 flex flex-col gap-4'>
       <h1 className='text-3xl font-extrabold tracking-tight'>Album</h1>
