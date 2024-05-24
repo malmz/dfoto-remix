@@ -139,7 +139,7 @@ function Footer() {
           Copyright © {getYear(new Date())} - All right reserved
         </p>
       </aside>
-      <p className='text-lg font-medium text-muted-foreground'>
+      <p className='text-lg font-medium text-muted-foreground hidden sm:block'>
         Vi ses genom kameralinsen!
       </p>
       <div className='flex items-center gap-2'>
