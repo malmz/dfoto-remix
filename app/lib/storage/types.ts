@@ -20,5 +20,4 @@ export interface ImageRecord {
   id: number;
   album_id: number;
   mimetype?: string | null;
-  legacy_id?: string | null;
 }
