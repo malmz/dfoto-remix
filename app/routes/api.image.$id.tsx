@@ -1,5 +1,4 @@
 import { type LoaderFunctionArgs } from '@remix-run/node';
-import { getImage } from '~/lib/data.server';
 import { assertResponse } from '~/lib/utils';
 import { checkRole } from '~/lib/auth.server';
 import { getThumbnailStream } from '~/lib/storage/thumbnail';
@@ -7,6 +6,7 @@ import { getPreviewStream } from '~/lib/storage/preview';
 import { getImageStream } from '~/lib/storage/image';
 import type { ImageStream } from '~/lib/storage/types';
 import { extension } from 'mime-types';
+import { getImage } from '~/lib/data.server';
 
 const ensure = true;
 
@@ -16,14 +16,14 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const id = Number(params.id);
   assertResponse(!Number.isNaN(id), 'Invalid image id');
 
-  const data = await getImage(id, passed);
-  assertResponse(data, 'Image not found', { status: 404 });
-
   const query = new URL(request.url).searchParams;
   const thumbnail = query.get('thumbnail') != null;
   const preview = query.get('preview') != null;
-
   assertResponse(!(thumbnail && preview), 'Invalid query parameters');
+
+  const data = await getImage(id, passed);
+  assertResponse(data, 'Image not found', { status: 404 });
+
   let imageStream: ImageStream;
   try {
     if (thumbnail) {
