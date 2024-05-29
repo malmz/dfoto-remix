@@ -15,7 +15,6 @@ import type { Jsonify } from '@remix-run/server-runtime/dist/jsonify';
 
 export const album = pgTable('album', {
   id: serial('id').primaryKey(),
-  legacy_id: text('legacy_id').unique(),
   name: text('name').notNull(),
   description: text('description'),
   published: boolean('published').default(false).notNull(),
@@ -33,7 +32,7 @@ export const album = pgTable('album', {
 export const legacyAlbum = pgTable('legacy_album', {
   id: text('id').primaryKey(),
   album_id: integer('album_id')
-    .references(() => album.id)
+    .references(() => album.id, { onDelete: 'cascade' })
     .notNull(),
 });
 
@@ -48,12 +47,11 @@ export const albumRelation = relations(album, ({ many, one }) => ({
 export type Album = InferSelectModel<typeof album>;
 export type CreateAlbum = Omit<
   InferInsertModel<typeof album>,
-  'legacy_id' | 'created_at' | 'modified_at'
+  'created_at' | 'modified_at'
 >;
 
 export const image = pgTable('image', {
   id: serial('id').primaryKey(),
-  legacy_id: text('legacy_id').unique(),
   exif_data: jsonb('exif_data').$type<Jsonify<Exif>>(),
   mimetype: text('mimetype'),
   album_id: integer('album_id')
@@ -73,7 +71,7 @@ export const image = pgTable('image', {
 export const legacyImage = pgTable('legacy_image', {
   id: text('id').primaryKey(),
   image_id: integer('image_id')
-    .references(() => image.id)
+    .references(() => image.id, { onDelete: 'cascade' })
     .notNull(),
   filepath: text('filepath').notNull(),
 });
@@ -94,10 +92,9 @@ export const imageRelation = relations(image, ({ one, many }) => ({
 
 export const tag = pgTable('tag', {
   id: serial('id').primaryKey(),
-  legacy_id: text('legacy_id').unique().notNull(),
   text: text('text').notNull(),
   image_id: integer('image_id')
-    .references(() => image.id)
+    .references(() => image.id, { onDelete: 'cascade' })
     .notNull(),
   created_by: text('created_by'),
   created_at: timestamp('created_at', { withTimezone: true })
@@ -108,7 +105,7 @@ export const tag = pgTable('tag', {
 export const legacyTag = pgTable('legacy_tag', {
   id: text('id').primaryKey(),
   tag_id: integer('tag_id')
-    .references(() => tag.id)
+    .references(() => tag.id, { onDelete: 'cascade' })
     .notNull(),
 });
 
