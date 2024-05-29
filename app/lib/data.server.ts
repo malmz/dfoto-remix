@@ -1,6 +1,6 @@
 import { and, asc, desc, eq, sql, ilike } from 'drizzle-orm';
 import { db } from './db.server';
-import { album, image } from './schema.server';
+import { album, image, legacyImage, tag } from './schema.server';
 
 export async function getAlbums(page: number, limit: number, search?: string) {
   const albums = await db.query.album.findMany({
@@ -42,6 +42,23 @@ export async function getImage(id: number, unpublished = false) {
     .limit(1);
 
   return res.length ? res[0] : null;
+}
+
+export async function getLegacyImageData(image: { id: number }) {
+  const res = await db
+    .select()
+    .from(legacyImage)
+    .where(eq(legacyImage.image_id, image.id))
+    .limit(1);
+
+  return res.length ? res[0] : null;
+}
+
+export async function getTags(id: number) {
+  return await db.query.tag.findMany({
+    where: eq(tag.image_id, id),
+    orderBy: [asc(tag.created_at)],
+  });
 }
 
 export async function getAlbum(id: number, unpublished = false) {
