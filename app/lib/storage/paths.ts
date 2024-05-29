@@ -30,3 +30,7 @@ export function getPreviewPath(image: {
 }): string {
   return join(previewPath, image.album_id.toString(), `${image.id}.webp`);
 }
+
+export function getLegacyPath(filepath: string): string {
+  return join(legacyPath, filepath);
+}
