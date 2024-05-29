@@ -6,7 +6,6 @@ type Props = {
     id: number;
     name: string;
     start_at: Date;
-    legacy_id: string | null;
     thumbnail_id: number | null;
   };
 };
