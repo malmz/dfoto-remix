@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, sql, ilike } from 'drizzle-orm';
+import { and, asc, desc, eq, ilike, sql } from 'drizzle-orm';
 import { db } from './db.server';
 import { album, image, legacyImage, tag } from './schema.server';
 
@@ -9,7 +9,7 @@ export async function getAlbums(page: number, limit: number, search?: string) {
 		offset: page * limit,
 		where: and(
 			eq(album.published, true),
-			search ? ilike(album.name, '%' + search + '%') : undefined,
+			search ? ilike(album.name, `%${search}%`) : undefined,
 		),
 	});
 	return albums;

@@ -1,6 +1,6 @@
 import { and, asc, eq, isNull } from 'drizzle-orm';
 import { db } from './db.server';
-import { album, image, type CreateAlbum } from './schema.server';
+import { type CreateAlbum, album, image } from './schema.server';
 import { deleteAlbumFiles, deleteImageFiles } from './storage/image';
 
 export async function createAlbum(data: CreateAlbum) {

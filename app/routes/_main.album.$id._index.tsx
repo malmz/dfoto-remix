@@ -37,7 +37,7 @@ export default function Page() {
 							decoding='async'
 							loading='lazy'
 							className='aspect-[3/2] object-cover transition-transform hover:scale-105'
-						></img>
+						/>
 					</Link>
 				))}
 			</AutoGrid>

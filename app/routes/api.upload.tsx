@@ -1,19 +1,19 @@
 import {
+	type ActionFunctionArgs,
+	NodeOnDiskFile,
 	unstable_composeUploadHandlers as composeUploadHandlers,
 	unstable_createFileUploadHandler as createFileUploadHandler,
 	unstable_createMemoryUploadHandler as createMemoryUploadHandler,
 	unstable_parseMultipartFormData as parseMultipartFormData,
-	type ActionFunctionArgs,
-	NodeOnDiskFile,
 } from '@remix-run/node';
-import sharp from 'sharp';
 import type { InferInsertModel } from 'drizzle-orm';
-import { image } from '~/lib/schema.server';
 import exif from 'exif-reader';
-import { db } from '~/lib/db.server';
+import sharp from 'sharp';
 import { ensureRole } from '~/lib/auth.server';
-import { uploadsPath } from '~/lib/storage/paths';
+import { db } from '~/lib/db.server';
+import { image } from '~/lib/schema.server';
 import { commitUpload } from '~/lib/storage/image';
+import { uploadsPath } from '~/lib/storage/paths';
 import { assertResponse } from '~/lib/utils';
 
 const imageTypes = ['image/jpeg', 'image/png'];
@@ -31,7 +31,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 	const formData = await parseMultipartFormData(request, uploadHandler);
 	const id = Number(formData.get('id'));
-	assertResponse(!isNaN(id), 'Invalid album id');
+	assertResponse(!Number.isNaN(id), 'Invalid album id');
 	const files = formData.getAll('files') as NodeOnDiskFile[];
 	assertResponse(files.length > 0, 'At least 1 file is required');
 	assertResponse(

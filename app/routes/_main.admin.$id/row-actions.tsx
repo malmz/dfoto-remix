@@ -1,3 +1,6 @@
+import { useSubmit } from '@remix-run/react';
+import { Check, LinkIcon, MoreHorizontal, Trash2 } from 'lucide-react';
+import { Button } from '~/components/ui/button';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -6,9 +9,6 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
-import { useSubmit } from '@remix-run/react';
-import { Button } from '~/components/ui/button';
-import { Check, LinkIcon, MoreHorizontal, Trash2 } from 'lucide-react';
 
 interface Props {
 	id: number;
@@ -27,13 +27,13 @@ export function RowActions({ id, album_id }: Props) {
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align='end'>
 				<DropdownMenuLabel>Actions</DropdownMenuLabel>
-				<DropdownMenuSeparator></DropdownMenuSeparator>
+				<DropdownMenuSeparator />
 				<DropdownMenuItem
 					onSelect={() =>
 						submit({ intent: 'thumbnail', id, album_id }, { method: 'POST' })
 					}
 				>
-					<Check className='mr-2 h-4 w-4'></Check>
+					<Check className='mr-2 h-4 w-4' />
 					<span>Sätt som omslag</span>
 				</DropdownMenuItem>
 				<DropdownMenuItem
@@ -46,7 +46,7 @@ export function RowActions({ id, album_id }: Props) {
 						);
 					}}
 				>
-					<LinkIcon className='mr-2 h-4 w-4'></LinkIcon>
+					<LinkIcon className='mr-2 h-4 w-4' />
 					<span>Kopiera länk</span>
 				</DropdownMenuItem>
 				<DropdownMenuItem
@@ -55,7 +55,7 @@ export function RowActions({ id, album_id }: Props) {
 						submit({ intent: 'delete', id }, { method: 'POST' });
 					}}
 				>
-					<Trash2 className='mr-2 h-4 w-4'></Trash2>
+					<Trash2 className='mr-2 h-4 w-4' />
 					<span>Ta bort</span>
 				</DropdownMenuItem>
 			</DropdownMenuContent>

@@ -1,7 +1,7 @@
+import { remember } from '@epic-web/remember';
+import { makeLogtoRemix } from '@logto/remix';
 import { redirect } from '@remix-run/node';
 import { sessionStorage } from './session.server';
-import { makeLogtoRemix } from '@logto/remix';
-import { remember } from '@epic-web/remember';
 
 export const resource = 'https://dfoto.se';
 export const scopes = [

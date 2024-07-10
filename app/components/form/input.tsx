@@ -1,5 +1,5 @@
-import { Input } from '../ui/input';
 import type { ComponentProps } from 'react';
+import { Input } from '../ui/input';
 import { useField } from './form';
 
 interface Props extends ComponentProps<typeof Input> {}

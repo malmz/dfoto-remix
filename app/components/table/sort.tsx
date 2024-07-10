@@ -1,6 +1,6 @@
 import type { Column } from '@tanstack/react-table';
-import { Button } from '../ui/button';
 import { ArrowUpDown } from 'lucide-react';
+import { Button } from '../ui/button';
 
 interface Props<TData> {
 	column: Column<TData>;
@@ -11,9 +11,9 @@ export function SortButton<TData>({ column, children }: Props<TData>) {
 		<Button
 			className='-ml-4'
 			variant='ghost'
-			onClick={() => column.toggleSorting(column.getIsSorted() == 'asc')}
+			onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
 		>
-			{children} <ArrowUpDown className='ml-2 h-4 w-4'></ArrowUpDown>
+			{children} <ArrowUpDown className='ml-2 h-4 w-4' />
 		</Button>
 	);
 }

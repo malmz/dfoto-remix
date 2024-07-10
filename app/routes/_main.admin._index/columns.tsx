@@ -1,12 +1,12 @@
-import { Badge } from '~/components/ui/badge';
-import type { Album } from '~/lib/schema.server';
+import { Link } from '@remix-run/react';
 import type { ColumnDef } from '@tanstack/react-table';
 import { createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
-import { Link } from '@remix-run/react';
-import { RowActions } from './row-actions';
-import { Checkbox } from '~/components/ui/checkbox';
 import { SortButton } from '~/components/table/sort';
+import { Badge } from '~/components/ui/badge';
+import { Checkbox } from '~/components/ui/checkbox';
+import type { Album } from '~/lib/schema.server';
+import { RowActions } from './row-actions';
 
 const cb = createColumnHelper<Album>();
 
@@ -22,7 +22,7 @@ export const columns = [
 				onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
 				aria-label='Select all'
 				className='translate-y-[2px]'
-			></Checkbox>
+			/>
 		),
 		cell: ({ row }) => (
 			<Checkbox
@@ -73,7 +73,7 @@ export const columns = [
 			<RowActions
 				id={info.row.original.id}
 				published={info.row.original.published}
-			></RowActions>
+			/>
 		),
 		enableSorting: false,
 		enableHiding: false,

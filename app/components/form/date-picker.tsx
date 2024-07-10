@@ -1,11 +1,12 @@
-import React, { useRef, useState } from 'react';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { Button } from '../ui/button';
-import { cn } from '~/lib/utils';
-import { CalendarIcon } from 'lucide-react';
 import { format, parse } from 'date-fns';
-import { Calendar } from '../ui/calendar';
 import { sv } from 'date-fns/locale';
+import { CalendarIcon } from 'lucide-react';
+import type React from 'react';
+import { useRef, useState } from 'react';
+import { cn } from '~/lib/utils';
+import { Button } from '../ui/button';
+import { Calendar } from '../ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { useField } from './form';
 
 interface Props

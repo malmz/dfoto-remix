@@ -1,12 +1,12 @@
-import { type LoaderFunctionArgs } from '@remix-run/node';
-import { assertResponse } from '~/lib/utils';
-import { checkRole } from '~/lib/auth.server';
-import { getThumbnailStream } from '~/lib/storage/thumbnail';
-import { getPreviewStream } from '~/lib/storage/preview';
-import { getImageStream } from '~/lib/storage/image';
-import type { ImageStream } from '~/lib/storage/types';
+import type { LoaderFunctionArgs } from '@remix-run/node';
 import { extension } from 'mime-types';
+import { checkRole } from '~/lib/auth.server';
 import { getImage } from '~/lib/data.server';
+import { getImageStream } from '~/lib/storage/image';
+import { getPreviewStream } from '~/lib/storage/preview';
+import { getThumbnailStream } from '~/lib/storage/thumbnail';
+import type { ImageStream } from '~/lib/storage/types';
+import { assertResponse } from '~/lib/utils';
 
 const ensure = true;
 

@@ -1,8 +1,8 @@
 import type { MetaFunction } from '@remix-run/node';
 import { Outlet } from '@remix-run/react';
 import {
-	DynamicBreadcrum,
 	type CrumbHandle,
+	DynamicBreadcrum,
 } from '~/components/dynamic-breadcrum';
 
 export const meta: MetaFunction = () => [{ title: '🔒DFoto - Admin' }];
@@ -16,9 +16,9 @@ export default function Layout() {
 	return (
 		<>
 			<div className='h-14 px-4 flex items-center'>
-				<DynamicBreadcrum></DynamicBreadcrum>
+				<DynamicBreadcrum />
 			</div>
-			<Outlet></Outlet>
+			<Outlet />
 		</>
 	);
 }

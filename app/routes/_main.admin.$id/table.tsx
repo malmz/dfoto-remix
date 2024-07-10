@@ -1,20 +1,20 @@
+import { Link } from '@remix-run/react';
 import {
+	type SortingState,
 	getCoreRowModel,
 	getFilteredRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
 	useReactTable,
-	type SortingState,
 } from '@tanstack/react-table';
 import { useMemo, useState } from 'react';
+import { DataTablePagination } from '~/components/table/pagination';
+import { DataTable } from '~/components/table/table';
+import { fuzzyFilter } from '~/components/table/utils';
+import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
 import type { Image } from '~/lib/schema.server';
 import { columns } from './columns';
-import { fuzzyFilter } from '~/components/table/utils';
-import { DataTable } from '~/components/table/table';
-import { DataTablePagination } from '~/components/table/pagination';
-import { Input } from '~/components/ui/input';
-import { Button } from '~/components/ui/button';
-import { Link } from '@remix-run/react';
 import { UploadButton } from './upload-button';
 
 interface Props {

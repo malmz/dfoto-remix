@@ -1,5 +1,5 @@
+import { join } from 'node:path';
 import { createCookie, createFileSessionStorage } from '@remix-run/node';
-import { join } from 'path';
 import { storagePath } from './storage/paths';
 
 // export the whole sessionStorage object

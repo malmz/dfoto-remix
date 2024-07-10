@@ -22,9 +22,7 @@ export function Paginator({ page, totalPages, ...props }: Props) {
 			<PaginationContent>
 				{page > 1 ? (
 					<PaginationItem>
-						<PaginationPrevious
-							to={page === 2 ? '/' : `/?page=${page - 1}`}
-						></PaginationPrevious>
+						<PaginationPrevious to={page === 2 ? '/' : `/?page=${page - 1}`} />
 					</PaginationItem>
 				) : null}
 				<PaginationItem>
@@ -75,7 +73,7 @@ export function Paginator({ page, totalPages, ...props }: Props) {
 				) : null}
 				{page < totalPages ? (
 					<PaginationItem>
-						<PaginationNext to={`/?page=${page + 1}`}></PaginationNext>
+						<PaginationNext to={`/?page=${page + 1}`} />
 					</PaginationItem>
 				) : null}
 			</PaginationContent>

@@ -1,12 +1,12 @@
 import { createReadStream } from 'node:fs';
+import { mkdir, stat } from 'node:fs/promises';
+import { dirname } from 'node:path';
+import { createReadableStreamFromReadable } from '@remix-run/node';
+import { ensureImage } from './image';
+import { createPreview } from './optimizer';
+import { getImagePath, getPreviewPath } from './paths';
 import { ImageError, type ImageRecord, type ImageStream } from './types';
 import { safeStat } from './utils';
-import { createReadableStreamFromReadable } from '@remix-run/node';
-import { createPreview } from './optimizer';
-import { stat, mkdir } from 'node:fs/promises';
-import { getImagePath, getPreviewPath } from './paths';
-import { ensureImage } from './image';
-import { dirname } from 'node:path';
 
 async function ensurePreview(image: ImageRecord) {
 	const path = getPreviewPath(image);

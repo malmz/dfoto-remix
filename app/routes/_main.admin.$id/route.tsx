@@ -1,30 +1,30 @@
-import { PublishButton } from './publish-button';
-import { Separator } from '~/components/ui/separator';
 import type {
 	ActionFunctionArgs,
 	LoaderFunctionArgs,
 	MetaFunction,
 } from '@remix-run/node';
-import { getAlbum } from '~/lib/data.server';
 import { useFetcher, useLoaderData } from '@remix-run/react';
+import { Loader2 } from 'lucide-react';
+import { useEffect } from 'react';
+import { getParams } from 'remix-params-helper';
+import { toast } from 'sonner';
 import { z } from 'zod';
+import type { CrumbHandle } from '~/components/dynamic-breadcrum';
+import { FormDatePicker } from '~/components/form/date-picker';
+import { FormError, FormField, FormLabel } from '~/components/form/form';
+import { FormInput } from '~/components/form/input';
+import { FormTextarea } from '~/components/form/textarea';
+import { Button } from '~/components/ui/button';
+import { Separator } from '~/components/ui/separator';
 import {
 	deleteImage,
 	setPubishedStatus,
 	setThumbnail,
 	updateAlbum,
 } from '~/lib/actions.server';
-import { useEffect } from 'react';
-import { toast } from 'sonner';
 import { ensureRole } from '~/lib/auth.server';
-import type { CrumbHandle } from '~/components/dynamic-breadcrum';
-import { getParams } from 'remix-params-helper';
-import { FormError, FormField, FormLabel } from '~/components/form/form';
-import { FormInput } from '~/components/form/input';
-import { FormTextarea } from '~/components/form/textarea';
-import { Loader2 } from 'lucide-react';
-import { Button } from '~/components/ui/button';
-import { FormDatePicker } from '~/components/form/date-picker';
+import { getAlbum } from '~/lib/data.server';
+import { PublishButton } from './publish-button';
 import { ImageTable } from './table';
 
 const updateSchema = z.object({

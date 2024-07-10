@@ -1,8 +1,9 @@
 import {
+	type UIMatch_SingleFetch,
 	useLocation,
 	useMatches,
-	type UIMatch_SingleFetch,
 } from '@remix-run/react';
+import { Fragment } from 'react/jsx-runtime';
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -11,7 +12,6 @@ import {
 	BreadcrumbPage,
 	BreadcrumbSeparator,
 } from './ui/breadcrumb';
-import { Fragment } from 'react/jsx-runtime';
 
 export type CrumbHandle<D = unknown> = {
 	breadcrumb: (
@@ -36,9 +36,8 @@ function Crumb({
 	const crumb = match.handle.breadcrumb(match, current)!;
 	if (current) {
 		return <BreadcrumbPage>{crumb.title}</BreadcrumbPage>;
-	} else {
-		return <BreadcrumbLink to={crumb.to}>{crumb.title}</BreadcrumbLink>;
 	}
+	return <BreadcrumbLink to={crumb.to}>{crumb.title}</BreadcrumbLink>;
 }
 
 export function DynamicBreadcrum() {
@@ -49,17 +48,14 @@ export function DynamicBreadcrum() {
 		<Breadcrumb>
 			<BreadcrumbList>
 				{matches
-					.filter(
-						(match) =>
-							match.handle &&
-							match.handle.breadcrumb &&
-							match.handle.breadcrumb(match, match.pathname === pathname),
+					.filter((match) =>
+						match.handle?.breadcrumb?.(match, match.pathname === pathname),
 					)
 					.map((match, i) => (
 						<Fragment key={match.id}>
-							{i !== 0 && <BreadcrumbSeparator></BreadcrumbSeparator>}
+							{i !== 0 && <BreadcrumbSeparator />}
 							<BreadcrumbItem>
-								<Crumb match={match}></Crumb>
+								<Crumb match={match} />
 							</BreadcrumbItem>
 						</Fragment>
 					))}

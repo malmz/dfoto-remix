@@ -24,8 +24,7 @@ export function ImageDialog({ image }: Props) {
 				<DialogHeader>
 					<DialogTitle>Edit {image.id}</DialogTitle>
 				</DialogHeader>
-				<div></div>
-				<DialogFooter></DialogFooter>
+				<DialogFooter />
 			</DialogContent>
 		</Dialog>
 	);

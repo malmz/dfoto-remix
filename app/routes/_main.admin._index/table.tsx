@@ -1,20 +1,20 @@
+import { Link } from '@remix-run/react';
 import {
+	type SortingState,
 	getCoreRowModel,
 	getFilteredRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
 	useReactTable,
-	type SortingState,
 } from '@tanstack/react-table';
 import { useState } from 'react';
+import { DataTablePagination } from '~/components/table/pagination';
+import { DataTable } from '~/components/table/table';
+import { fuzzyFilter } from '~/components/table/utils';
+import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
 import type { Album } from '~/lib/schema.server';
 import { columns } from './columns';
-import { fuzzyFilter } from '~/components/table/utils';
-import { DataTable } from '~/components/table/table';
-import { DataTablePagination } from '~/components/table/pagination';
-import { Input } from '~/components/ui/input';
-import { Button } from '~/components/ui/button';
-import { Link } from '@remix-run/react';
 
 interface Props {
 	data: Album[];
@@ -51,7 +51,7 @@ export function AlbumTable({ data }: Props) {
 					value={filter ?? ''}
 					onChange={(event) => setFilter(event.target.value)}
 					className='max-w-sm'
-				></Input>
+				/>
 				{table.getFilteredSelectedRowModel().rows.length > 0 ? (
 					<Button variant='destructive' size='sm'>
 						Ta bort bilder

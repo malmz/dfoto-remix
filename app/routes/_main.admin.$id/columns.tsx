@@ -1,13 +1,13 @@
-import { Checkbox } from '~/components/ui/checkbox';
-import type { Image as ImageType } from '~/lib/schema.server';
+import { Link } from '@remix-run/react';
 import type { ColumnDef } from '@tanstack/react-table';
 import { createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { Check } from 'lucide-react';
-import { Link } from '@remix-run/react';
-import { RowActions } from './row-actions';
 import { SortButton } from '~/components/table/sort';
 import { Button } from '~/components/ui/button';
+import { Checkbox } from '~/components/ui/checkbox';
+import type { Image as ImageType } from '~/lib/schema.server';
+import { RowActions } from './row-actions';
 
 type ItemType = ImageType & { thumbnail: boolean };
 const cb = createColumnHelper<ItemType>();
@@ -24,7 +24,7 @@ export const columns = [
 				onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
 				aria-label='Select all'
 				className='translate-y-[2px]'
-			></Checkbox>
+			/>
 		),
 		cell: ({ row }) => (
 			<Checkbox
@@ -53,7 +53,7 @@ export const columns = [
 				height='100'
 				alt=''
 				className='aspect-[3/2] object-cover rounded-md'
-			></img>
+			/>
 		),
 		enableSorting: false,
 	}),
@@ -74,8 +74,7 @@ export const columns = [
 	}),
 	cb.accessor('thumbnail', {
 		header: 'Omslag',
-		cell: (info) =>
-			info.getValue() ? <Check className='h-6 w-6'></Check> : null,
+		cell: (info) => (info.getValue() ? <Check className='h-6 w-6' /> : null),
 	}),
 	cb.display({
 		id: 'actions',
@@ -83,7 +82,7 @@ export const columns = [
 			<RowActions
 				id={info.row.original.id}
 				album_id={info.row.original.album_id}
-			></RowActions>
+			/>
 		),
 		enableSorting: false,
 		enableHiding: false,

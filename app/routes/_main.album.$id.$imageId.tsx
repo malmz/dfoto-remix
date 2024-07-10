@@ -5,7 +5,6 @@ import { sv } from 'date-fns/locale';
 import { ChevronLeft, CircleUser, Info } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 
-import { getImage, getTags } from '~/lib/data.server';
 import { Avatar, AvatarFallback } from '~/components/ui/avatar';
 import { Badge } from '~/components/ui/badge';
 import {
@@ -13,6 +12,7 @@ import {
 	CollapsibleContent,
 	CollapsibleTrigger,
 } from '~/components/ui/collapsible';
+import { getImage, getTags } from '~/lib/data.server';
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	const albumId = Number(params.id);
@@ -37,7 +37,7 @@ export default function Page() {
 			<div className='mx-auto my-2 flex w-full max-w-screen-lg justify-between px-2'>
 				<Button asChild variant='ghost' size='sm'>
 					<Link to={`/album/${albumId}`}>
-						<ChevronLeft className='mr-2 h-4 w-4'></ChevronLeft>
+						<ChevronLeft className='mr-2 h-4 w-4' />
 						{albumName}
 					</Link>
 				</Button>
@@ -71,7 +71,7 @@ export default function Page() {
 							</span>
 							<CollapsibleTrigger asChild>
 								<Button variant='ghost' size='icon' className='rounded-full'>
-									<Info className='h-4 w-4'></Info>
+									<Info className='h-4 w-4' />
 								</Button>
 							</CollapsibleTrigger>
 						</div>

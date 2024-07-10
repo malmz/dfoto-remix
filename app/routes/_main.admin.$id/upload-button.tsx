@@ -1,9 +1,9 @@
-import type { ButtonProps } from '~/components/ui/button';
-import { Button } from '~/components/ui/button';
+import { useFetcher } from '@remix-run/react';
 import { Loader2 } from 'lucide-react';
 import { useEffect, useId, useRef } from 'react';
 import { toast } from 'sonner';
-import { useFetcher } from '@remix-run/react';
+import type { ButtonProps } from '~/components/ui/button';
+import { Button } from '~/components/ui/button';
 import type { action } from '../api.upload';
 
 interface Props extends ButtonProps {
@@ -31,7 +31,7 @@ export function UploadButton({ children, albumId, ...props }: Props) {
 			<Button asChild {...props}>
 				<label htmlFor={id}>
 					{fetcher.state !== 'idle' && (
-						<Loader2 className='mr-2 h-4 w-4 animate-spin'></Loader2>
+						<Loader2 className='mr-2 h-4 w-4 animate-spin' />
 					)}
 					{children}
 				</label>

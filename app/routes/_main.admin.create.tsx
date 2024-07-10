@@ -1,11 +1,16 @@
-import { z } from 'zod';
 import {
-	redirect,
 	type ActionFunctionArgs,
 	type MetaFunction,
+	redirect,
 } from '@remix-run/node';
-import { createAlbum } from '~/lib/actions.server';
 import { Form, Link, useActionData } from '@remix-run/react';
+import { getFormData } from 'remix-params-helper';
+import { z } from 'zod';
+import { FormDatePicker } from '~/components/form/date-picker';
+import { FormError, FormField, FormLabel } from '~/components/form/form';
+import { FormInput } from '~/components/form/input';
+import { FormTextarea } from '~/components/form/textarea';
+import { Button } from '~/components/ui/button';
 import {
 	Card,
 	CardContent,
@@ -14,13 +19,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from '~/components/ui/card';
-import { Button } from '~/components/ui/button';
+import { createAlbum } from '~/lib/actions.server';
 import { ensureRole } from '~/lib/auth.server';
-import { getFormData } from 'remix-params-helper';
-import { FormError, FormField, FormLabel } from '~/components/form/form';
-import { FormInput } from '~/components/form/input';
-import { FormTextarea } from '~/components/form/textarea';
-import { FormDatePicker } from '~/components/form/date-picker';
 
 export const meta: MetaFunction = () => [{ title: '🔒DFoto - Skapa nytt' }];
 

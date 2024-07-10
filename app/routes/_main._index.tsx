@@ -11,7 +11,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const queryParams = new URL(request.url).searchParams;
 	if (queryParams.get('page') === '1') throw redirect('/');
 	const page = Math.max(
-		queryParams.get('page') ? parseInt(queryParams.get('page')!) : 1,
+		queryParams.get('page') ? Number.parseInt(queryParams.get('page')!) : 1,
 		1,
 	);
 	const albums = getAlbums(page - 1, 28, queryParams.get('q')!);
@@ -30,15 +30,13 @@ export default function Page() {
 		<>
 			<div className='mt-4 grow px-2 space-y-4'>
 				<Form className='max-w-md mx-auto'>
-					<Input type='search' placeholder='Sök...' name='q'></Input>
+					<Input type='search' placeholder='Sök...' name='q' />
 				</Form>
 				<Suspense fallback={<div>Loading...</div>}>
 					<AutoGrid>
 						<Await resolve={albums}>
 							{(albums) =>
-								albums.map((album) => (
-									<Album key={album.id} album={album}></Album>
-								))
+								albums.map((album) => <Album key={album.id} album={album} />)
 							}
 						</Await>
 					</AutoGrid>

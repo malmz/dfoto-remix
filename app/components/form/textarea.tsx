@@ -1,5 +1,5 @@
-import { Textarea } from '~/components/ui/textarea';
 import type { ComponentProps } from 'react';
+import { Textarea } from '~/components/ui/textarea';
 import { useField } from './form';
 
 interface Props extends ComponentProps<typeof Textarea> {}

@@ -1,12 +1,12 @@
 import { createReadStream } from 'node:fs';
-import { ImageError, type ImageRecord, type ImageStream } from './types';
-import { safeStat } from './utils';
+import { mkdir, stat } from 'node:fs/promises';
+import { dirname } from 'node:path';
 import { createReadableStreamFromReadable } from '@remix-run/node';
 import { ensureImage } from './image';
 import { createThumbnail } from './optimizer';
-import { stat, mkdir } from 'node:fs/promises';
 import { getImagePath, getThumbnailPath } from './paths';
-import { dirname } from 'node:path';
+import { ImageError, type ImageRecord, type ImageStream } from './types';
+import { safeStat } from './utils';
 
 async function ensureThumbnail(image: ImageRecord) {
 	const path = getThumbnailPath(image);

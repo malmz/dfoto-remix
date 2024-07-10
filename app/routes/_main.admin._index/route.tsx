@@ -1,11 +1,11 @@
-import { useLoaderData } from '@remix-run/react';
-import { getAllAlbums } from '~/lib/data.server';
-import { ensureRole } from '~/lib/auth.server';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
-import { deleteAlbum, setPubishedStatus } from '~/lib/actions.server';
 import { getParams } from 'remix-params-helper';
 import { z } from 'zod';
+import { deleteAlbum, setPubishedStatus } from '~/lib/actions.server';
+import { ensureRole } from '~/lib/auth.server';
+import { getAllAlbums } from '~/lib/data.server';
 import { AlbumTable } from './table';
 
 export async function action({ request }: ActionFunctionArgs) {

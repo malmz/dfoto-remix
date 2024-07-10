@@ -1,13 +1,11 @@
+import { createReadStream, createWriteStream } from 'node:fs';
+import { mkdir, rename, rm, stat } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
 import {
 	createReadableStreamFromReadable,
 	writeReadableStreamToWritable,
 } from '@remix-run/node';
-import { createReadStream, createWriteStream } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { ImageError, type ImageRecord, type ImageStream } from './types';
-import { safeStat } from './utils';
 import { getLegacyImageStream } from './legacy';
-import { stat, mkdir, rename, rm } from 'node:fs/promises';
 import { createOptimized } from './optimizer';
 import {
 	getImagePath,
@@ -17,6 +15,8 @@ import {
 	previewPath,
 	thumbnailPath,
 } from './paths';
+import { ImageError, type ImageRecord, type ImageStream } from './types';
+import { safeStat } from './utils';
 
 export async function ensureImage(image: ImageRecord) {
 	const path = getImagePath(image);

@@ -16,7 +16,7 @@ export default function Page() {
 				<h1 className='text-3xl font-extrabold tracking-tight'>
 					Edit image {imageId}
 				</h1>
-				<fetcher.Form></fetcher.Form>
+				<fetcher.Form />
 			</div>
 		</>
 	);

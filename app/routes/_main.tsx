@@ -1,3 +1,4 @@
+import type { LoaderFunctionArgs } from '@remix-run/node';
 import {
 	Form,
 	Link,
@@ -6,18 +7,13 @@ import {
 	json,
 	useLoaderData,
 } from '@remix-run/react';
-import { CircleUser, Mail } from 'lucide-react';
-import dataLogo from '~/assets/images/datalogo.svg';
 import { getYear } from 'date-fns';
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
-} from '~/components/ui/tooltip';
-import { Button } from '~/components/ui/button';
+import { CircleUser, Mail } from 'lucide-react';
 import logo from '~/assets/icon.svg';
-import type { LoaderFunctionArgs } from '@remix-run/node';
-import { logto } from '~/lib/auth.server';
+import dataLogo from '~/assets/images/datalogo.svg';
+import { ThemeSwitcher } from '~/components/theme-switcher';
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
+import { Button } from '~/components/ui/button';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -26,8 +22,12 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
-import { ThemeSwitcher } from '~/components/theme-switcher';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from '~/components/ui/tooltip';
+import { logto } from '~/lib/auth.server';
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const context = await logto.getContext({
@@ -52,7 +52,7 @@ function UserProfile() {
 							className='overflow-hidden rounded-full'
 						>
 							<Avatar>
-								<AvatarImage src={user.picture ?? undefined}></AvatarImage>
+								<AvatarImage src={user.picture ?? undefined} />
 								<AvatarFallback className='uppercase'>
 									{user.name?.slice(0, 2) ?? <CircleUser className='h-5 w-5' />}
 								</AvatarFallback>
@@ -102,7 +102,7 @@ function Header() {
 						height='40'
 						className='h-8 w-8'
 						alt='DFoto'
-					></img>
+					/>
 					<span className='sr-only'>DFoto</span>
 				</Link>
 				<NavLink
@@ -119,7 +119,7 @@ function Header() {
 				</NavLink>
 			</nav>
 			<div className='flex items-center gap-2'>
-				<UserProfile></UserProfile>
+				<UserProfile />
 			</div>
 		</header>
 	);
@@ -143,12 +143,12 @@ function Footer() {
 				Vi ses genom kameralinsen!
 			</p>
 			<div className='flex items-center gap-2'>
-				<ThemeSwitcher></ThemeSwitcher>
+				<ThemeSwitcher />
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<Button variant='ghost' size='icon' asChild>
 							<a href='mailto:dfoto@dtek.se'>
-								<Mail></Mail>
+								<Mail />
 							</a>
 						</Button>
 					</TooltipTrigger>
@@ -164,11 +164,11 @@ function Footer() {
 export default function Layout() {
 	return (
 		<>
-			<Header></Header>
+			<Header />
 			<main className='flex grow flex-col'>
-				<Outlet></Outlet>
+				<Outlet />
 			</main>
-			<Footer></Footer>
+			<Footer />
 		</>
 	);
 }

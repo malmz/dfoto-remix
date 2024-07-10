@@ -1,3 +1,4 @@
+import type { Jsonify } from '@remix-run/server-runtime/dist/jsonify';
 import type { InferInsertModel, InferSelectModel } from 'drizzle-orm';
 import { relations } from 'drizzle-orm';
 import {
@@ -11,7 +12,6 @@ import {
 	timestamp,
 } from 'drizzle-orm/pg-core';
 import type { Exif } from 'exif-reader';
-import type { Jsonify } from '@remix-run/server-runtime/dist/jsonify';
 
 export const album = pgTable('album', {
 	id: serial('id').primaryKey(),

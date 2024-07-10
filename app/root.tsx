@@ -1,3 +1,4 @@
+import type { LinksFunction, MetaFunction } from '@remix-run/node';
 import {
 	Links,
 	Meta,
@@ -5,12 +6,11 @@ import {
 	Scripts,
 	ScrollRestoration,
 } from '@remix-run/react';
-import type { LinksFunction, MetaFunction } from '@remix-run/node';
-import styles from './globals.css?url';
-import { TooltipProvider } from './components/ui/tooltip';
-import { cn } from './lib/utils';
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from './components/ui/sonner';
+import { TooltipProvider } from './components/ui/tooltip';
+import styles from './globals.css?url';
+import { cn } from './lib/utils';
 
 export const meta: MetaFunction = () => [{ title: 'DFoto' }];
 
@@ -48,7 +48,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				)}
 			>
 				<Providers>{children}</Providers>
-				<Toaster></Toaster>
+				<Toaster />
 				<ScrollRestoration />
 				<Scripts />
 			</body>

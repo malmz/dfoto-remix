@@ -1,9 +1,9 @@
+import { createReadStream } from 'node:fs';
 import { createReadableStreamFromReadable } from '@remix-run/node';
 import { getLegacyImageData } from '../data.server';
-import { ImageError, type ImageRecord, type ImageStream } from './types';
-import { createReadStream } from 'node:fs';
-import { safeStat } from './utils';
 import { getLegacyPath } from './paths';
+import { ImageError, type ImageRecord, type ImageStream } from './types';
+import { safeStat } from './utils';
 
 export async function getLegacyImageStream(
 	image: ImageRecord,

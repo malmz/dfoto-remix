@@ -13,4 +13,8 @@ export const loader = logto.handleAuthRoutes({
 		path: '/auth/sign-out',
 		redirectBackTo: '/',
 	},
+	'sign-up': {
+		path: '/auth/sign-up',
+		redirectBackTo: '/',
+	},
 });

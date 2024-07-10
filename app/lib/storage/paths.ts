@@ -1,5 +1,5 @@
-import { extension } from 'mime-types';
 import { join } from 'node:path';
+import { extension } from 'mime-types';
 
 export const storagePath = process.env.STORAGE_PATH ?? './storage';
 export const imagePath = join(storagePath, 'images');
