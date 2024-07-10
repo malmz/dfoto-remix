@@ -40,6 +40,7 @@
     "drizzle-orm": "^0.30.10",
     "embla-carousel-react": "^8.0.4",
     "exif-reader": "^2.0.1",
+    "framer-motion": "^11.2.14",
     "isbot": "^5.1.6",
     "lucide-react": "^0.378.0",
     "mime-types": "^2.1.35",
@@ -57,6 +58,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.8.3",
     "@dotenvx/dotenvx": "^0.39.0",
     "@eslint/js": "^9.2.0",
     "@remix-run/dev": "^2.9.2",
