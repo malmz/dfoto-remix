@@ -7,6 +7,7 @@ import { Check } from 'lucide-react';
 import { Link } from '@remix-run/react';
 import { RowActions } from './row-actions';
 import { SortButton } from '~/components/table/sort';
+import { Button } from '~/components/ui/button';
 
 type ItemType = ImageType & { thumbnail: boolean };
 const cb = createColumnHelper<ItemType>();
@@ -39,7 +40,7 @@ export const columns = [
 
   cb.accessor('id', {
     header: (info) => <SortButton column={info.column}>ID</SortButton>,
-    cell: (info) => <Link to={''}>{info.getValue()}</Link>,
+    cell: (info) => <Link to={`./${info.getValue()}`}>{info.getValue()}</Link>,
   }),
 
   cb.display({
