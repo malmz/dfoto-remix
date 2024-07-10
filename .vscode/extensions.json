@@ -1,8 +1,7 @@
 {
   "recommendations": [
     "mikestead.dotenv",
-    "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode",
-    "bradlc.vscode-tailwindcss"
+    "bradlc.vscode-tailwindcss",
+    "biomejs.biome"
   ]
 }
