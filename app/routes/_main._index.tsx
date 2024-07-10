@@ -8,43 +8,43 @@ import { Input } from '~/components/ui/input';
 import { getAlbums, getPagesCount } from '~/lib/data.server';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const queryParams = new URL(request.url).searchParams;
-  if (queryParams.get('page') === '1') throw redirect('/');
-  const page = Math.max(
-    queryParams.get('page') ? parseInt(queryParams.get('page')!) : 1,
-    1
-  );
-  const albums = getAlbums(page - 1, 28, queryParams.get('q')!);
-  const totalPages = await getPagesCount(28, queryParams.get('q')!);
-  return {
-    page,
-    totalPages,
-    albums,
-  };
+	const queryParams = new URL(request.url).searchParams;
+	if (queryParams.get('page') === '1') throw redirect('/');
+	const page = Math.max(
+		queryParams.get('page') ? parseInt(queryParams.get('page')!) : 1,
+		1,
+	);
+	const albums = getAlbums(page - 1, 28, queryParams.get('q')!);
+	const totalPages = await getPagesCount(28, queryParams.get('q')!);
+	return {
+		page,
+		totalPages,
+		albums,
+	};
 };
 
 export default function Page() {
-  const { totalPages, albums, page } = useLoaderData<typeof loader>();
+	const { totalPages, albums, page } = useLoaderData<typeof loader>();
 
-  return (
-    <>
-      <div className='mt-4 grow px-2 space-y-4'>
-        <Form className='max-w-md mx-auto'>
-          <Input type='search' placeholder='Sök...' name='q'></Input>
-        </Form>
-        <Suspense fallback={<div>Loading...</div>}>
-          <AutoGrid>
-            <Await resolve={albums}>
-              {(albums) =>
-                albums.map((album) => (
-                  <Album key={album.id} album={album}></Album>
-                ))
-              }
-            </Await>
-          </AutoGrid>
-        </Suspense>
-      </div>
-      <Paginator page={page} totalPages={totalPages} className='mt-3' />
-    </>
-  );
+	return (
+		<>
+			<div className='mt-4 grow px-2 space-y-4'>
+				<Form className='max-w-md mx-auto'>
+					<Input type='search' placeholder='Sök...' name='q'></Input>
+				</Form>
+				<Suspense fallback={<div>Loading...</div>}>
+					<AutoGrid>
+						<Await resolve={albums}>
+							{(albums) =>
+								albums.map((album) => (
+									<Album key={album.id} album={album}></Album>
+								))
+							}
+						</Await>
+					</AutoGrid>
+				</Suspense>
+			</div>
+			<Paginator page={page} totalPages={totalPages} className='mt-3' />
+		</>
+	);
 }

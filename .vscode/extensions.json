@@ -1,7 +1,7 @@
 {
-  "recommendations": [
-    "mikestead.dotenv",
-    "bradlc.vscode-tailwindcss",
-    "biomejs.biome"
-  ]
+	"recommendations": [
+		"mikestead.dotenv",
+		"bradlc.vscode-tailwindcss",
+		"biomejs.biome"
+	]
 }

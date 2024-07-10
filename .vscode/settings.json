@@ -1,7 +1,7 @@
 {
-  "files.associations": {
-    "*.css": "tailwindcss"
-  },
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.preferences.preferTypeOnlyAutoImports": true
+	"files.associations": {
+		"*.css": "tailwindcss"
+	},
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"typescript.preferences.preferTypeOnlyAutoImports": true
 }

@@ -17,16 +17,16 @@ import { storagePath } from './storage/paths';
 const sessionDir = join(storagePath, 'sessions');
 
 const cookie = createCookie('session', {
-  sameSite: 'lax',
-  path: '/',
-  httpOnly: true,
-  secrets: [process.env.COOKIE_SECRET!],
-  secure: process.env.NODE_ENV === 'production',
+	sameSite: 'lax',
+	path: '/',
+	httpOnly: true,
+	secrets: [process.env.COOKIE_SECRET!],
+	secure: process.env.NODE_ENV === 'production',
 });
 
 export const sessionStorage = createFileSessionStorage({
-  dir: sessionDir,
-  cookie,
+	dir: sessionDir,
+	cookie,
 });
 
 // you can also export the methods individually for your own usage
