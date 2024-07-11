@@ -2,7 +2,7 @@ import { vitePlugin as remix } from '@remix-run/dev';
 import { installGlobals } from '@remix-run/node';
 import { remixDevTools } from 'remix-development-tools';
 import { defineConfig } from 'vite';
-import envOnly from 'vite-env-only';
+import { denyImports, envOnlyMacros } from 'vite-env-only';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 installGlobals({ nativeFetch: true });
@@ -12,7 +12,13 @@ export default defineConfig({
 		target: 'esnext',
 	},
 	plugins: [
-		envOnly(),
+		denyImports({
+			client: {
+				specifiers: [/^node:/, 'drizzle-orm*', 'postgres'],
+				files: ['**/.server/*', '**/*.server.*'],
+			},
+		}),
+		envOnlyMacros(),
 		remixDevTools(),
 		remix({
 			future: {
