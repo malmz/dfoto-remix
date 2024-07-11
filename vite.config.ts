@@ -15,7 +15,7 @@ export default defineConfig({
 		denyImports({
 			client: {
 				specifiers: [/^node:/, 'drizzle-orm*', 'postgres'],
-				files: ['**/.server/*', '**/*.server.*'],
+				files: ['**/lib/server/*', '**/.server/*', '**/*.server.*'],
 			},
 		}),
 		envOnlyMacros(),

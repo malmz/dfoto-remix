@@ -5,7 +5,7 @@ import { Album } from '~/components/album';
 import { AutoGrid } from '~/components/autogrid';
 import { Paginator } from '~/components/paginator';
 import { Input } from '~/components/ui/input';
-import { getAlbums, getPagesCount } from '~/lib/data.server';
+import { getAlbums, getPagesCount } from '~/lib/server/data';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const queryParams = new URL(request.url).searchParams;

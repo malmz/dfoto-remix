@@ -2,7 +2,7 @@ import { remember } from '@epic-web/remember';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import postgres from 'postgres';
-import * as schema from './schema.server';
+import * as schema from './schema';
 
 async function runMigrations() {
 	if (process.env.MIGRATE) {

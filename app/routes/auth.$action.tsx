@@ -1,4 +1,4 @@
-import { logto } from '~/lib/auth.server';
+import { logto } from '~/lib/server/auth';
 
 export const loader = logto.handleAuthRoutes({
 	'sign-in': {

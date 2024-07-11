@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 import { SortButton } from '~/components/table/sort';
 import { Badge } from '~/components/ui/badge';
 import { Checkbox } from '~/components/ui/checkbox';
-import type { Album } from '~/lib/schema.server';
+import type { Album } from '~/lib/server/schema';
 import { RowActions } from './row-actions';
 
 const cb = createColumnHelper<Album>();

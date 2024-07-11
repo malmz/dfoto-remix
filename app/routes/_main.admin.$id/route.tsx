@@ -21,9 +21,9 @@ import {
 	setPubishedStatus,
 	setThumbnail,
 	updateAlbum,
-} from '~/lib/actions.server';
-import { ensureRole } from '~/lib/auth.server';
-import { getAlbum } from '~/lib/data.server';
+} from '~/lib/server/actions';
+import { ensureRole } from '~/lib/server/auth';
+import { getAlbum, getAlbumAll } from '~/lib/server/data';
 import { PublishButton } from './publish-button';
 import { ImageTable } from './table';
 
@@ -50,7 +50,7 @@ export const handle: CrumbHandle<typeof loader> = {
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
 	await ensureRole(['read:album'])(request);
-	const album = await getAlbum(Number(params.id), true);
+	const album = await getAlbumAll(Number(params.id));
 	if (!album) {
 		throw new Response('Not found', { status: 404 });
 	}

@@ -27,7 +27,7 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '~/components/ui/tooltip';
-import { logto } from '~/lib/auth.server';
+import { logto } from '~/lib/server/auth';
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const context = await logto.getContext({

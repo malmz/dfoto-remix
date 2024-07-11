@@ -1,5 +1,5 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
-import { getAlbum } from '~/lib/data.server';
+import { getAlbum } from '~/lib/server/data';
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => [
 	{ title: data ? `DFoto - ${data.album.name}` : undefined },
