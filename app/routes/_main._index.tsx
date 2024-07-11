@@ -30,7 +30,7 @@ export default function Page() {
 		<>
 			<div className='mt-4 grow px-2 space-y-4'>
 				<Form className='max-w-md mx-auto'>
-					<Input type='search' placeholder='Sök...' name='q' />
+					<Input type='search' placeholder='Sök efter album' name='q' />
 				</Form>
 				<Suspense fallback={<div>Loading...</div>}>
 					<AutoGrid>
