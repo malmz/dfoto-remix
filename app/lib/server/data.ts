@@ -46,7 +46,7 @@ export async function getImageWindow(id: number, album_id: number) {
 export async function getImage(id: number, unpublished = false) {
 	const publishFilter = unpublished ? undefined : eq(album.published, true);
 	const [res] = await db
-		.select()
+		.select({ image })
 		.from(image)
 		.innerJoin(album, eq(album.id, image.album_id))
 		.where(and(eq(image.id, id), publishFilter))

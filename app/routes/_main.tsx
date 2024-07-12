@@ -6,6 +6,7 @@ import {
 	Outlet,
 	json,
 	useLoaderData,
+	type ShouldRevalidateFunction,
 } from '@remix-run/react';
 import { getYear } from 'date-fns';
 import { CircleUser, Mail } from 'lucide-react';
@@ -28,6 +29,10 @@ import {
 	TooltipTrigger,
 } from '~/components/ui/tooltip';
 import { logto } from '~/lib/server/auth';
+
+export const shouldRevalidate: ShouldRevalidateFunction = () => {
+	return false;
+};
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const context = await logto.getContext({

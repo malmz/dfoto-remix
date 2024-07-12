@@ -1,38 +1,153 @@
 import type { LoaderFunctionArgs } from '@remix-run/node';
-import { Await, Link, useLoaderData } from '@remix-run/react';
-import { format } from 'date-fns';
-import { sv } from 'date-fns/locale';
-import { ChevronLeft, CircleUser, Info } from 'lucide-react';
-import { Button } from '~/components/ui/button';
-
-import { Avatar, AvatarFallback } from '~/components/ui/avatar';
-import { Badge } from '~/components/ui/badge';
 import {
-	Collapsible,
-	CollapsibleContent,
-	CollapsibleTrigger,
-} from '~/components/ui/collapsible';
-import { getImage, getTags } from '~/lib/data.server';
+	Link,
+	useNavigate,
+	useNavigation,
+	useParams,
+	useRouteLoaderData,
+	useSearchParams,
+} from '@remix-run/react';
+import { Button } from '~/components/ui/button';
+import { motion, AnimatePresence } from 'framer-motion';
+import { getImage, getTags } from '~/lib/server/data';
+import { useState } from 'react';
+import type { AlbumLoader } from './_main.album.$id';
+import { Loader2 } from 'lucide-react';
 
-export async function loader({ params }: LoaderFunctionArgs) {
-	const albumId = Number(params.id);
+/* export async function loader({ params }: LoaderFunctionArgs) {
 	const imageId = Number(params.imageId);
 	const tags = getTags(imageId);
-	const data = await getImage(imageId);
-	if (!data) throw new Response('Not found', { status: 404 });
+	const image = getImage(imageId);
+
 	return {
-		image: data.image,
-		albumName: data.albumName,
-		imageId,
-		albumId,
+		image,
 		tags,
 	};
-}
+} */
+
+const swipeConfidenceThreshold = 10000;
+const swipePower = (offset: number, velocity: number) => {
+	return Math.abs(offset) * velocity;
+};
+
+const variants = {
+	enter: (direction: number) => {
+		return {
+			x: direction > 0 ? 1000 : -1000,
+			opacity: 0,
+		};
+	},
+	center: {
+		zIndex: 1,
+		x: 0,
+		opacity: 1,
+	},
+	exit: (direction: number) => {
+		return {
+			zIndex: 0,
+			x: direction < 0 ? 1000 : -1000,
+			opacity: 0,
+		};
+	},
+};
+
+const loadingVariants = {
+	show: {
+		opacity: 1,
+		display: 'grid',
+	},
+	hide: {
+		opacity: 0,
+		transitionEnd: {
+			display: 'none',
+		},
+	},
+};
 
 export default function Page() {
-	const { image, albumId, albumName, tags } = useLoaderData<typeof loader>();
+	const { album } = useRouteLoaderData<AlbumLoader>('routes/_main.album.$id');
+	//const { image } = useLoaderData<typeof loader>();
+	const params = useParams();
+	const navigate = useNavigate();
+	const navigation = useNavigation();
+	const [direction, setDirection] = useState(0);
+
+	const imageId = Number(params.imageId);
+	const albumId = Number(params.id);
+
+	const currentIndex = album?.images.findIndex(({ id }) => id === imageId) ?? 0;
+	const nextId = album?.images[currentIndex + 1]?.id;
+	const prevId = album?.images[currentIndex - 1]?.id;
+
+	const paginate = (newDirection: number) => {
+		const toId = newDirection === 1 ? nextId : prevId;
+		if (toId != null) {
+			setDirection(newDirection);
+			navigate(`/album/${albumId}/${toId}`);
+		}
+	};
 
 	return (
+		<>
+			<div className='fixed inset-0 bg-black'>
+				<AnimatePresence initial={false} custom={direction}>
+					<motion.img
+						key={imageId}
+						src={`/api/image/${imageId}?preview`}
+						className='object-contain absolute w-full h-full'
+						variants={variants}
+						custom={direction}
+						initial='enter'
+						animate={navigation.state === 'loading' ? 'exit' : 'center'}
+						exit='exit'
+						transition={{
+							x: { type: 'tween' },
+							opacity: { duration: 0.2 },
+						}}
+						drag='x'
+						dragConstraints={{ left: 0, right: 0 }}
+						dragElastic={1}
+						onDragEnd={(e, { offset, velocity }) => {
+							const swipe = swipePower(offset.x, velocity.x);
+							if (swipe < -swipeConfidenceThreshold) {
+								paginate(1);
+							} else if (swipe > swipeConfidenceThreshold) {
+								paginate(-1);
+							}
+						}}
+					/>
+				</AnimatePresence>
+				<motion.div
+					key='spinner'
+					className='absolute inset-0 grid place-content-center'
+					variants={loadingVariants}
+					initial='hide'
+					animate={navigation.state === 'loading' ? 'show' : 'hide'}
+					transition={{
+						delay: 0.3,
+					}}
+				>
+					<Loader2 className='animate-spin w-24 h-24 text-muted-foreground' />
+				</motion.div>
+				{nextId && (
+					<Button asChild>
+						<Link to={`/album/${albumId}/${nextId}`} prefetch='render'>
+							Next
+						</Link>
+					</Button>
+				)}
+				{prevId && (
+					<Button asChild>
+						<Link to={`/album/${albumId}/${prevId}`} prefetch='render'>
+							Previous
+						</Link>
+					</Button>
+				)}
+			</div>
+		</>
+	);
+
+	/* return (
 		<>
 			<div className='mx-auto my-2 flex w-full max-w-screen-lg justify-between px-2'>
 				<Button asChild variant='ghost' size='sm'>
@@ -122,5 +237,5 @@ export default function Page() {
 				</div>
 			</Collapsible>
 		</>
-	);
+	); */
 }
