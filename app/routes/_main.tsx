@@ -1,13 +1,5 @@
-import type { LoaderFunctionArgs } from '@remix-run/node';
-import {
-	Form,
-	Link,
-	NavLink,
-	Outlet,
-	json,
-	useLoaderData,
-	type ShouldRevalidateFunction,
-} from '@remix-run/react';
+import { unstable_defineLoader as defineLoader } from '@remix-run/node';
+import { Form, Link, NavLink, Outlet, useLoaderData } from '@remix-run/react';
 import { getYear } from 'date-fns';
 import { CircleUser, Mail } from 'lucide-react';
 import logo from '~/assets/icon.svg';
@@ -28,20 +20,18 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '~/components/ui/tooltip';
-import { logto } from '~/lib/server/auth';
+import { serverOnly$ } from 'vite-env-only/macros';
+import { createAuthMiddleware, getUser } from '~/lib/server/middleware/auth';
 
-export const shouldRevalidate: ShouldRevalidateFunction = () => {
-	return false;
-};
+const auth = createAuthMiddleware();
 
-export async function loader({ request }: LoaderFunctionArgs) {
-	const context = await logto.getContext({
-		getAccessToken: false,
-		fetchUserInfo: true,
-	})(request);
+export const middleware = serverOnly$([auth]);
 
-	return json({ user: context.userInfo });
-}
+export const loader = defineLoader(async ({ request, context }) => {
+	const user = getUser(context);
+
+	return { user: user?.claims };
+});
 
 function UserProfile() {
 	const { user } = useLoaderData<typeof loader>();
@@ -86,11 +76,9 @@ function UserProfile() {
 					</DropdownMenuContent>
 				</DropdownMenu>
 			) : (
-				<Form action='/auth/sign-in'>
-					<Button variant='outline' type='submit'>
-						Sign in
-					</Button>
-				</Form>
+				<Button variant='outline' asChild>
+					<Link to='/auth/sign-in'>Sign in</Link>
+				</Button>
 			)}
 		</>
 	);

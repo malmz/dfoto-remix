@@ -11,6 +11,9 @@ import { Toaster } from './components/ui/sonner';
 import { TooltipProvider } from './components/ui/tooltip';
 import styles from './globals.css?url';
 import { cn } from './lib/utils';
+import { serverOnly$ } from 'vite-env-only/macros';
+import { createSessionMiddleware } from './lib/server/middleware/session';
+import { sessionStorage } from './lib/server/session';
 
 export const meta: MetaFunction = () => [{ title: 'DFoto' }];
 
@@ -19,6 +22,10 @@ export const links: LinksFunction = () => [
 	{ rel: 'stylesheet', href: 'https://rsms.me/inter/inter.css' },
 	{ rel: 'stylesheet', href: styles },
 ];
+
+const session = createSessionMiddleware(sessionStorage);
+
+export const middleware = serverOnly$([session]);
 
 export function Providers({ children }: { children: React.ReactNode }) {
 	return (

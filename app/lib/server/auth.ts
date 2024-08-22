@@ -2,6 +2,19 @@ import { remember } from '@epic-web/remember';
 import { makeLogtoRemix } from '@logto/remix';
 import { redirect } from '@remix-run/node';
 import { sessionStorage } from './session';
+import { KeyCloak } from 'arctic';
+import type { ServerContext } from 'remix-create-express-app/context';
+import { getUser } from './middleware/auth';
+
+const realmURL = process.env.KEYCLOAK_ENDPOINT!;
+const clientId = process.env.KEYCLOAK_CLIENTID!;
+const clientSecret = process.env.KEYCLOAK_CLIENTSECRET!;
+const redirectURI = process.env.KEYCLOAK_REDIRECTURI!;
+
+export const keycloak = remember(
+	'keycloak',
+	() => new KeyCloak(realmURL, clientId, clientSecret, redirectURI),
+);
 
 export const resource = 'https://dfoto.se';
 export const scopes = [
@@ -15,66 +28,34 @@ export const scopes = [
 
 export type Role = (typeof scopes)[number];
 
-export const logto = remember('logto', () =>
-	makeLogtoRemix(
-		{
-			endpoint: process.env.LOGTO_ENDPOINT!,
-			appId: process.env.LOGTO_APP_ID!,
-			appSecret: process.env.LOGTO_APP_SECRET!,
-			baseUrl: process.env.BASE_URL!,
-			resources: [resource],
-			scopes: scopes as unknown as string[],
-		},
-		{ sessionStorage },
-	),
-);
+export function ensureRole(roles: Role[], context: ServerContext) {
+	const user = getUser(context);
+	if (!user) {
+		throw redirect('/auth/sign-in');
+	}
 
-export function ensureRole(
-	roles: Role[],
-	params?: Parameters<(typeof logto)['getContext']>,
-) {
-	return async (request: Request) => {
-		const ctx = await logto.getContext({
-			getAccessToken: true,
-			resource: resource,
-			...params,
-		})(request);
-		if (!ctx.isAuthenticated) {
-			throw redirect('/auth/sign-in');
+	for (const role of roles) {
+		if (!user.roles.includes(role)) {
+			throw new Response(`missing role: ${role}`, {
+				status: 401,
+				statusText: 'Unautharized',
+			});
 		}
-
-		for (const role of roles) {
-			if (!ctx.scopes?.includes(role)) {
-				throw new Response(`unauthorized: missing role: ${role}`, {
-					status: 401,
-				});
-			}
-		}
-		return ctx;
-	};
+	}
+	return user;
 }
 
-export function checkRole(
-	roles: Role[],
-	params?: Parameters<(typeof logto)['getContext']>,
-) {
-	return async (request: Request) => {
-		const ctx = await logto.getContext({
-			getAccessToken: true,
-			resource: resource,
-			...params,
-		})(request);
+export function checkRole(roles: Role[], context: ServerContext) {
+	const user = getUser(context);
+	if (!user) {
+		return { passed: false as const };
+	}
 
-		if (!ctx.isAuthenticated) {
-			return { ...ctx, passed: false };
+	for (const r of roles) {
+		if (!user.roles.includes(r)) {
+			return { passed: false as const };
 		}
+	}
 
-		for (const r of roles) {
-			if (!ctx.scopes?.includes(r)) {
-				return { ...ctx, passed: false };
-			}
-		}
-
-		return { ...ctx, passed: true };
-	};
+	return { user, passed: true as const };
 }

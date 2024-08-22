@@ -1,5 +1,5 @@
 import type { MetaFunction } from '@remix-run/node';
-import { Outlet } from '@remix-run/react';
+import { isRouteErrorResponse, Outlet, useRouteError } from '@remix-run/react';
 import {
 	type CrumbHandle,
 	DynamicBreadcrum,
@@ -21,4 +21,19 @@ export default function Layout() {
 			<Outlet />
 		</>
 	);
+}
+
+export function ErrorBoundary() {
+	const error = useRouteError();
+
+	if (isRouteErrorResponse(error)) {
+		return (
+			<div className='grid place-content-center grow'>
+				<h2 className='font-bold text-2xl'>
+					{error.status} {error.statusText ?? 'Error'}
+				</h2>
+				<p className='text-lg'>{error.data}</p>
+			</div>
+		);
+	}
 }

@@ -1,6 +1,5 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import { useState } from 'react';
 import { getParams } from 'remix-params-helper';
 import { z } from 'zod';
 import { deleteAlbum, setPubishedStatus } from '~/lib/server/actions';
@@ -8,11 +7,11 @@ import { ensureRole } from '~/lib/server/auth';
 import { getAllAlbums } from '~/lib/server/data';
 import { AlbumTable } from './table';
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request, context }: ActionFunctionArgs) {
 	const formData = await request.formData();
 	switch (formData.get('intent')) {
 		case 'publish': {
-			await ensureRole(['publish:album'])(request);
+			ensureRole(['publish:album'], context);
 			const result = getParams(
 				formData,
 				z.object({
@@ -29,7 +28,7 @@ export async function action({ request }: ActionFunctionArgs) {
 			return { success: true } as const;
 		}
 		case 'delete': {
-			await ensureRole(['delete:album'])(request);
+			ensureRole(['delete:album'], context);
 			const result = getParams(
 				formData,
 				z.object({
@@ -48,8 +47,8 @@ export async function action({ request }: ActionFunctionArgs) {
 	}
 }
 
-export async function loader({ request }: LoaderFunctionArgs) {
-	await ensureRole(['read:album'])(request);
+export async function loader({ request, context }: LoaderFunctionArgs) {
+	await ensureRole(['read:album'], context);
 	const albums = await getAllAlbums();
 	return { albums };
 }

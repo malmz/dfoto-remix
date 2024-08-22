@@ -1,18 +1,15 @@
-import type { LoaderFunctionArgs } from '@remix-run/node';
 import {
-	Link,
 	useNavigate,
 	useNavigation,
 	useParams,
 	useRouteLoaderData,
-	useSearchParams,
 } from '@remix-run/react';
-import { Button } from '~/components/ui/button';
-import { motion, AnimatePresence } from 'framer-motion';
-import { getImage, getTags } from '~/lib/server/data';
 import { useState } from 'react';
 import type { AlbumLoader } from './_main.album.$id';
-import { Loader2 } from 'lucide-react';
+import Lightbox from 'yet-another-react-lightbox';
+import Inline from 'yet-another-react-lightbox/plugins/inline';
+import 'yet-another-react-lightbox/styles.css';
+import { Button } from '~/components/ui/button';
 
 /* export async function loader({ params }: LoaderFunctionArgs) {
 	const imageId = Number(params.imageId);
@@ -25,52 +22,12 @@ import { Loader2 } from 'lucide-react';
 	};
 } */
 
-const swipeConfidenceThreshold = 10000;
-const swipePower = (offset: number, velocity: number) => {
-	return Math.abs(offset) * velocity;
-};
-
-const variants = {
-	enter: (direction: number) => {
-		return {
-			x: direction > 0 ? 1000 : -1000,
-			opacity: 0,
-		};
-	},
-	center: {
-		zIndex: 1,
-		x: 0,
-		opacity: 1,
-	},
-	exit: (direction: number) => {
-		return {
-			zIndex: 0,
-			x: direction < 0 ? 1000 : -1000,
-			opacity: 0,
-		};
-	},
-};
-
-const loadingVariants = {
-	show: {
-		opacity: 1,
-		display: 'grid',
-	},
-	hide: {
-		opacity: 0,
-		transitionEnd: {
-			display: 'none',
-		},
-	},
-};
-
 export default function Page() {
 	const { album } = useRouteLoaderData<AlbumLoader>('routes/_main.album.$id');
 	//const { image } = useLoaderData<typeof loader>();
 	const params = useParams();
 	const navigate = useNavigate();
-	const navigation = useNavigation();
-	const [direction, setDirection] = useState(0);
+	const [open, setOpen] = useState(true);
 
 	const imageId = Number(params.imageId);
 	const albumId = Number(params.id);
@@ -79,70 +36,21 @@ export default function Page() {
 	const nextId = album?.images[currentIndex + 1]?.id;
 	const prevId = album?.images[currentIndex - 1]?.id;
 
-	const paginate = (newDirection: number) => {
-		const toId = newDirection === 1 ? nextId : prevId;
-		if (toId != null) {
-			setDirection(newDirection);
-			navigate(`/album/${albumId}/${toId}`);
-		}
-	};
+	const slides = album.images.map(({ id }) => ({
+		src: `/api/image/${id}?preview`,
+	}));
 
 	return (
 		<>
 			<div className='fixed inset-0 bg-black'>
-				<AnimatePresence initial={false} custom={direction}>
-					<motion.img
-						key={imageId}
-						src={`/api/image/${imageId}?preview`}
-						className='object-contain absolute w-full h-full'
-						variants={variants}
-						custom={direction}
-						initial='enter'
-						animate={navigation.state === 'loading' ? 'exit' : 'center'}
-						exit='exit'
-						transition={{
-							x: { type: 'tween' },
-							opacity: { duration: 0.2 },
-						}}
-						drag='x'
-						dragConstraints={{ left: 0, right: 0 }}
-						dragElastic={1}
-						onDragEnd={(e, { offset, velocity }) => {
-							const swipe = swipePower(offset.x, velocity.x);
-							if (swipe < -swipeConfidenceThreshold) {
-								paginate(1);
-							} else if (swipe > swipeConfidenceThreshold) {
-								paginate(-1);
-							}
-						}}
-					/>
-				</AnimatePresence>
-				<motion.div
-					key='spinner'
-					className='absolute inset-0 grid place-content-center'
-					variants={loadingVariants}
-					initial='hide'
-					animate={navigation.state === 'loading' ? 'show' : 'hide'}
-					transition={{
-						delay: 0.3,
+				<Lightbox
+					carousel={{
+						finite: true,
 					}}
-				>
-					<Loader2 className='animate-spin w-24 h-24 text-muted-foreground' />
-				</motion.div>
-				{nextId && (
-					<Button asChild>
-						<Link to={`/album/${albumId}/${nextId}`} prefetch='render'>
-							Next
-						</Link>
-					</Button>
-				)}
-				{prevId && (
-					<Button asChild>
-						<Link to={`/album/${albumId}/${prevId}`} prefetch='render'>
-							Previous
-						</Link>
-					</Button>
-				)}
+					plugins={[Inline]}
+					slides={slides}
+					index={currentIndex}
+				/>
 			</div>
 		</>
 	);

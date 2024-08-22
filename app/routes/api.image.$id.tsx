@@ -10,8 +10,12 @@ import { assertResponse } from '~/lib/utils';
 
 const ensure = true;
 
-export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-	const { passed } = await checkRole(['read:album'])(request);
+export const loader = async ({
+	params,
+	request,
+	context,
+}: LoaderFunctionArgs) => {
+	const { passed } = checkRole(['read:album'], context);
 
 	const id = Number(params.id);
 	assertResponse(!Number.isNaN(id), 'Invalid image id');

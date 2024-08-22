@@ -18,8 +18,8 @@ import { assertResponse } from '~/lib/utils';
 
 const imageTypes = ['image/jpeg', 'image/png'];
 
-export async function action({ request }: ActionFunctionArgs) {
-	const { claims } = await ensureRole(['write:image'])(request);
+export async function action({ request, context }: ActionFunctionArgs) {
+	const { claims } = ensureRole(['write:image'], context);
 
 	const uploadHandler = composeUploadHandlers(
 		createFileUploadHandler({

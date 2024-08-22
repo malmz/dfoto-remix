@@ -48,8 +48,8 @@ export const handle: CrumbHandle<typeof loader> = {
 	}),
 };
 
-export async function loader({ request, params }: LoaderFunctionArgs) {
-	await ensureRole(['read:album'])(request);
+export async function loader({ params, context }: LoaderFunctionArgs) {
+	ensureRole(['read:album'], context);
 	const album = await getAlbumAll(Number(params.id));
 	if (!album) {
 		throw new Response('Not found', { status: 404 });
@@ -57,11 +57,11 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 	return { album };
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request, context }: ActionFunctionArgs) {
 	const formData = await request.formData();
 	switch (formData.get('intent')) {
 		case 'publish': {
-			await ensureRole(['publish:album'])(request);
+			ensureRole(['publish:album'], context);
 			const result = getParams(
 				formData,
 				z.object({
@@ -78,7 +78,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		}
 
 		case 'save': {
-			await ensureRole(['write:album'])(request);
+			ensureRole(['write:album'], context);
 			const result = getParams(formData, updateSchema);
 			if (!result.success) {
 				return result;
@@ -90,7 +90,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		}
 
 		case 'thumbnail': {
-			await ensureRole(['write:album'])(request);
+			ensureRole(['write:album'], context);
 			const result = getParams(
 				formData,
 				z.object({ id: z.number(), album_id: z.number() }),
@@ -104,7 +104,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		}
 
 		case 'delete': {
-			await ensureRole(['delete:image'])(request);
+			ensureRole(['delete:image'], context);
 			const result = getParams(formData, z.object({ id: z.number() }));
 			if (!result.success) {
 				return result;
