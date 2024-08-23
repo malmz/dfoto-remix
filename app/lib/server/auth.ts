@@ -1,5 +1,4 @@
 import { remember } from '@epic-web/remember';
-import { makeLogtoRemix } from '@logto/remix';
 import { redirect } from '@remix-run/node';
 import { sessionStorage } from './session';
 import { KeyCloak } from 'arctic';

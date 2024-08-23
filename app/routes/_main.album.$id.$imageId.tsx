@@ -1,15 +1,57 @@
 import {
+	Link,
 	useNavigate,
 	useNavigation,
 	useParams,
 	useRouteLoaderData,
 } from '@remix-run/react';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import type { AlbumLoader } from './_main.album.$id';
 import Lightbox from 'yet-another-react-lightbox';
 import Inline from 'yet-another-react-lightbox/plugins/inline';
 import 'yet-another-react-lightbox/styles.css';
 import { Button } from '~/components/ui/button';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
+
+const swipeConfidenceThreshold = 10000;
+const swipePower = (offset: number, velocity: number) => {
+	return Math.abs(offset) * velocity;
+};
+
+const variants = {
+	enter: (direction: number) => {
+		return {
+			x: direction > 0 ? 1000 : -1000,
+			opacity: 0,
+		};
+	},
+	center: {
+		zIndex: 1,
+		x: 0,
+		opacity: 1,
+	},
+	exit: (direction: number) => {
+		return {
+			zIndex: 0,
+			x: direction < 0 ? 1000 : -1000,
+			opacity: 0,
+		};
+	},
+};
+
+const loadingVariants = {
+	show: {
+		opacity: 1,
+		display: 'grid',
+	},
+	hide: {
+		opacity: 0,
+		transitionEnd: {
+			display: 'none',
+		},
+	},
+};
 
 /* export async function loader({ params }: LoaderFunctionArgs) {
 	const imageId = Number(params.imageId);
@@ -23,24 +65,105 @@ import { Button } from '~/components/ui/button';
 } */
 
 export default function Page() {
-	const { album } = useRouteLoaderData<AlbumLoader>('routes/_main.album.$id');
+	const { album } = useRouteLoaderData<AlbumLoader>('routes/_main.album.$id')!;
+	const imageMap = useMemo(
+		() =>
+			new Map(
+				album.images.map((image, i) => [
+					image.id,
+					{
+						image,
+						next: album.images[i + 1]?.id,
+						prev: album.images[i - 1]?.id,
+					},
+				]),
+			),
+		[album],
+	);
 	//const { image } = useLoaderData<typeof loader>();
 	const params = useParams();
 	const navigate = useNavigate();
-	const [open, setOpen] = useState(true);
+
+	const navigation = useNavigation();
+	const [direction, setDirection] = useState(0);
 
 	const imageId = Number(params.imageId);
 	const albumId = Number(params.id);
 
-	const currentIndex = album?.images.findIndex(({ id }) => id === imageId) ?? 0;
-	const nextId = album?.images[currentIndex + 1]?.id;
-	const prevId = album?.images[currentIndex - 1]?.id;
+	const { next, prev } = imageMap.get(imageId)!;
 
-	const slides = album.images.map(({ id }) => ({
-		src: `/api/image/${id}?preview`,
-	}));
+	const paginate = useCallback(
+		(newDirection: number) => {
+			const toId = newDirection === 1 ? next : prev;
+			if (toId != null) {
+				setDirection(newDirection);
+				navigate(`/album/${albumId}/${toId}`);
+			}
+		},
+		[next, prev, albumId, navigate],
+	);
 
 	return (
+		<>
+			<div className='fixed inset-0 bg-black'>
+				<AnimatePresence initial={false} custom={direction}>
+					<motion.img
+						key={imageId}
+						src={`/api/image/${imageId}?preview`}
+						className='object-contain absolute w-full h-full'
+						variants={variants}
+						custom={direction}
+						initial='enter'
+						animate={navigation.state === 'loading' ? 'exit' : 'center'}
+						exit='exit'
+						transition={{
+							x: { type: 'spring', stiffness: 300, damping: 30 },
+							opacity: { duration: 0.2 },
+						}}
+						drag='x'
+						dragConstraints={{ left: 0, right: 0 }}
+						dragElastic={1}
+						onDragEnd={(e, { offset, velocity }) => {
+							const swipe = swipePower(offset.x, velocity.x);
+							if (swipe < -swipeConfidenceThreshold) {
+								paginate(1);
+							} else if (swipe > swipeConfidenceThreshold) {
+								paginate(-1);
+							}
+						}}
+					/>
+				</AnimatePresence>
+				<motion.div
+					key='spinner'
+					className='absolute inset-0 grid place-content-center'
+					variants={loadingVariants}
+					initial='hide'
+					animate={navigation.state === 'loading' ? 'show' : 'hide'}
+					transition={{
+						delay: 0.3,
+					}}
+				>
+					<Loader2 className='animate-spin w-24 h-24 text-muted-foreground' />
+				</motion.div>
+				{next && (
+					<Button asChild>
+						<Link to={`/album/${albumId}/${next}`} prefetch='render'>
+							Next
+						</Link>
+					</Button>
+				)}
+				{prev && (
+					<Button asChild>
+						<Link to={`/album/${albumId}/${prev}`} prefetch='render'>
+							Previous
+						</Link>
+					</Button>
+				)}
+			</div>
+		</>
+	);
+
+	/* return (
 		<>
 			<div className='fixed inset-0 bg-black'>
 				<Lightbox
@@ -53,7 +176,7 @@ export default function Page() {
 				/>
 			</div>
 		</>
-	);
+	); */
 
 	/* return (
 		<>
