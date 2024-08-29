@@ -120,7 +120,7 @@ function Header() {
 
 function Footer() {
 	return (
-		<footer className='mt-8 flex items-center justify-between gap-4 border-t p-4'>
+		<footer className='flex items-center justify-between gap-4 border-t p-4'>
 			<aside className='flex items-center gap-2'>
 				<img
 					src={dataLogo}

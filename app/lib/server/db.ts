@@ -17,5 +17,5 @@ await runMigrations();
 
 export const db = remember('drizzle', () => {
 	const queryClient = postgres(process.env.DATABASE_URL ?? '', {});
-	return drizzle(queryClient, { schema, logger: true });
+	return drizzle(queryClient, { schema });
 });

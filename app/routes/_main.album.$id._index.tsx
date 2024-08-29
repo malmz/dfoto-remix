@@ -1,6 +1,7 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 import { AutoGrid } from '~/components/autogrid';
+import { useAlbum } from '~/lib/context';
 import { getAlbum } from '~/lib/server/data';
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => [
@@ -16,7 +17,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 }
 
 export default function Page() {
-	const { album } = useLoaderData<typeof loader>();
+	const album = useAlbum()!;
 
 	return (
 		<div className='mt-8'>

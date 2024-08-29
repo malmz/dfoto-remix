@@ -28,6 +28,8 @@ export const loader = async ({
 	const data = await getImage(id, passed);
 	assertResponse(data, 'Image not found', { status: 404 });
 
+	await new Promise((resolve) => setTimeout(resolve, 1000));
+
 	let imageStream: ImageStream;
 	try {
 		if (thumbnail) {

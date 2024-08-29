@@ -3,7 +3,13 @@ import {
 	type LoaderFunctionArgs,
 	type MetaFunction,
 } from '@remix-run/node';
-import type { ShouldRevalidateFunction } from '@remix-run/react';
+import {
+	Outlet,
+	useLoaderData,
+	type ShouldRevalidateFunction,
+} from '@remix-run/react';
+import { createContext, useContext } from 'react';
+import { AlbumContext } from '~/lib/context';
 import { getAlbum } from '~/lib/server/data';
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => [
@@ -20,11 +26,18 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 };
 
 export const loader = defineLoader(async ({ params }) => {
-	console.log('loading parent');
-
 	const album = await getAlbum(Number(params.id));
 	if (!album) throw new Response('Not found', { status: 404 });
 	return { album };
 });
 
 export type AlbumLoader = typeof loader;
+
+export default function Page() {
+	const { album } = useLoaderData<typeof loader>();
+	return (
+		<AlbumContext.Provider value={album}>
+			<Outlet />
+		</AlbumContext.Provider>
+	);
+}
