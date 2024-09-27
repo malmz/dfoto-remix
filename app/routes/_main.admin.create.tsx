@@ -36,8 +36,8 @@ const schema = z.object({
 	start_at: z.date(),
 });
 
-export async function action({ request }: ActionFunctionArgs) {
-	await ensureRole(['write:album'])(request);
+export async function action({ request, context }: ActionFunctionArgs) {
+	ensureRole(['write:album'], context);
 	const result = await getFormData(request, schema);
 	if (!result.success) {
 		return result;

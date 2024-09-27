@@ -48,7 +48,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 }
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
-	await ensureRole(['read:album'], context);
+	ensureRole(['read:album'], context);
 	const albums = await getAllAlbums();
 	return { albums };
 }
