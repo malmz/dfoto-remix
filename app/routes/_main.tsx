@@ -58,7 +58,7 @@ function UserProfile() {
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align='end'>
 						<DropdownMenuLabel>
-							{user.name ?? user.email ?? 'Användare'}
+							{user.preferred_username ?? user.email ?? "Användare"}
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem>Settings</DropdownMenuItem>
