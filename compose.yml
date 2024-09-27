@@ -1,12 +1,21 @@
 services:
   database:
-    image: "postgres:latest"
+    image: postgres:latest
     environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=password
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - 5432:5432
+  
+  auth:
+    image: quay.io/keycloak/keycloak:latest
+    command: start-dev
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - 8080:8080
 volumes:
   db_data:
