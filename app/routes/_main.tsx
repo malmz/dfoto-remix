@@ -1,4 +1,3 @@
-import { unstable_defineLoader as defineLoader } from '@remix-run/node';
 import { Form, Link, NavLink, Outlet, useLoaderData } from '@remix-run/react';
 import { getYear } from 'date-fns';
 import { CircleUser, Mail } from 'lucide-react';
@@ -22,16 +21,17 @@ import {
 } from '~/components/ui/tooltip';
 import { serverOnly$ } from 'vite-env-only/macros';
 import { createAuthMiddleware, getUser } from '~/lib/server/middleware/auth';
+import type { LoaderFunctionArgs } from '@remix-run/node';
 
 const auth = createAuthMiddleware();
 
 export const middleware = serverOnly$([auth]);
 
-export const loader = defineLoader(async ({ request, context }) => {
+export async function loader({ request, context }: LoaderFunctionArgs) {
 	const user = getUser(context);
 
 	return { user: user?.claims };
-});
+}
 
 function UserProfile() {
 	const { user } = useLoaderData<typeof loader>();

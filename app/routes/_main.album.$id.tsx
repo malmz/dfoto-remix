@@ -1,8 +1,4 @@
-import {
-	unstable_defineLoader as defineLoader,
-	type LoaderFunctionArgs,
-	type MetaFunction,
-} from '@remix-run/node';
+import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
 import {
 	Outlet,
 	useLoaderData,
@@ -25,11 +21,11 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 	return defaultShouldRevalidate;
 };
 
-export const loader = defineLoader(async ({ params }) => {
+export async function loader({ params }: LoaderFunctionArgs) {
 	const album = await getAlbum(Number(params.id));
 	if (!album) throw new Response('Not found', { status: 404 });
 	return { album };
-});
+}
 
 export type AlbumLoader = typeof loader;
 

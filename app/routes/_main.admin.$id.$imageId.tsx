@@ -1,11 +1,11 @@
-import { unstable_defineLoader as defineLoader } from '@remix-run/node';
+import type { LoaderFunctionArgs } from '@remix-run/node';
 import { useFetcher, useLoaderData } from '@remix-run/react';
 
-export const loader = defineLoader(async ({ params }) => {
+export async function loader({ params }: LoaderFunctionArgs) {
 	return {
 		imageId: params.imageId,
 	};
-});
+}
 
 export default function Page() {
 	const { imageId } = useLoaderData<typeof loader>();

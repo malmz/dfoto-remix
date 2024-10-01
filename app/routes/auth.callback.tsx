@@ -1,13 +1,10 @@
-import {
-	unstable_defineLoader as defineLoader,
-	redirect,
-} from '@remix-run/node';
+import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
 import { decodeIdToken } from 'arctic';
 import { parseJWT } from 'oslo/jwt';
 import { keycloak } from '~/lib/server/auth';
 import { getSession } from '~/lib/server/middleware/session';
 
-export const loader = defineLoader(async ({ request, context }) => {
+export async function loader({ request, context }: LoaderFunctionArgs) {
 	const session = getSession(context);
 	const query = new URL(request.url).searchParams;
 
@@ -44,4 +41,4 @@ export const loader = defineLoader(async ({ request, context }) => {
 	});
 
 	return redirect(returnTo);
-});
+}

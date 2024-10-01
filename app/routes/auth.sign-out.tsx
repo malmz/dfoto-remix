@@ -1,12 +1,9 @@
-import {
-	unstable_defineLoader as defineLoader,
-	redirect,
-} from '@remix-run/node';
+import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
 import { ArcticFetchError, OAuth2RequestError } from 'arctic';
 import { keycloak } from '~/lib/server/auth';
 import { getSession } from '~/lib/server/middleware/session';
 
-export const loader = defineLoader(async ({ context }) => {
+export async function loader({ context }: LoaderFunctionArgs) {
 	const session = getSession(context);
 	const user = session.get('user');
 	try {
@@ -30,4 +27,4 @@ export const loader = defineLoader(async ({ context }) => {
 
 	session.unset('user');
 	return redirect('/');
-});
+}

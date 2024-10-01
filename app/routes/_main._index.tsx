@@ -42,7 +42,7 @@ export default function Page() {
 					</AutoGrid>
 				</Suspense>
 			</div>
-			<Paginator page={page} totalPages={totalPages} className='mt-3' />
+			<Paginator page={page} totalPages={totalPages} className='my-3' />
 		</>
 	);
 }

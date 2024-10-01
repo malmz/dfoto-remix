@@ -5,7 +5,7 @@ import { Button } from '~/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAlbum } from '~/lib/context';
 
-/* export const loader = defineLoader(({ params }) => {
+/* export async function loader({ params }: LoaderFunctionArgs) {
 	const imageId = Number(params.imageId);
 	const tags = getTags(imageId);
 	const image = getImage(imageId);
@@ -14,7 +14,7 @@ import { useAlbum } from '~/lib/context';
 		image,
 		tags,
 	};
-}); */
+} */
 
 export default function Page() {
 	const album = useAlbum()!;
