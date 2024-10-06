@@ -1,8 +1,4 @@
-import {
-	type UIMatch_SingleFetch,
-	useLocation,
-	useMatches,
-} from '@remix-run/react';
+import { type UIMatch, useLocation, useMatches } from '@remix-run/react';
 import { Fragment } from 'react/jsx-runtime';
 import {
 	Breadcrumb,
@@ -15,7 +11,7 @@ import {
 
 export type CrumbHandle<D = unknown> = {
 	breadcrumb: (
-		match: UIMatch_SingleFetch<D, unknown>,
+		match: UIMatch<D, unknown>,
 		current?: boolean,
 	) =>
 		| {
@@ -28,7 +24,7 @@ export type CrumbHandle<D = unknown> = {
 function Crumb({
 	match,
 }: {
-	match: UIMatch_SingleFetch<unknown, CrumbHandle>;
+	match: UIMatch<unknown, CrumbHandle>;
 }) {
 	const location = useLocation();
 	const pathname = location.pathname;
@@ -41,7 +37,7 @@ function Crumb({
 }
 
 export function DynamicBreadcrum() {
-	const matches = useMatches() as UIMatch_SingleFetch<unknown, CrumbHandle>[];
+	const matches = useMatches() as UIMatch<unknown, CrumbHandle>[];
 	const location = useLocation();
 	const pathname = location.pathname;
 	return (
