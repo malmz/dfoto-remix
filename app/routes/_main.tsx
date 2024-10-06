@@ -22,6 +22,7 @@ import {
 import { serverOnly$ } from 'vite-env-only/macros';
 import { createAuthMiddleware, getUser } from '~/lib/server/middleware/auth';
 import type { LoaderFunctionArgs } from '@remix-run/node';
+import { SignInLink, SignOutLink } from '~/components/signin';
 
 const auth = createAuthMiddleware();
 
@@ -69,15 +70,13 @@ function UserProfile() {
 						)}
 						<DropdownMenuSeparator />
 						<DropdownMenuItem asChild>
-							<Form action='/auth/sign-out'>
-								<button type='submit'>Sign out</button>
-							</Form>
+							<SignOutLink />
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
 			) : (
 				<Button variant='outline' asChild>
-					<Link to='/auth/sign-in'>Sign in</Link>
+					<SignInLink />
 				</Button>
 			)}
 		</>
