@@ -1,10 +1,8 @@
+import { isFuture } from 'date-fns';
 import type { ServerContext } from 'remix-create-express-app/context';
 import type { MiddleWareFunction } from 'remix-create-express-app/middleware';
+import { extractUserFromToken, keycloak } from '../auth';
 import { getSession } from './session';
-import { decodeIdToken } from 'arctic';
-import { parseJWT } from 'oslo/jwt';
-import { isFuture, isPast } from 'date-fns';
-import { keycloak } from '../auth';
 
 export function getUser(context: ServerContext) {
 	return getSession(context).get('user');
@@ -18,17 +16,14 @@ export function createAuthMiddleware(): MiddleWareFunction {
 		if (!user || isFuture(user.accessTokenExpiresAt)) return await next();
 
 		if (user.refreshToken) {
-			const tokens = await keycloak.refreshAccessToken(user.refreshToken);
-			const accessToken = tokens.accessToken();
-			const accessData = parseJWT(accessToken);
-			const roles = (accessData?.payload as any).roles ?? [];
-			session.set('user', {
-				claims: decodeIdToken(tokens.idToken()) as Record<string, string>,
-				roles,
-				accessToken: tokens.accessToken(),
-				accessTokenExpiresAt: tokens.accessTokenExpiresAt(),
-				refreshToken: tokens.refreshToken(),
-			});
+			try {
+				const tokens = await keycloak.refreshAccessToken(user.refreshToken);
+				const newUser = extractUserFromToken(tokens);
+				session.set('user', newUser);
+			} catch (error) {
+				console.error('refresh token', error);
+				session.unset('user');
+			}
 		} else {
 			session.unset('user');
 		}

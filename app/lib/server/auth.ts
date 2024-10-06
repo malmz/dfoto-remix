@@ -1,7 +1,7 @@
 import { remember } from '@epic-web/remember';
 import { redirect } from '@remix-run/node';
-import { sessionStorage } from './session';
-import { KeyCloak } from 'arctic';
+import { KeyCloak, type OAuth2Tokens, decodeIdToken } from 'arctic';
+import { parseJWT } from 'oslo/jwt';
 import type { ServerContext } from 'remix-create-express-app/context';
 import { getUser } from './middleware/auth';
 
@@ -15,7 +15,24 @@ export const keycloak = remember(
 	() => new KeyCloak(realmURL, clientId, clientSecret, redirectURI),
 );
 
-export const resource = 'https://dfoto.se';
+export function extractUserFromToken(tokens: OAuth2Tokens) {
+	const accessToken = tokens.accessToken();
+	const accessData = parseJWT(accessToken);
+	if (!accessData) throw new Error('access token is not a jwt');
+
+	const roles =
+		(accessData.payload as Record<string, any>).resource_access?.[clientId]
+			.roles ?? [];
+
+	return {
+		claims: decodeIdToken(tokens.idToken()) as Record<string, string>,
+		roles,
+		accessToken: tokens.accessToken(),
+		accessTokenExpiresAt: tokens.accessTokenExpiresAt(),
+		refreshToken: tokens.refreshToken(),
+	};
+}
+
 export const scopes = [
 	'write:album',
 	'read:album',

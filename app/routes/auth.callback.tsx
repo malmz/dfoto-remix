@@ -1,7 +1,5 @@
-import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
-import { decodeIdToken } from 'arctic';
-import { parseJWT } from 'oslo/jwt';
-import { keycloak } from '~/lib/server/auth';
+import { type LoaderFunctionArgs, redirect } from '@remix-run/node';
+import { extractUserFromToken, keycloak } from '~/lib/server/auth';
 import { getSession } from '~/lib/server/middleware/session';
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
@@ -28,17 +26,8 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 		storedCodeVerifier,
 	);
 
-	const accessToken = tokens.accessToken();
-	const accessData = parseJWT(accessToken);
-	const roles = (accessData?.payload as any).roles ?? [];
-
-	session.set('user', {
-		claims: decodeIdToken(tokens.idToken()) as Record<string, string>,
-		roles,
-		accessToken: tokens.accessToken(),
-		accessTokenExpiresAt: tokens.accessTokenExpiresAt(),
-		refreshToken: tokens.refreshToken(),
-	});
+	const newUser = extractUserFromToken(tokens);
+	session.set('user', newUser);
 
 	return redirect(returnTo);
 }
