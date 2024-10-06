@@ -177,7 +177,7 @@ export default function Page() {
 				</fetcher.Form>
 			</div>
 			<Separator className='mx-auto mt-12 max-w-prose' />
-			<div className='mx-auto px-4 w-full mt-8 flex flex-col gap-4'>
+			<div className='mx-auto px-4 w-full my-8 flex flex-col gap-4'>
 				<h2 className='text-3xl font-extrabold tracking-tight'>Bilder</h2>
 
 				<ImageTable
