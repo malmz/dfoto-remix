@@ -51,7 +51,7 @@ export default function Page() {
 	const lastResult = useActionData<typeof action>();
 	const errors = lastResult?.errors;
 	return (
-		<div className='container mt-8 flex flex-col gap-4'>
+		<div className='container my-8 flex flex-col gap-4'>
 			<Form method='post'>
 				<Card className='max-w-screen-md mx-auto'>
 					<CardHeader>
