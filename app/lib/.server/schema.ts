@@ -119,3 +119,8 @@ export const tagRelation = relations(tag, ({ one }) => ({
 		references: [legacyTag.tag_id],
 	}),
 }));
+
+export const user = pgTable('user', {
+	id: integer('id').primaryKey(),
+	name: text('name').notNull(),
+});
