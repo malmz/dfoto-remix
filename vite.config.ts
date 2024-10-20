@@ -19,11 +19,6 @@ export default defineConfig({
 	},
 	plugins: [
 		expressDevServer(),
-		denyImports({
-			client: {
-				files: ['**/lib/server/*', '**/.server/*', '**/*.server.*'],
-			},
-		}),
 		envOnlyMacros(),
 		//remixDevTools(),
 		remix({
