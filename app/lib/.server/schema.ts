@@ -7,31 +7,28 @@ import {
 	integer,
 	jsonb,
 	pgTable,
-	serial,
 	text,
 	timestamp,
 } from 'drizzle-orm/pg-core';
 import type { Exif } from 'exif-reader';
 
 export const album = pgTable('album', {
-	id: serial('id').primaryKey(),
-	name: text('name').notNull(),
-	description: text('description'),
-	published: boolean('published').default(false).notNull(),
-	start_at: date('start_at', { mode: 'date' }).defaultNow().notNull(),
-	thumbnail_id: integer('thumbnail_id'),
-	created_at: timestamp('created_at', { withTimezone: true })
-		.defaultNow()
-		.notNull(),
-	modified_at: timestamp('modified_at', { withTimezone: true })
+	id: integer().primaryKey().generatedAlwaysAsIdentity(),
+	name: text().notNull(),
+	description: text(),
+	published: boolean().default(false).notNull(),
+	start_at: date({ mode: 'date' }).defaultNow().notNull(),
+	thumbnail_id: integer(),
+	created_at: timestamp({ withTimezone: true }).defaultNow().notNull(),
+	modified_at: timestamp({ withTimezone: true })
 		.defaultNow()
 		.notNull()
 		.$onUpdateFn(() => new Date()),
 });
 
 export const legacyAlbum = pgTable('legacy_album', {
-	id: text('id').primaryKey(),
-	album_id: integer('album_id')
+	id: text().primaryKey(),
+	album_id: integer()
 		.references(() => album.id, { onDelete: 'cascade' })
 		.notNull(),
 });
@@ -51,29 +48,25 @@ export type CreateAlbum = Omit<
 >;
 
 export const image = pgTable('image', {
-	id: serial('id').primaryKey(),
-	exif_data: jsonb('exif_data').$type<Jsonify<Exif>>(),
-	mimetype: text('mimetype'),
-	album_id: integer('album_id')
+	id: integer().primaryKey().generatedAlwaysAsIdentity(),
+	exif_data: jsonb().$type<Jsonify<Exif>>(),
+	mimetype: text(),
+	album_id: integer()
 		.references(() => album.id, { onDelete: 'cascade' })
 		.notNull(),
-	taken_by: text('taken_by'),
-	taken_by_name: text('taken_by_name'),
-	taken_at: timestamp('taken_at', { withTimezone: true })
-		.defaultNow()
-		.notNull(),
-	created_by: text('created_by'),
-	created_at: timestamp('created_at', { withTimezone: true })
-		.defaultNow()
-		.notNull(),
+	taken_by: integer().references(() => user.id),
+	taken_by_name: text(),
+	taken_at: timestamp({ withTimezone: true }).defaultNow().notNull(),
+	created_by: integer().references(() => user.id),
+	created_at: timestamp({ withTimezone: true }).defaultNow().notNull(),
 });
 
 export const legacyImage = pgTable('legacy_image', {
-	id: text('id').primaryKey(),
-	image_id: integer('image_id')
+	id: text().primaryKey(),
+	image_id: integer()
 		.references(() => image.id, { onDelete: 'cascade' })
 		.notNull(),
-	filepath: text('filepath').notNull(),
+	filepath: text().notNull(),
 });
 
 export type Image = InferSelectModel<typeof image>;
@@ -91,20 +84,18 @@ export const imageRelation = relations(image, ({ one, many }) => ({
 }));
 
 export const tag = pgTable('tag', {
-	id: serial('id').primaryKey(),
-	text: text('text').notNull(),
-	image_id: integer('image_id')
+	id: integer().primaryKey().generatedAlwaysAsIdentity(),
+	text: text().notNull(),
+	image_id: integer()
 		.references(() => image.id, { onDelete: 'cascade' })
 		.notNull(),
-	created_by: text('created_by'),
-	created_at: timestamp('created_at', { withTimezone: true })
-		.defaultNow()
-		.notNull(),
+	created_by: text(),
+	created_at: timestamp({ withTimezone: true }).defaultNow().notNull(),
 });
 
 export const legacyTag = pgTable('legacy_tag', {
-	id: text('id').primaryKey(),
-	tag_id: integer('tag_id')
+	id: text().primaryKey(),
+	tag_id: integer()
 		.references(() => tag.id, { onDelete: 'cascade' })
 		.notNull(),
 });
@@ -121,6 +112,12 @@ export const tagRelation = relations(tag, ({ one }) => ({
 }));
 
 export const user = pgTable('user', {
-	id: integer('id').primaryKey(),
-	name: text('name').notNull(),
+	id: integer().primaryKey(),
+	name: text().notNull(),
+});
+
+export const session = pgTable('session', {
+	id: text().primaryKey(),
+	data: jsonb().notNull(),
+	expires_at: timestamp({ withTimezone: true }),
 });
