@@ -1,6 +1,6 @@
 import { type LoaderFunctionArgs, redirect } from '@remix-run/node';
-import { extractUserFromToken, keycloak } from '~/lib/server/auth';
-import { getSession } from '~/lib/server/middleware/session';
+import { extractUserFromToken, keycloak } from '~/lib/.server/auth';
+import { getSession } from '~/lib/.server/middleware/session';
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
 	const session = getSession(context);

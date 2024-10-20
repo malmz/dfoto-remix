@@ -1,8 +1,8 @@
 import { Link, useParams } from '@remix-run/react';
 import { useMemo } from 'react';
 import 'yet-another-react-lightbox/styles.css';
-import { Button } from '~/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from '~/components/ui/button';
 import { useAlbum } from '~/lib/context';
 
 /* export async function loader({ params }: LoaderFunctionArgs) {
@@ -41,7 +41,7 @@ export default function Page() {
 
 	return (
 		<>
-			<div className='grow grid place-content-center px-2 md:px-20 pb-20 md:pb-4 pt-4 relative'>
+			<div className='grow px-2 md:px-20 pb-20 md:pb-4 pt-4 relative'>
 				{prev && (
 					<Button
 						variant='secondary'
@@ -49,7 +49,7 @@ export default function Page() {
 						className='rounded-full z-10 absolute bottom-6 left-1/3 md:top-1/2 md:left-4'
 						asChild
 					>
-						<Link to={`/album/${albumId}/${prev}`} prefetch='render'>
+						<Link to={`/album/${albumId}/${prev}`}>
 							<ChevronLeft className='w-4 h-4' />
 						</Link>
 					</Button>
@@ -61,7 +61,7 @@ export default function Page() {
 						className='rounded-full z-10 absolute bottom-6 right-1/3 md:top-1/2 md:right-4'
 						asChild
 					>
-						<Link to={`/album/${albumId}/${next}`} prefetch='render'>
+						<Link to={`/album/${albumId}/${next}`}>
 							<ChevronRight className='w-4 h-4' />
 						</Link>
 					</Button>
@@ -70,7 +70,7 @@ export default function Page() {
 				<img
 					src={`/api/image/${imageId}?preview`}
 					alt='photograph'
-					className='object-contain rounded'
+					className='object-contain w-full max-h-[80vh]'
 				/>
 			</div>
 		</>

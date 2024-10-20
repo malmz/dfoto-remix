@@ -13,7 +13,7 @@ import { DataTable } from '~/components/table/table';
 import { fuzzyFilter } from '~/components/table/utils';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
-import type { Image } from '~/lib/server/schema';
+import type { Image } from '~/lib/.server/schema';
 import { columns } from './columns';
 import { UploadButton } from './upload-button';
 

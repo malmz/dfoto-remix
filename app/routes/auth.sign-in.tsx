@@ -1,7 +1,7 @@
-import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
+import { type LoaderFunctionArgs, redirect } from '@remix-run/node';
 import { generateCodeVerifier, generateState } from 'arctic';
-import { keycloak, scopes } from '~/lib/server/auth';
-import { getSession } from '~/lib/server/middleware/session';
+import { keycloak } from '~/lib/.server/auth';
+import { getSession } from '~/lib/.server/middleware/session';
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
 	const session = getSession(context);

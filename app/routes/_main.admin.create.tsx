@@ -19,8 +19,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from '~/components/ui/card';
-import { createAlbum } from '~/lib/server/actions';
-import { ensureRole } from '~/lib/server/auth';
+import { createAlbum } from '~/lib/.server/actions';
+import { ensureRole } from '~/lib/.server/auth';
 
 export const meta: MetaFunction = () => [{ title: '🔒DFoto - Skapa nytt' }];
 

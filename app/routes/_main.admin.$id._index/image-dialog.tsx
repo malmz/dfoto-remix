@@ -7,7 +7,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '~/components/ui/dialog';
-import type { Image } from '~/lib/server/schema';
+import type { Image } from '~/lib/.server/schema';
 
 interface Props {
 	image: Image;

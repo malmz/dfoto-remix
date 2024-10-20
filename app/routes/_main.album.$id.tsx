@@ -1,12 +1,12 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
 import {
 	Outlet,
-	useLoaderData,
 	type ShouldRevalidateFunction,
+	useLoaderData,
 } from '@remix-run/react';
 import { createContext, useContext } from 'react';
+import { getAlbum } from '~/lib/.server/data';
 import { AlbumContext } from '~/lib/context';
-import { getAlbum } from '~/lib/server/data';
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => [
 	{ title: data ? `DFoto - ${data.album.name}` : undefined },

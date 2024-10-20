@@ -9,11 +9,11 @@ import {
 import type { InferInsertModel } from 'drizzle-orm';
 import exif from 'exif-reader';
 import sharp from 'sharp';
-import { ensureRole } from '~/lib/server/auth';
-import { db } from '~/lib/server/db';
-import { image } from '~/lib/server/schema';
-import { commitUpload } from '~/lib/server/storage/image';
-import { uploadsPath } from '~/lib/server/storage/paths';
+import { ensureRole } from '~/lib/.server/auth';
+import { db } from '~/lib/.server/db';
+import { image } from '~/lib/.server/schema';
+import { commitUpload } from '~/lib/.server/storage/image';
+import { uploadsPath } from '~/lib/.server/storage/paths';
 import { assertResponse } from '~/lib/utils';
 
 const imageTypes = ['image/jpeg', 'image/png'];

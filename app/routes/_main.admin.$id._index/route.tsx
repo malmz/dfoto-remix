@@ -21,9 +21,9 @@ import {
 	setPubishedStatus,
 	setThumbnail,
 	updateAlbum,
-} from '~/lib/server/actions';
-import { ensureRole } from '~/lib/server/auth';
-import { getAlbum, getAlbumAll } from '~/lib/server/data';
+} from '~/lib/.server/actions';
+import { ensureRole } from '~/lib/.server/auth';
+import { getAlbum, getAlbumAll } from '~/lib/.server/data';
 import { PublishButton } from './publish-button';
 import { ImageTable } from './table';
 

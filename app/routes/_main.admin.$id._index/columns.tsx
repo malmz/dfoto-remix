@@ -6,7 +6,7 @@ import { Check } from 'lucide-react';
 import { SortButton } from '~/components/table/sort';
 import { Button } from '~/components/ui/button';
 import { Checkbox } from '~/components/ui/checkbox';
-import type { Image as ImageType } from '~/lib/server/schema';
+import type { Image as ImageType } from '~/lib/.server/schema';
 import { RowActions } from './row-actions';
 
 type ItemType = ImageType & { thumbnail: boolean };

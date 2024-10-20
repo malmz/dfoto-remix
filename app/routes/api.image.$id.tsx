@@ -1,11 +1,11 @@
 import type { LoaderFunctionArgs } from '@remix-run/node';
 import { extension } from 'mime-types';
-import { checkRole } from '~/lib/server/auth';
-import { getImage } from '~/lib/server/data';
-import { getImageStream } from '~/lib/server/storage/image';
-import { getPreviewStream } from '~/lib/server/storage/preview';
-import { getThumbnailStream } from '~/lib/server/storage/thumbnail';
-import type { ImageStream } from '~/lib/server/storage/types';
+import { checkRole } from '~/lib/.server/auth';
+import { getImage } from '~/lib/.server/data';
+import { getImageStream } from '~/lib/.server/storage/image';
+import { getPreviewStream } from '~/lib/.server/storage/preview';
+import { getThumbnailStream } from '~/lib/.server/storage/thumbnail';
+import type { ImageStream } from '~/lib/.server/storage/types';
 import { assertResponse } from '~/lib/utils';
 
 const ensure = true;

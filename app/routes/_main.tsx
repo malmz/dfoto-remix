@@ -1,8 +1,11 @@
+import type { LoaderFunctionArgs } from '@remix-run/node';
 import { Form, Link, NavLink, Outlet, useLoaderData } from '@remix-run/react';
 import { getYear } from 'date-fns';
 import { CircleUser, Mail } from 'lucide-react';
+import { serverOnly$ } from 'vite-env-only/macros';
 import logo from '~/assets/icon.svg';
 import dataLogo from '~/assets/images/datalogo.svg';
+import { SignInLink, SignOutLink } from '~/components/signin';
 import { ThemeSwitcher } from '~/components/theme-switcher';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Button } from '~/components/ui/button';
@@ -19,10 +22,7 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '~/components/ui/tooltip';
-import { serverOnly$ } from 'vite-env-only/macros';
-import { createAuthMiddleware, getUser } from '~/lib/server/middleware/auth';
-import type { LoaderFunctionArgs } from '@remix-run/node';
-import { SignInLink, SignOutLink } from '~/components/signin';
+import { createAuthMiddleware, getUser } from '~/lib/.server/middleware/auth';
 
 const auth = createAuthMiddleware();
 

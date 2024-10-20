@@ -1,8 +1,8 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 import { AutoGrid } from '~/components/autogrid';
+import { getAlbum } from '~/lib/.server/data';
 import { useAlbum } from '~/lib/context';
-import { getAlbum } from '~/lib/server/data';
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => [
 	{ title: data ? `DFoto - ${data.album.name}` : undefined },
