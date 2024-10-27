@@ -22,6 +22,7 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '~/components/ui/tooltip';
+import { getUserDashboardLink } from '~/lib/.server/auth';
 import { createAuthMiddleware, getUser } from '~/lib/.server/middleware/auth';
 
 const auth = createAuthMiddleware();
@@ -30,12 +31,13 @@ export const middleware = serverOnly$([auth]);
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
 	const user = getUser(context);
+	const userDash = getUserDashboardLink();
 
-	return { user: user?.claims };
+	return { user: user?.claims, userDash };
 }
 
 function UserProfile() {
-	const { user } = useLoaderData<typeof loader>();
+	const { user, userDash } = useLoaderData<typeof loader>();
 
 	return (
 		<>
@@ -62,7 +64,9 @@ function UserProfile() {
 							{user.name ?? user.email ?? 'Användare'}
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem>Settings</DropdownMenuItem>
+						<DropdownMenuItem asChild>
+							<Link to={userDash}>Account</Link>
+						</DropdownMenuItem>
 						{true && (
 							<DropdownMenuItem asChild>
 								<Link to='/admin'>Admin</Link>

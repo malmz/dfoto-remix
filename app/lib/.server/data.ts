@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, ilike, sql, count } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike, sql } from 'drizzle-orm';
 import { db } from './db';
 import { album, image, legacyImage, tag } from './schema';
 
@@ -92,6 +92,9 @@ export async function getAlbumAll(id: number) {
 		with: {
 			images: {
 				orderBy: [asc(image.taken_at)],
+				with: {
+					photographer: true,
+				},
 			},
 		},
 	});

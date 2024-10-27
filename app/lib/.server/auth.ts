@@ -33,6 +33,10 @@ export function extractUserFromToken(tokens: OAuth2Tokens) {
 	};
 }
 
+export function getUserDashboardLink() {
+	return `${realmURL}/account`;
+}
+
 export const scopes = [
 	'write:album',
 	'read:album',
