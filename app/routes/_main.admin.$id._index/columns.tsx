@@ -9,7 +9,10 @@ import { Checkbox } from '~/components/ui/checkbox';
 import type { Image as ImageType } from '~/lib/.server/schema';
 import { RowActions } from './row-actions';
 
-type ItemType = ImageType & { thumbnail: boolean };
+type ItemType = ImageType & {
+	thumbnail: boolean;
+	photographer?: { name: string };
+};
 const cb = createColumnHelper<ItemType>();
 
 export const columns = [
@@ -69,7 +72,8 @@ export const columns = [
 			</span>
 		),
 	}),
-	cb.accessor('taken_by_name', {
+	cb.accessor((row) => row.taken_by_name ?? row.photographer?.name, {
+		id: 'taken_by',
 		header: (info) => <SortButton column={info.column}>Fotograf</SortButton>,
 	}),
 	cb.accessor('thumbnail', {

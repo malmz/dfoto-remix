@@ -50,7 +50,6 @@ export async function action({ request, context }: ActionFunctionArgs) {
 				album_id: id,
 				mimetype: file.type,
 				taken_by: claims?.sub,
-				taken_by_name: claims?.name ?? claims?.email ?? null,
 				taken_at,
 				created_by: claims?.sub,
 				exif_data,
@@ -58,7 +57,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 		}),
 	);
 
-	db.transaction(async (db) => {
+	await db.transaction(async (db) => {
 		const inserted = await db.insert(image).values(insertdata).returning({
 			id: image.id,
 			mimetype: image.mimetype,

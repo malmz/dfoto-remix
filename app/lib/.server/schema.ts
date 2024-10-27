@@ -54,10 +54,10 @@ export const image = pgTable('image', {
 	album_id: integer()
 		.references(() => album.id, { onDelete: 'cascade' })
 		.notNull(),
-	taken_by: integer().references(() => user.id),
+	taken_by: text().references(() => user.id),
 	taken_by_name: text(),
 	taken_at: timestamp({ withTimezone: true }).defaultNow().notNull(),
-	created_by: integer().references(() => user.id),
+	created_by: text().references(() => user.id),
 	created_at: timestamp({ withTimezone: true }).defaultNow().notNull(),
 });
 
@@ -79,6 +79,10 @@ export const imageRelation = relations(image, ({ one, many }) => ({
 	legacy: one(legacyImage, {
 		fields: [image.id],
 		references: [legacyImage.image_id],
+	}),
+	photographer: one(user, {
+		fields: [image.taken_by],
+		references: [user.id],
 	}),
 	tags: many(tag),
 }));
@@ -112,7 +116,7 @@ export const tagRelation = relations(tag, ({ one }) => ({
 }));
 
 export const user = pgTable('user', {
-	id: integer().primaryKey(),
+	id: text().primaryKey(),
 	name: text().notNull(),
 });
 
