@@ -24,8 +24,8 @@ export function Album({ album }: Props) {
 					className='aspect-[3/2] h-[240px] w-[360px] object-cover transition-transform hover:scale-105'
 				/>
 			</div>
-			<div className='flex flex-wrap justify-between px-2 text-sm'>
-				<span className='font-medium text-2xl leading-none'>{album.name}</span>
+			<div className='flex flex-col flex-wrap justify-between px-2 text-sm'>
+				<span className='font-medium text-xl leading-none'>{album.name}</span>
 				<span className='text-md text-muted-foreground'>
 					{format(album.start_at, 'yyyy-MM-dd')}
 				</span>
