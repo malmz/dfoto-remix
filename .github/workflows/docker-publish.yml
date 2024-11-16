@@ -7,6 +7,9 @@ on:
 jobs:
   build-and-push-image:
     uses: dtekcth/workflows/.github/workflows/docker-publish.yml@v1.0.0
+    permissions:
+      contents: read
+      packages: write
 #env:
 #  REGISTRY: ghcr.io
 #  IMAGE_NAME: ${{ github.repository }}
