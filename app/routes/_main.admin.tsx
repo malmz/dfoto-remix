@@ -1,5 +1,7 @@
 import type { MetaFunction } from '@remix-run/node';
-import { isRouteErrorResponse, Outlet, useRouteError } from '@remix-run/react';
+import { Outlet, isRouteErrorResponse, useRouteError } from '@remix-run/react';
+import { CameraOff } from 'lucide-react';
+import { useEffect } from 'react';
 import {
 	type CrumbHandle,
 	DynamicBreadcrum,
@@ -25,6 +27,9 @@ export default function Layout() {
 
 export function ErrorBoundary() {
 	const error = useRouteError();
+	useEffect(() => {
+		console.error(error);
+	}, [error]);
 
 	if (isRouteErrorResponse(error)) {
 		return (
@@ -36,4 +41,19 @@ export function ErrorBoundary() {
 			</div>
 		);
 	}
+	if (error instanceof Error) {
+		return (
+			<div className='grid place-content-center grow'>
+				<h2 className='font-bold text-2xl'>Oof! Nån gick snätt!</h2>
+				<p className='text-lg'>{error.message}</p>
+			</div>
+		);
+	}
+
+	return (
+		<div className='grid place-content-center grow'>
+			<CameraOff className='h-24 w-24' />
+			<h2 className='font-bold text-2xl'>Oof! Nån gick snätt!</h2>
+		</div>
+	);
 }

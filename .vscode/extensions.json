@@ -2,6 +2,9 @@
 	"recommendations": [
 		"mikestead.dotenv",
 		"bradlc.vscode-tailwindcss",
-		"biomejs.biome"
+		"editorconfig.editorconfig",
+		"dbaeumer.vscode-eslint",
+		"esbenp.prettier-vscode",
+		"ms-azuretools.vscode-docker"
 	]
 }

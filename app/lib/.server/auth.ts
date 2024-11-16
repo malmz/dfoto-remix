@@ -4,6 +4,7 @@ import { KeyCloak, type OAuth2Tokens, decodeIdToken } from 'arctic';
 import { parseJWT } from 'oslo/jwt';
 import type { ServerContext } from 'remix-create-express-app/context';
 import { getUser } from './middleware/auth';
+import type { UserClaims } from './types';
 
 const realmURL = process.env.KEYCLOAK_ENDPOINT!;
 const clientId = process.env.KEYCLOAK_CLIENTID!;
@@ -24,12 +25,23 @@ export function extractUserFromToken(tokens: OAuth2Tokens) {
 		(accessData.payload as Record<string, any>).resource_access?.[clientId]
 			.roles ?? [];
 
+	const claims = decodeIdToken(tokens.idToken()) as UserClaims;
+
+	let refreshTokenExpiresIn: number | undefined = undefined;
+	if (
+		'refresh_expires_in' in tokens.data &&
+		typeof tokens.data.refresh_expires_in === 'number'
+	) {
+		refreshTokenExpiresIn = tokens.data.refresh_expires_in;
+	}
+
 	return {
-		claims: decodeIdToken(tokens.idToken()) as Record<string, string>,
+		claims,
 		roles,
 		accessToken: tokens.accessToken(),
 		accessTokenExpiresAt: tokens.accessTokenExpiresAt(),
 		refreshToken: tokens.refreshToken(),
+		refreshTokenExpiresIn,
 	};
 }
 

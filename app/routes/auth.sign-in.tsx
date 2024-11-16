@@ -19,6 +19,6 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 	session.set('state', state);
 	session.set('codeVerifier', codeVerifier);
-	returnTo && session.set('returnTo', returnTo);
+	if (returnTo) session.set('returnTo', returnTo);
 	return redirect(url.toString());
 }

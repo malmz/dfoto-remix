@@ -14,7 +14,7 @@ import { db } from '~/lib/.server/db';
 import { image } from '~/lib/.server/schema';
 import { commitUpload } from '~/lib/.server/storage/image';
 import { uploadsPath } from '~/lib/.server/storage/paths';
-import { assertResponse } from '~/lib/utils';
+import { assertResponse, maxFileSize } from '~/lib/utils';
 
 const imageTypes = ['image/jpeg', 'image/png'];
 
@@ -24,6 +24,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 	const uploadHandler = composeUploadHandlers(
 		createFileUploadHandler({
 			directory: uploadsPath,
+			maxPartSize: maxFileSize,
 			filter: ({ contentType }) => imageTypes.includes(contentType),
 		}),
 		createMemoryUploadHandler(),
@@ -43,8 +44,8 @@ export async function action({ request, context }: ActionFunctionArgs) {
 		files.map(async (file) => {
 			const metadata = await sharp(file.getFilePath()).metadata();
 			const exif_data = metadata.exif ? exif(metadata.exif) : (null as any);
-			const taken_at =
-				exif_data?.Image?.DateTime ?? new Date(file.lastModified) ?? new Date();
+
+			const taken_at = exif_data?.Image?.DateTime ?? new Date();
 
 			return {
 				album_id: id,

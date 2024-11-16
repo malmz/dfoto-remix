@@ -87,6 +87,12 @@ export const imageRelation = relations(image, ({ one, many }) => ({
 	tags: many(tag),
 }));
 
+export const imageToTags = pgTable('image_to_tags', {
+	image_id: integer()
+		.notNull()
+		.references(() => image.id),
+});
+
 export const tag = pgTable('tag', {
 	id: integer().primaryKey().generatedAlwaysAsIdentity(),
 	text: text().notNull(),

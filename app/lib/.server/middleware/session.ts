@@ -1,25 +1,15 @@
 import type { SessionStorage, Session, AppLoadContext } from '@remix-run/node';
 import {
 	createContext,
-	contextGet,
 	type ServerContext,
 } from 'remix-create-express-app/context';
 import type { MiddlewareFunctionArgs } from 'remix-create-express-app/middleware';
-import type { UserState } from './types';
-
-export type SessionMiddlewareArgs = {
-	isCookieSessionStorage: boolean;
-};
+import type { SessionState } from '../types';
 
 // create SessionContext for use with context.get and .set
 export const SessionContext =
 	createContext<
-		Session<{
-			user: UserState;
-			state: string;
-			codeVerifier: string;
-			returnTo: string;
-		}>
+		Session<SessionState>
 	>();
 
 export function getSession(context: ServerContext) {

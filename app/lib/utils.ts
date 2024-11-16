@@ -54,3 +54,5 @@ export function useIsSubmitting({
 		navigation.formMethod === formMethod
 	);
 }
+
+export const maxFileSize = 30_000_000;
