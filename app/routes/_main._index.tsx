@@ -28,7 +28,7 @@ export default function Page() {
 
 	return (
 		<>
-			<div className='mt-4 grow px-2 space-y-4'>
+			<div className='mt-4 grow px-2 space-y-4 pb-6'>
 				<Form className='max-w-md mx-auto'>
 					<Input type='search' placeholder='Sök efter album' name='q' />
 				</Form>
