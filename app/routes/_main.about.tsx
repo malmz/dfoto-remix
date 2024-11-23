@@ -2,7 +2,7 @@ import { Link } from '@remix-run/react';
 
 export default function Page() {
 	return (
-		<section className='mx-auto mt-8 max-w-prose px-4'>
+		<section className='mx-auto mt-4 max-w-prose px-4'>
 			<h2 className='mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0'>
 				Om oss
 			</h2>

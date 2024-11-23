@@ -47,7 +47,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 			</head>
 			<body
 				className={cn(
-					'flex min-h-screen flex-col bg-background font-sans antialiased',
+					'flex min-h-screen flex-col gap-4 bg-background font-sans antialiased',
 				)}
 			>
 				<Providers>{children}</Providers>

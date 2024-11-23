@@ -1,14 +1,24 @@
 import { and, asc, eq, isNull } from 'drizzle-orm';
 import { db } from './db';
-import { type CreateAlbum, album, image, tag } from './schema';
+import {
+	type CreateAlbum,
+	type CreateImage,
+	album,
+	image,
+	tag,
+} from './schema';
 import { deleteAlbumFiles, deleteImageFiles } from './storage/image';
 
 export async function createAlbum(data: CreateAlbum) {
 	return await db.insert(album).values(data).returning({ id: album.id });
 }
 
-export async function updateAlbum(id: number, data: CreateAlbum) {
+export async function updateAlbum(id: number, data: Partial<CreateAlbum>) {
 	await db.update(album).set(data).where(eq(album.id, id));
+}
+
+export async function updateImage(id: number, data: Partial<CreateImage>) {
+	await db.update(image).set(data).where(eq(image.id, id));
 }
 
 export async function setThumbnail(id: number, thumbnail_id: number) {

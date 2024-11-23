@@ -51,9 +51,9 @@ export default function Page() {
 	const lastResult = useActionData<typeof action>();
 	const errors = lastResult?.errors;
 	return (
-		<div className='container my-8 flex flex-col gap-4'>
+		<div className='container flex flex-col gap-4'>
 			<Form method='post'>
-				<Card className='max-w-screen-md mx-auto'>
+				<Card className='mx-auto max-w-screen-md'>
 					<CardHeader>
 						<CardTitle>Skapa nytt album</CardTitle>
 						<CardDescription>
@@ -79,7 +79,7 @@ export default function Page() {
 							{errors && <FormError>{errors.start_at}</FormError>}
 						</FormField>
 					</CardContent>
-					<CardFooter className='gap-4 justify-between'>
+					<CardFooter className='justify-between gap-4'>
 						<Button type='submit'>Skapa</Button>
 						<Button asChild variant='secondary'>
 							<Link to='/admin'>Tillbaka</Link>

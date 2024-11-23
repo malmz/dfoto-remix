@@ -41,13 +41,6 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => [
 	{ title: data ? `🔒DFoto - ${data.album.name}` : undefined },
 ];
 
-export const handle: CrumbHandle<typeof loader> = {
-	breadcrumb: (match) => ({
-		to: `/admin/${match.data.album.id}`,
-		title: match.data.album.name,
-	}),
-};
-
 export async function loader({ params, context }: LoaderFunctionArgs) {
 	ensureRole(['read:album'], context);
 	const album = await getAlbumAll(Number(params.id));
@@ -131,7 +124,7 @@ export default function Page() {
 
 	return (
 		<>
-			<div className='px-4 mt-8 mx-auto w-full max-w-prose flex flex-col gap-4'>
+			<div className='mx-auto flex w-full max-w-prose flex-col gap-4 px-4'>
 				<h1 className='text-3xl font-extrabold tracking-tight'>{album.name}</h1>
 				<fetcher.Form
 					id='album-form'
@@ -165,7 +158,7 @@ export default function Page() {
 						{error && <FormError>{error.start_at}</FormError>}
 					</FormField>
 
-					<div className='flex justify-between items-center'>
+					<div className='flex items-center justify-between'>
 						<Button type='submit' name='intent' value='save'>
 							{fetcher.state !== 'idle' && (
 								<Loader2 className='mr-2 h-4 w-4 animate-spin' />
@@ -177,7 +170,7 @@ export default function Page() {
 				</fetcher.Form>
 			</div>
 			<Separator className='mx-auto mt-12 max-w-prose' />
-			<div className='mx-auto px-4 w-full my-8 flex flex-col gap-4'>
+			<div className='mx-auto mt-8 flex w-full flex-col gap-4 px-4'>
 				<h2 className='text-3xl font-extrabold tracking-tight'>Bilder</h2>
 
 				<ImageTable

@@ -32,12 +32,13 @@ export const middleware = serverOnly$([auth]);
 export async function loader({ request, context }: LoaderFunctionArgs) {
 	const user = getUser(context);
 	const userDash = getUserDashboardLink();
+	const isAdmin = user?.roles.includes('read:album');
 
-	return { user: user?.claims, userDash };
+	return { user: user?.claims, userDash, isAdmin };
 }
 
 function UserProfile() {
-	const { user, userDash } = useLoaderData<typeof loader>();
+	const { user, userDash, isAdmin } = useLoaderData<typeof loader>();
 
 	return (
 		<>
@@ -67,7 +68,7 @@ function UserProfile() {
 						<DropdownMenuItem asChild>
 							<Link to={userDash}>Account</Link>
 						</DropdownMenuItem>
-						{true && (
+						{isAdmin && (
 							<DropdownMenuItem asChild>
 								<Link to='/admin'>Admin</Link>
 							</DropdownMenuItem>
@@ -135,7 +136,7 @@ function Footer() {
 					Copyright © {getYear(new Date())} - All right reserved
 				</p>
 			</aside>
-			<p className='text-lg font-medium text-muted-foreground hidden sm:block'>
+			<p className='hidden text-lg font-medium text-muted-foreground sm:block'>
 				Vi ses genom kameralinsen!
 			</p>
 			<div className='flex items-center gap-2'>

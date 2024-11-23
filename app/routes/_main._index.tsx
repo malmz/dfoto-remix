@@ -28,8 +28,8 @@ export default function Page() {
 
 	return (
 		<>
-			<div className='mt-4 grow px-2 space-y-4 pb-6'>
-				<Form className='max-w-md mx-auto'>
+			<div className='grow space-y-4 px-2 pb-6'>
+				<Form className='mx-auto max-w-md'>
 					<Input type='search' placeholder='Sök efter album' name='q' />
 				</Form>
 				<Suspense fallback={<div>Loading...</div>}>
@@ -42,7 +42,7 @@ export default function Page() {
 					</AutoGrid>
 				</Suspense>
 			</div>
-			<Paginator page={page} totalPages={totalPages} className='my-3' />
+			<Paginator page={page} totalPages={totalPages} />
 		</>
 	);
 }

@@ -47,7 +47,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 		z.object({
 			imageId: z.number(),
 			tag: z.string(),
-		})
+		}),
 	);
 	if (!result.success) {
 		return result;
@@ -80,9 +80,9 @@ export default function Page() {
 						next: album.images[i + 1]?.id as number | undefined,
 						prev: album.images[i - 1]?.id as number | undefined,
 					},
-				])
+				]),
 			),
-		[album]
+		[album],
 	);
 	const params = useParams();
 	const imageId = Number(params.imageId);
@@ -92,23 +92,23 @@ export default function Page() {
 
 	return (
 		<>
-			<div className='flex flex-col h-[calc(100vh-4rem)] px-2 py-4 gap-2'>
+			<div className='-mt-4 flex h-[calc(100vh-4rem)] flex-col gap-2 px-2 py-4'>
 				<img
 					src={`/api/image/${imageId}?preview`}
 					alt='photograph'
-					className='object-contain min-h-0 min-w-0 w-full shrink grow'
+					className='min-h-0 w-full min-w-0 shrink grow object-contain'
 				/>
 				<div className='mx-auto flex gap-2'>
 					<LinkButton
 						to={prev != null ? `/album/${albumId}/${prev}` : undefined}
 					>
-						<ChevronLeft className='w-4 h-4' />
+						<ChevronLeft className='h-4 w-4' />
 					</LinkButton>
 
 					<Dialog>
 						<DialogTrigger asChild>
 							<Button variant='secondary' size='icon'>
-								<Tags className='w-4 h-4' />
+								<Tags className='h-4 w-4' />
 							</Button>
 						</DialogTrigger>
 						<DialogContent className='sm:max-w-[425px]'>
@@ -134,24 +134,24 @@ export default function Page() {
 
 					<Button variant='secondary' size='icon' asChild>
 						<a href={`/api/image/${imageId}`}>
-							<Fullscreen className='w-4 h-4' />
+							<Fullscreen className='h-4 w-4' />
 						</a>
 					</Button>
 
 					<Button variant='secondary' size='icon' asChild>
 						<Link to='#info-header'>
-							<Info className='w-4 h-4' />
+							<Info className='h-4 w-4' />
 						</Link>
 					</Button>
 
 					<LinkButton
 						to={next != null ? `/album/${albumId}/${next}` : undefined}
 					>
-						<ChevronRight className='w-4 h-4' />
+						<ChevronRight className='h-4 w-4' />
 					</LinkButton>
 				</div>
 			</div>
-			<div className='px-2 pb-4'>
+			<div className='px-2'>
 				<div>
 					{tags.map((tag) => (
 						<span key={tag.id}>{tag.text}</span>

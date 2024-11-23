@@ -1,6 +1,6 @@
 import { and, asc, count, desc, eq, ilike, sql } from 'drizzle-orm';
 import { db } from './db';
-import { album, image, legacyImage, tag } from './schema';
+import { album, image, legacyImage, tag, user } from './schema';
 
 export async function getAlbums(page: number, limit: number, search?: string) {
 	const albums = await db.query.album.findMany({
@@ -29,6 +29,16 @@ export async function getAllAlbums() {
 	});
 }
 
+export async function getAlbumName(id: number) {
+	const [data] = await db
+		.select({ id: album.id, name: album.name })
+		.from(album)
+		.where(eq(album.id, id))
+		.limit(1);
+
+	return data;
+}
+
 export async function getImageWindow(id: number, album_id: number) {
 	const [res] = await db
 		.select({
@@ -46,7 +56,7 @@ export async function getImageWindow(id: number, album_id: number) {
 export async function getImage(id: number, unpublished = false) {
 	const publishFilter = unpublished ? undefined : eq(album.published, true);
 	const [res] = await db
-		.select({ image })
+		.select({ image, album: { id: album.id, name: album.name } })
 		.from(image)
 		.innerJoin(album, eq(album.id, image.album_id))
 		.where(and(eq(image.id, id), publishFilter))
@@ -98,4 +108,8 @@ export async function getAlbumAll(id: number) {
 			},
 		},
 	});
+}
+
+export async function getUsers() {
+	return await db.select().from(user);
 }

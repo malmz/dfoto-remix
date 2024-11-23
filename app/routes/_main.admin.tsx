@@ -17,7 +17,7 @@ export const handle: CrumbHandle = {
 export default function Layout() {
 	return (
 		<>
-			<div className='h-14 px-4 flex items-center'>
+			<div className='flex h-14 items-center px-4'>
 				<DynamicBreadcrum />
 			</div>
 			<Outlet />
@@ -33,8 +33,8 @@ export function ErrorBoundary() {
 
 	if (isRouteErrorResponse(error)) {
 		return (
-			<div className='grid place-content-center grow'>
-				<h2 className='font-bold text-2xl'>
+			<div className='grid grow place-content-center px-4'>
+				<h2 className='text-2xl font-bold'>
 					{error.status} {error.statusText ?? 'Error'}
 				</h2>
 				<p className='text-lg'>{error.data}</p>
@@ -43,17 +43,17 @@ export function ErrorBoundary() {
 	}
 	if (error instanceof Error) {
 		return (
-			<div className='grid place-content-center grow'>
-				<h2 className='font-bold text-2xl'>Oof! Nån gick snätt!</h2>
+			<div className='grid grow place-content-center px-4'>
+				<h2 className='text-2xl font-bold'>Oof! Nån gick snätt!</h2>
 				<p className='text-lg'>{error.message}</p>
 			</div>
 		);
 	}
 
 	return (
-		<div className='grid place-content-center grow'>
+		<div className='grid grow place-content-center px-4'>
 			<CameraOff className='h-24 w-24' />
-			<h2 className='font-bold text-2xl'>Oof! Nån gick snätt!</h2>
+			<h2 className='text-2xl font-bold'>Oof! Nån gick snätt!</h2>
 		</div>
 	);
 }

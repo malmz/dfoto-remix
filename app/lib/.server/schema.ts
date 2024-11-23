@@ -70,6 +70,7 @@ export const legacyImage = pgTable('legacy_image', {
 });
 
 export type Image = InferSelectModel<typeof image>;
+export type CreateImage = Omit<InferInsertModel<typeof image>, 'created_at'>;
 
 export const imageRelation = relations(image, ({ one, many }) => ({
 	album: one(album, {

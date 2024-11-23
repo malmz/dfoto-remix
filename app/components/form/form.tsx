@@ -6,7 +6,7 @@ import { Label } from '../ui/label';
 const FieldContext = createContext<{ id?: string; errorId?: string }>({});
 export const useField = () => useContext(FieldContext);
 
-interface ErrorProps extends React.HTMLAttributes<HTMLDivElement> {}
+type ErrorProps = React.HTMLAttributes<HTMLDivElement>;
 export function FormError({ className, ...props }: ErrorProps) {
 	const { id } = useField();
 	return (
@@ -18,13 +18,13 @@ export function FormError({ className, ...props }: ErrorProps) {
 	);
 }
 
-interface LabelProps extends React.ComponentProps<typeof Label> {}
+type LabelProps = React.ComponentProps<typeof Label>;
 export function FormLabel({ ...props }: LabelProps) {
 	const { id } = useField();
 	return <Label htmlFor={id} {...props} />;
 }
 
-interface DescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {}
+type DescriptionProps = React.HTMLAttributes<HTMLParagraphElement>;
 export function FormDescription({ className, ...props }: DescriptionProps) {
 	const { errorId } = useField();
 	return (
