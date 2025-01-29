@@ -1,10 +1,7 @@
 import { createReadStream, createWriteStream } from 'node:fs';
 import { mkdir, rename, rm, stat } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import {
-	createReadableStreamFromReadable,
-	writeReadableStreamToWritable,
-} from '@remix-run/node';
+import { createReadableStreamFromReadable, writeReadableStreamToWritable } from '@react-router/node';
 import { getLegacyImageStream } from './legacy';
 import { createOptimized } from './optimizer';
 import {

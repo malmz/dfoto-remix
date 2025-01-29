@@ -1,5 +1,5 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
+import { useLoaderData } from 'react-router';
 import { getParams } from 'remix-params-helper';
 import { z } from 'zod';
 import { deleteAlbum, setPubishedStatus } from '~/lib/.server/actions';

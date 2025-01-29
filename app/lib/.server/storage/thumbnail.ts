@@ -1,7 +1,7 @@
 import { createReadStream } from 'node:fs';
 import { mkdir, stat } from 'node:fs/promises';
 import { dirname } from 'node:path';
-import { createReadableStreamFromReadable } from '@remix-run/node';
+import { createReadableStreamFromReadable } from '@react-router/node';
 import { ensureImage } from './image';
 import { createThumbnail } from './optimizer';
 import { getImagePath, getThumbnailPath } from './paths';

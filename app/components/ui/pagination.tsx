@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
 import * as React from 'react';
 
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 import type { ButtonProps } from '~/components/ui/button';
 import { buttonVariants } from '~/components/ui/button';
 import { cn } from '~/lib/utils';
@@ -47,7 +47,7 @@ const PaginationLink = ({
 	...props
 }: PaginationLinkProps) => (
 	// eslint-disable-next-line jsx-a11y/anchor-has-content
-	<Link
+	(<Link
 		aria-current={isActive ? 'page' : undefined}
 		className={cn(
 			buttonVariants({
@@ -57,7 +57,7 @@ const PaginationLink = ({
 			className,
 		)}
 		{...props}
-	/>
+	/>)
 );
 PaginationLink.displayName = 'PaginationLink';
 

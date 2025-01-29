@@ -1,4 +1,4 @@
-import type { LoaderFunctionArgs } from '@remix-run/node';
+import type { LoaderFunctionArgs } from 'react-router';
 import type { CrumbHandle } from '~/components/dynamic-breadcrum';
 import { ensureRole } from '~/lib/.server/auth';
 import { getAlbumName } from '~/lib/.server/data';

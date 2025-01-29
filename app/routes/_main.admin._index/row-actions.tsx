@@ -1,4 +1,4 @@
-import { useSubmit } from '@remix-run/react';
+import { useSubmit } from 'react-router';
 import { Check, LinkIcon, MoreHorizontal, Trash2 } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import {

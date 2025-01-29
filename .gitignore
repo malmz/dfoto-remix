@@ -1,12 +1,8 @@
 node_modules
-
 /.cache
 /build
 .env
-
 /storage
-# Million Lint
-.million
-
 .direnv
 .envrc
+.react-router/

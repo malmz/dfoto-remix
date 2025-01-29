@@ -1,10 +1,8 @@
 import { remember } from '@epic-web/remember';
-import { redirect } from '@remix-run/node';
+import { redirect, type AppLoadContext } from 'react-router';
 import { KeyCloak, type OAuth2Tokens, decodeIdToken } from 'arctic';
-import { parseJWT } from 'oslo/jwt';
-import type { ServerContext } from 'remix-create-express-app/context';
-import { getUser } from './middleware/auth';
-import type { UserClaims } from './types';
+import { parseJWT } from '@oslojs/jwt';
+import type { UserClaims } from '../types';
 
 const realmURL = process.env.KEYCLOAK_ENDPOINT!;
 const clientId = process.env.KEYCLOAK_CLIENTID!;
@@ -18,12 +16,11 @@ export const keycloak = remember(
 
 export function extractUserFromToken(tokens: OAuth2Tokens) {
 	const accessToken = tokens.accessToken();
-	const accessData = parseJWT(accessToken);
-	if (!accessData) throw new Error('access token is not a jwt');
+	const [_header, payload, _signature, _signatureMessage] =
+		parseJWT(accessToken);
 
 	const roles =
-		(accessData.payload as Record<string, any>).resource_access?.[clientId]
-			.roles ?? [];
+		(payload as Record<string, any>).resource_access?.[clientId].roles ?? [];
 
 	const claims = decodeIdToken(tokens.idToken()) as UserClaims;
 
@@ -60,7 +57,11 @@ export const scopes = [
 
 export type Role = (typeof scopes)[number];
 
-export function ensureRole(roles: Role[], context: ServerContext) {
+export function getUser(context: AppLoadContext) {
+	return context.session.get('user');
+}
+
+export function ensureRole(roles: Role[], context: AppLoadContext) {
 	const user = getUser(context);
 	if (!user) {
 		throw redirect('/auth/sign-in');
@@ -77,7 +78,7 @@ export function ensureRole(roles: Role[], context: ServerContext) {
 	return user;
 }
 
-export function checkRole(roles: Role[], context: ServerContext) {
+export function checkRole(roles: Role[], context: AppLoadContext) {
 	const user = getUser(context);
 	if (!user) {
 		return { passed: false as const };

@@ -1,11 +1,11 @@
-import { type LoaderFunctionArgs, redirect } from '@remix-run/node';
+import { type LoaderFunctionArgs, redirect } from 'react-router';
 import { extractUserFromToken, keycloak } from '~/lib/.server/auth';
 import { db } from '~/lib/.server/db';
-import { getSession } from '~/lib/.server/middleware/session';
-import { user } from '~/lib/.server/schema';
+import { userTable } from '~/lib/.server/schema';
+import type { Route } from './+types/auth.callback';
 
-export async function loader({ request, context }: LoaderFunctionArgs) {
-	const session = getSession(context);
+export async function loader({ request, context }: Route.LoaderArgs) {
+	const session = context.session;
 	const query = new URL(request.url).searchParams;
 
 	const code = query.get('code');
@@ -33,10 +33,10 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 	const name = newUser.claims.name ?? newUser.claims.preferred_username;
 	await db
-		.insert(user)
+		.insert(userTable)
 		.values({ id: newUser.claims.sub, name })
 		.onConflictDoUpdate({
-			target: user.id,
+			target: userTable.id,
 			set: {
 				name,
 			},
@@ -44,4 +44,3 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 	return redirect(returnTo);
 }
-

@@ -1,8 +1,7 @@
-import type { LoaderFunctionArgs } from '@remix-run/node';
-import { Form, Link, NavLink, Outlet, useLoaderData } from '@remix-run/react';
+import type { LoaderFunctionArgs } from 'react-router';
+import { Link, NavLink, Outlet, useLoaderData } from 'react-router';
 import { getYear } from 'date-fns';
 import { CircleUser, Mail } from 'lucide-react';
-import { serverOnly$ } from 'vite-env-only/macros';
 import logo from '~/assets/icon.svg';
 import dataLogo from '~/assets/images/datalogo.svg';
 import { SignInLink, SignOutLink } from '~/components/signin';
@@ -23,14 +22,10 @@ import {
 	TooltipTrigger,
 } from '~/components/ui/tooltip';
 import { getUserDashboardLink } from '~/lib/.server/auth';
-import { createAuthMiddleware, getUser } from '~/lib/.server/middleware/auth';
+import type { Route } from './+types/_main';
 
-const auth = createAuthMiddleware();
-
-export const middleware = serverOnly$([auth]);
-
-export async function loader({ request, context }: LoaderFunctionArgs) {
-	const user = getUser(context);
+export async function loader({ request, context }: Route.LoaderArgs) {
+	const user = context.session.get('user');
 	const userDash = getUserDashboardLink();
 	const isAdmin = user?.roles.includes('read:album');
 

@@ -1,10 +1,10 @@
-import { type LoaderFunctionArgs, redirect } from '@remix-run/node';
+import { type LoaderFunctionArgs, redirect } from 'react-router';
 import { generateCodeVerifier, generateState } from 'arctic';
 import { keycloak } from '~/lib/.server/auth';
-import { getSession } from '~/lib/.server/middleware/session';
+import type { Route } from './+types/auth.sign-in';
 
-export async function loader({ request, context }: LoaderFunctionArgs) {
-	const session = getSession(context);
+export async function loader({ request, context }: Route.LoaderArgs) {
+	const session = context.session;
 	const query = new URL(request.url).searchParams;
 	const returnTo = query.get('return_to');
 	const state = generateState();

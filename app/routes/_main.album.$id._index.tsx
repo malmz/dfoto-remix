@@ -1,5 +1,5 @@
-import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
-import { Link, useLoaderData } from '@remix-run/react';
+import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
+import { Link, useLoaderData } from 'react-router';
 import { AutoGrid } from '~/components/autogrid';
 import { getAlbum } from '~/lib/.server/data';
 import { useAlbum } from '~/lib/context';

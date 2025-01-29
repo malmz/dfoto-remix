@@ -1,5 +1,5 @@
-import type { MetaFunction } from '@remix-run/node';
-import { Outlet, isRouteErrorResponse, useRouteError } from '@remix-run/react';
+import type { MetaFunction } from 'react-router';
+import { Outlet, isRouteErrorResponse, useRouteError } from 'react-router';
 import { CameraOff } from 'lucide-react';
 import { useEffect } from 'react';
 import {

@@ -1,5 +1,5 @@
-import type { LoaderFunctionArgs } from '@remix-run/node';
-import { Await, Form, redirect, useLoaderData } from '@remix-run/react';
+import type { LoaderFunctionArgs } from 'react-router';
+import { Await, Form, redirect, useLoaderData } from 'react-router';
 import { Suspense } from 'react';
 import { Album } from '~/components/album';
 import { AutoGrid } from '~/components/autogrid';

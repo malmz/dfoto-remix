@@ -1,13 +1,15 @@
-import { type LoaderFunctionArgs, redirect } from '@remix-run/node';
+import { type LoaderFunctionArgs, redirect } from 'react-router';
 import { ArcticFetchError, OAuth2RequestError } from 'arctic';
 import { keycloak } from '~/lib/.server/auth';
-import { getSession } from '~/lib/.server/middleware/session';
+import type { Route } from './+types/auth.sign-out';
 
-export async function loader({ context }: LoaderFunctionArgs) {
-	const session = getSession(context);
+export async function loader({ context }: Route.LoaderArgs) {
+	const session = context.session;
 	const user = session.get('user');
 	try {
-		user && (await keycloak.revokeToken(user.accessToken));
+		if (user) {
+			await keycloak.revokeToken(user.accessToken);
+		}
 	} catch (e) {
 		if (e instanceof OAuth2RequestError) {
 			console.error('auth error', e);

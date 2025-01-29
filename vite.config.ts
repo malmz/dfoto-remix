@@ -1,36 +1,11 @@
-import { vitePlugin as remix } from '@remix-run/dev';
-import { installGlobals } from '@remix-run/node';
-import { expressDevServer } from 'remix-express-dev-server';
+import { reactRouter } from '@react-router/dev/vite';
 import { defineConfig } from 'vite';
-import { denyImports, envOnlyMacros } from 'vite-env-only';
 import tsconfigPaths from 'vite-tsconfig-paths';
-
-installGlobals({ nativeFetch: true });
-
-declare module '@remix-run/node' {
-	interface Future {
-		unstable_singleFetch: true;
-	}
-}
+import { reactRouterHonoServer } from 'react-router-hono-server/dev'; // add this
 
 export default defineConfig({
 	build: {
 		target: 'esnext',
 	},
-	plugins: [
-		expressDevServer(),
-		envOnlyMacros(),
-		//remixDevTools(),
-		remix({
-			future: {
-				unstable_singleFetch: true,
-				unstable_optimizeDeps: true,
-				unstable_lazyRouteDiscovery: true,
-				v3_relativeSplatPath: true,
-				v3_fetcherPersist: true,
-				v3_throwAbortReason: true,
-			},
-		}),
-		tsconfigPaths(),
-	],
+	plugins: [reactRouterHonoServer(), reactRouter(), tsconfigPaths()],
 });

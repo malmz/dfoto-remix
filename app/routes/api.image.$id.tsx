@@ -1,4 +1,4 @@
-import type { LoaderFunctionArgs } from '@remix-run/node';
+import type { LoaderFunctionArgs } from 'react-router';
 import { extension } from 'mime-types';
 import { checkRole } from '~/lib/.server/auth';
 import { getImage } from '~/lib/.server/data';

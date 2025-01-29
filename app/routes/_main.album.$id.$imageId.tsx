@@ -1,8 +1,8 @@
-import { Link, useFetcher, useLoaderData, useParams } from '@remix-run/react';
+import { Link, useFetcher, useLoaderData, useParams } from 'react-router';
 import { type ReactNode, useMemo, useState } from 'react';
 import 'yet-another-react-lightbox/styles.css';
 import { DialogClose } from '@radix-ui/react-dialog';
-import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 import {
 	ChevronLeft,
 	ChevronRight,

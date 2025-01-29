@@ -1,9 +1,5 @@
-import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
-import {
-	Outlet,
-	type ShouldRevalidateFunction,
-	useLoaderData,
-} from '@remix-run/react';
+import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
+import { Outlet, type ShouldRevalidateFunction, useLoaderData } from 'react-router';
 import { createContext, useContext } from 'react';
 import { getAlbum } from '~/lib/.server/data';
 import { AlbumContext } from '~/lib/context';

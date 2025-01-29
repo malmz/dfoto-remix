@@ -1,5 +1,5 @@
 import { createReadStream } from 'node:fs';
-import { createReadableStreamFromReadable } from '@remix-run/node';
+import { createReadableStreamFromReadable } from '@react-router/node';
 import { getLegacyImageData } from '../data';
 import { getLegacyPath } from './paths';
 import { ImageError, type ImageRecord, type ImageStream } from './types';

@@ -1,5 +1,8 @@
-import type { ServerContext } from 'remix-create-express-app/context';
+import type { Session } from 'react-router';
+import type { SessionState } from './lib/types';
 
-declare module '@remix-run/node' {
-	interface AppLoadContext extends ServerContext {}
+declare module 'react-router' {
+	interface AppLoadContext {
+		session: Session<SessionState>;
+	}
 }
