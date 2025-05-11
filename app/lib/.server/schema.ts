@@ -47,21 +47,11 @@ export type CreateAlbum = Omit<
 	'created_at' | 'modified_at'
 >;
 
-export const fileTable = pgTable('file', {
-	id: integer().primaryKey().generatedAlwaysAsIdentity(),
-	
-	name: text().notNull(),
-	type: text().notNull(),
-	mtime: timestamp({ mode: 'date', withTimezone: true }).notNull(),
-});
-
 export const imageTable = pgTable(
 	'image',
 	{
 		id: integer().primaryKey().generatedAlwaysAsIdentity(),
-		file_id: integer()
-			.references(() => fileTable.id, { onDelete: 'cascade' })
-			.notNull(),
+		mimetype: text().notNull(),
 		album_id: integer().references(() => albumTable.id, {
 			onDelete: 'set null',
 		}),
@@ -69,8 +59,10 @@ export const imageTable = pgTable(
 		taken_by: integer().references(() => userTable.id),
 		taken_by_override: text(),
 		taken_at: timestamp({ withTimezone: true }).defaultNow().notNull(),
-		created_by: text().references(() => userTable.id),
-		created_at: timestamp({ withTimezone: true }).defaultNow().notNull(),
+		created_by: integer().references(() => userTable.id),
+		created_at: timestamp({ mode: 'date', withTimezone: true })
+			.defaultNow()
+			.notNull(),
 	},
 	(table) => [
 		{
@@ -100,10 +92,6 @@ export const imageRelation = relations(imageTable, ({ one, many }) => ({
 	album: one(albumTable, {
 		fields: [imageTable.album_id],
 		references: [albumTable.id],
-	}),
-	file: one(fileTable, {
-		fields: [imageTable.file_id],
-		references: [fileTable.id],
 	}),
 	legacy: one(legacyImageTable, {
 		fields: [imageTable.id],

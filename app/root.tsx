@@ -7,13 +7,13 @@ import {
 	ScrollRestoration,
 	type MetaFunction,
 } from 'react-router';
+import type { Route } from './+types/root';
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from './components/ui/sonner';
 import { TooltipProvider } from './components/ui/tooltip';
 import { cn } from './lib/utils';
 
 import './globals.css';
-//import type { Route } from './+types/root';
 
 export const meta: MetaFunction = () => [{ title: 'DFoto' }];
 
@@ -41,7 +41,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 			</head>
 			<body
 				className={cn(
-					'flex min-h-screen flex-col gap-4 bg-background font-sans antialiased',
+					'bg-background flex min-h-screen flex-col gap-4 font-sans antialiased',
 				)}
 			>
 				<Providers>{children}</Providers>
@@ -57,7 +57,7 @@ export default function App() {
 	return <Outlet />;
 }
 
-export function ErrorBoundary({ error }: any /* Route.ErrorBoundaryProps */) {
+export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 	let message = 'Oops!';
 	let details = 'An unexpected error occurred.';
 	let stack: string | undefined;

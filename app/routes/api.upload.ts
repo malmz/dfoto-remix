@@ -44,49 +44,90 @@ function generateKey(filename: string) {
 	return 'upload_' + randomBytes(4).readUInt32LE(0) + ext;
 }
 
-async function uploadHandler(fileUpload: FileUpload) {
-	if (
-		fileUpload.fieldName === 'files' &&
-		imageTypes.includes(fileUpload.type)
-	) {
-		let filename = generateKey(fileUpload.name);
-		while (await fileStorage.has(filename)) {
-			filename = generateKey(fileUpload.name);
-		}
-		await fileStorage.set(filename, fileUpload);
-		return fileStorage.get(filename);
-	}
-}
-
 const schema = z.object({
 	id: z.number().int('Invalid album id'),
-	files: z.instanceof(File).array().min(1, 'At least 1 file is required'),
-
-})
+	files: z.string().array().min(1, 'At least 1 file is required'),
+});
 
 export async function action({ request, context }: Route.ActionArgs) {
 	const { claims } = ensureRole(['write:image'], context);
 
+	const formData = await parseFormData(
+		request,
+		{ maxFileSize },
+		async (fileUpload) => {
+			if (
+				fileUpload.fieldName === 'files' &&
+				imageTypes.includes(fileUpload.type)
+			) {
+				let filename = generateKey(fileUpload.name);
+				while (await fileStorage.has(filename)) {
+					filename = generateKey(fileUpload.name);
+				}
+				await fileStorage.set(filename, fileUpload);
+				return filename;
+			}
+		},
+	);
 
-	const formData = await parseFormData(request, uploadHandler, { maxFileSize });
 	const result = getParams(formData, schema);
 
 	if (!result.success) {
-		return {success: result.success, errors: result.errors};
+		return { success: result.success, errors: result.errors };
 	}
 
-	const {id: album_id, files} = result.data;
+	const { id: album_id, files } = result.data;
+
+	const errors = [];
+	for (const path of files) {
+		try {
+			const metadata = await sharp(path).metadata();
+			const exif_data = metadata.exif ? exif(metadata.exif) : (null as any);
+			const file
+			const taken_at = exif_data?.Image?.DateTime ?? new Date();
+
+			const data = {
+				album_id: album_id,
+				mimetype: file.type,
+				taken_by: claims?.sub,
+				taken_at,
+				created_by: claims?.sub,
+				exif_data,
+			} satisfies InferInsertModel<typeof imageTable>;
+
+			await db.transaction(async (db) => {
+				const inserted = await db.insert(imageTable).values([data]).returning({
+					id: imageTable.id,
+					mimetype: imageTable.mimetype,
+					album_id: imageTable.album_id,
+				});
+		
+				await Promise.all(
+					inserted.map(async (image, i) => {
+						commitUpload(files[i].getFilePath(), image);
+					}),
+				);
+			});
+
+		} catch (error) {
+			console.error(`Failed to upload file ${path}`);
+			errors.push({ path, msg: 'failed to upload' });
+		}
+	}
+	if (errors.length !== 0) {
+		return { success: false, errors };
+	}
 
 	const insertdata = await Promise.all(
 		files.map(async (file) => {
-			const metadata = await sharp(file..getFilePath()).metadata();
+			const metadata = await sharp(file.stream()).metadata();
 			const exif_data = metadata.exif ? exif(metadata.exif) : (null as any);
 
 			const taken_at = exif_data?.Image?.DateTime ?? new Date();
 
 			return {
-				album_id: id,
-				mimetype: file.type,
+				album_id: album_id,
+				mimetype: metadata.,
 				taken_by: claims?.sub,
 				taken_at,
 				created_by: claims?.sub,
