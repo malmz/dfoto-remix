@@ -25,7 +25,7 @@ export function Album({ album }: Props) {
 				/>
 			</div>
 			<div className='flex flex-col flex-wrap justify-between px-2 text-sm'>
-				<span className='font-medium text-xl leading-none'>{album.name}</span>
+				<span className='text-xl leading-none font-medium'>{album.name}</span>
 				<span className='text-md text-muted-foreground'>
 					{format(album.start_at, 'yyyy-MM-dd')}
 				</span>

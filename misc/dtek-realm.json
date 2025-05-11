@@ -1,86 +1,86 @@
 {
-  "realm": "dtek",
-  "displayName": "Datateknologsektionen",
-  "enabled": true,
-  "roles": {
-    "client": {
-      "dfoto": [
-        {
-          "name": "read:album",
-          "description": "Allows reading all albums, even unpublished"
-        },
-        {
-          "name": "write:album",
-          "description": "Allows creating and editing albums"
-        },
-        {
-          "name": "publish:album",
-          "description": "Allows setting the publish status of albums"
-        },
-        {
-          "name": "delete:album",
-          "description": "Allows deleting albums"
-        },
-        {
-          "name": "write:image",
-          "description": "Allows adding images to albums"
-        }
-      ]
-    }
-  },
-  "groups": [
-    {
-      "name": "aktiv",
-      "path": "/aktiv",
-      "subGroups": [
-        {
-          "name": "dfoto",
-          "path": "/aktiv/dfoto",
-          "clientRoles": {
-            "dfoto": [
-              "read:album",
-              "write:album",
-              "publish:album",
-              "write:image",
-              "delete:album"
-            ]
-          }
-        }
-      ]
-    }
-  ],
-  "clients": [
-    {
-      "clientId": "${KEYCLOAK_CLIENTID}",
-      "name": "DFoto",
-      "enabled": true,
-      "clientAuthenticatorType": "client-secret",
-      "secret": "${KEYCLOAK_CLIENTSECRET}",
-      "redirectUris": [
-        "http://localhost:5173/auth/callback",
-        "http://localhost:3000/auth/callback"
-      ],
-      "webOrigins": ["http://localhost:3000", "http://localhost:5173"],
-      "standardFlowEnabled": true,
-      "directAccessGrantsEnabled": true,
-      "protocol": "openid-connect"
-    }
-  ],
-  "users": [
-    {
-      "username": "tester",
-      "email": "dhack@dtek.se",
-      "firstName": "Tes",
-      "lastName": "Ter",
-      "enabled": true,
-      "credentials": [
-        {
-          "type": "password",
-          "value": "supersecret"
-        }
-      ],
-      "realmRoles": ["default-roles-dtek"],
-      "groups": ["/aktiv/dfoto"]
-    }
-  ]
+	"realm": "dtek",
+	"displayName": "Datateknologsektionen",
+	"enabled": true,
+	"roles": {
+		"client": {
+			"dfoto": [
+				{
+					"name": "read:album",
+					"description": "Allows reading all albums, even unpublished"
+				},
+				{
+					"name": "write:album",
+					"description": "Allows creating and editing albums"
+				},
+				{
+					"name": "publish:album",
+					"description": "Allows setting the publish status of albums"
+				},
+				{
+					"name": "delete:album",
+					"description": "Allows deleting albums"
+				},
+				{
+					"name": "write:image",
+					"description": "Allows adding images to albums"
+				}
+			]
+		}
+	},
+	"groups": [
+		{
+			"name": "aktiv",
+			"path": "/aktiv",
+			"subGroups": [
+				{
+					"name": "dfoto",
+					"path": "/aktiv/dfoto",
+					"clientRoles": {
+						"dfoto": [
+							"read:album",
+							"write:album",
+							"publish:album",
+							"write:image",
+							"delete:album"
+						]
+					}
+				}
+			]
+		}
+	],
+	"clients": [
+		{
+			"clientId": "${KEYCLOAK_CLIENTID}",
+			"name": "DFoto",
+			"enabled": true,
+			"clientAuthenticatorType": "client-secret",
+			"secret": "${KEYCLOAK_CLIENTSECRET}",
+			"redirectUris": [
+				"http://localhost:5173/auth/callback",
+				"http://localhost:3000/auth/callback"
+			],
+			"webOrigins": ["http://localhost:3000", "http://localhost:5173"],
+			"standardFlowEnabled": true,
+			"directAccessGrantsEnabled": true,
+			"protocol": "openid-connect"
+		}
+	],
+	"users": [
+		{
+			"username": "tester",
+			"email": "dhack@dtek.se",
+			"firstName": "Tes",
+			"lastName": "Ter",
+			"enabled": true,
+			"credentials": [
+				{
+					"type": "password",
+					"value": "supersecret"
+				}
+			],
+			"realmRoles": ["default-roles-dtek"],
+			"groups": ["/aktiv/dfoto"]
+		}
+	]
 }

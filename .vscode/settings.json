@@ -3,5 +3,5 @@
 		"*.css": "tailwindcss"
 	},
 	"typescript.tsdk": "node_modules/typescript/lib",
-	"typescript.preferences.preferTypeOnlyAutoImports": true,
+	"typescript.preferences.preferTypeOnlyAutoImports": true
 }

@@ -55,7 +55,7 @@ export const columns = [
 				width='150'
 				height='100'
 				alt=''
-				className='aspect-[3/2] object-cover rounded-md'
+				className='aspect-[3/2] rounded-md object-cover'
 			/>
 		),
 		enableSorting: false,

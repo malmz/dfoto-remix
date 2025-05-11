@@ -19,4 +19,3 @@ export interface SessionState {
 	codeVerifier: string;
 	returnTo: string;
 }
-

@@ -12,7 +12,7 @@ export function FormError({ className, ...props }: ErrorProps) {
 	return (
 		<div
 			id={id}
-			className={cn('text-sm font-medium text-destructive', className)}
+			className={cn('text-destructive text-sm font-medium', className)}
 			{...props}
 		/>
 	);
@@ -30,7 +30,7 @@ export function FormDescription({ className, ...props }: DescriptionProps) {
 	return (
 		<p
 			id={errorId}
-			className={cn('text-sm text-muted-foreground', className)}
+			className={cn('text-muted-foreground text-sm', className)}
 			{...props}
 		/>
 	);

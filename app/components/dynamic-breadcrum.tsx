@@ -21,11 +21,7 @@ export type CrumbHandle<D = unknown> = {
 		| undefined;
 };
 
-function Crumb({
-	match,
-}: {
-	match: UIMatch<unknown, CrumbHandle>;
-}) {
+function Crumb({ match }: { match: UIMatch<unknown, CrumbHandle> }) {
 	const location = useLocation();
 	const pathname = location.pathname;
 	const current = match.pathname === pathname;
