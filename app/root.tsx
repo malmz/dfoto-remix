@@ -13,7 +13,7 @@ import { Toaster } from './components/ui/sonner';
 import { TooltipProvider } from './components/ui/tooltip';
 import { cn } from './lib/utils';
 
-import './globals.css';
+import './app.css';
 
 export const meta: MetaFunction = () => [{ title: 'DFoto' }];
 
