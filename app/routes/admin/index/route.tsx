@@ -6,8 +6,9 @@ import { deleteAlbum, setPubishedStatus } from '~/lib/.server/actions';
 import { ensureRole } from '~/lib/.server/auth';
 import { getAllAlbums } from '~/lib/.server/data';
 import { AlbumTable } from './table';
+import type { Route } from './+types/route';
 
-export async function action({ request, context }: ActionFunctionArgs) {
+export async function action({ request, context }: Route.ActionArgs) {
 	const formData = await request.formData();
 	switch (formData.get('intent')) {
 		case 'publish': {
@@ -47,7 +48,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 	}
 }
 
-export async function loader({ request, context }: LoaderFunctionArgs) {
+export async function loader({ request, context }: Route.LoaderArgs) {
 	ensureRole(['read:album'], context);
 	const albums = await getAllAlbums();
 	return { albums };

@@ -15,6 +15,19 @@ import { cn } from './lib/utils';
 
 import './app.css';
 
+export const links: Route.LinksFunction = () => [
+	{ rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+	{
+		rel: 'preconnect',
+		href: 'https://fonts.gstatic.com',
+		crossOrigin: 'anonymous',
+	},
+	{
+		rel: 'stylesheet',
+		href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
+	},
+];
+
 export const meta: MetaFunction = () => [{ title: 'DFoto' }];
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -39,11 +52,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<Meta />
 				<Links />
 			</head>
-			<body
-				className={cn(
-					'bg-background flex min-h-screen flex-col gap-4 font-sans antialiased',
-				)}
-			>
+			<body className={cn('flex min-h-screen flex-col gap-4 antialiased')}>
 				<Providers>{children}</Providers>
 				<Toaster />
 				<ScrollRestoration />

@@ -1,8 +1,8 @@
-import { type LoaderFunctionArgs, redirect } from 'react-router';
+import { redirect } from 'react-router';
 import { extractUserFromToken, keycloak } from '~/lib/.server/auth';
 import { db } from '~/lib/.server/db';
-import { userTable } from '~/lib/.server/schema';
-import type { Route } from './+types/auth.callback';
+import { user } from '~/lib/.server/schema';
+import type { Route } from './+types/callback';
 
 export async function loader({ request, context }: Route.LoaderArgs) {
 	const session = context.session;
@@ -33,10 +33,10 @@ export async function loader({ request, context }: Route.LoaderArgs) {
 
 	const name = newUser.claims.name ?? newUser.claims.preferred_username;
 	await db
-		.insert(userTable)
-		.values({ id: newUser.claims.sub, name })
+		.insert(user)
+		.values({ oidc_id: newUser.claims.sub, name })
 		.onConflictDoUpdate({
-			target: userTable.id,
+			target: user.oidc_id,
 			set: {
 				name,
 			},

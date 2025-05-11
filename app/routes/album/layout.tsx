@@ -1,10 +1,14 @@
 import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
-import { Outlet, type ShouldRevalidateFunction, useLoaderData } from 'react-router';
-import { createContext, useContext } from 'react';
+import {
+	Outlet,
+	type ShouldRevalidateFunction,
+	useLoaderData,
+} from 'react-router';
 import { getAlbum } from '~/lib/.server/data';
 import { AlbumContext } from '~/lib/context';
+import type { Route } from './+types/layout';
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => [
+export const meta: Route.MetaFunction = ({ data }) => [
 	{ title: data ? `DFoto - ${data.album.name}` : undefined },
 ];
 
@@ -17,7 +21,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 	return defaultShouldRevalidate;
 };
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ params }: Route.LoaderArgs) {
 	const album = await getAlbum(Number(params.id));
 	if (!album) throw new Response('Not found', { status: 404 });
 	return { album };

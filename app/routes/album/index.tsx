@@ -1,14 +1,14 @@
-import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
 import { Link, useLoaderData } from 'react-router';
 import { AutoGrid } from '~/components/autogrid';
 import { getAlbum } from '~/lib/.server/data';
 import { useAlbum } from '~/lib/context';
+import type { Route } from './+types/index';
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => [
+export const meta: Route.MetaFunction = ({ data }) => [
 	{ title: data ? `DFoto - ${data.album.name}` : undefined },
 ];
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ params }: Route.LoaderArgs) {
 	const album = await getAlbum(Number(params.id));
 
 	if (!album) throw new Response('Not found', { status: 404 });

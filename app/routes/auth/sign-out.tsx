@@ -1,7 +1,7 @@
 import { type LoaderFunctionArgs, redirect } from 'react-router';
 import { ArcticFetchError, OAuth2RequestError } from 'arctic';
 import { keycloak } from '~/lib/.server/auth';
-import type { Route } from './+types/auth.sign-out';
+import type { Route } from './+types/sign-out';
 
 export async function loader({ context }: Route.LoaderArgs) {
 	const session = context.session;

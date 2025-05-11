@@ -1,4 +1,3 @@
-import type { LoaderFunctionArgs } from 'react-router';
 import { extension } from 'mime-types';
 import { checkRole } from '~/lib/.server/auth';
 import { getImage } from '~/lib/.server/data';
@@ -7,6 +6,7 @@ import { getPreviewStream } from '~/lib/.server/storage/preview';
 import { getThumbnailStream } from '~/lib/.server/storage/thumbnail';
 import type { ImageStream } from '~/lib/.server/storage/types';
 import { assertResponse } from '~/lib/utils';
+import type { Route } from './+types/image';
 
 const ensure = true;
 
@@ -14,7 +14,7 @@ export const loader = async ({
 	params,
 	request,
 	context,
-}: LoaderFunctionArgs) => {
+}: Route.LoaderArgs) => {
 	const { passed } = checkRole(['read:album'], context);
 
 	const id = Number(params.id);

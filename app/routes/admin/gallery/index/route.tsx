@@ -1,4 +1,8 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from 'react-router';
+import type {
+	ActionFunctionArgs,
+	LoaderFunctionArgs,
+	MetaFunction,
+} from 'react-router';
 import { useFetcher, useLoaderData } from 'react-router';
 import { Loader2 } from 'lucide-react';
 import { useEffect } from 'react';
@@ -22,6 +26,7 @@ import { ensureRole } from '~/lib/.server/auth';
 import { getAlbum, getAlbumAll } from '~/lib/.server/data';
 import { PublishButton } from './publish-button';
 import { ImageTable } from './table';
+import type { Route } from './+types/route';
 
 const updateSchema = z.object({
 	id: z.number(),
@@ -33,11 +38,11 @@ const updateSchema = z.object({
 	start_at: z.date(),
 });
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => [
+export const meta: Route.MetaFunction = ({ data }) => [
 	{ title: data ? `🔒DFoto - ${data.album.name}` : undefined },
 ];
 
-export async function loader({ params, context }: LoaderFunctionArgs) {
+export async function loader({ params, context }: Route.LoaderArgs) {
 	ensureRole(['read:album'], context);
 	const album = await getAlbumAll(Number(params.id));
 	if (!album) {
@@ -46,7 +51,7 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
 	return { album };
 }
 
-export async function action({ request, context }: ActionFunctionArgs) {
+export async function action({ request, context }: Route.ActionArgs) {
 	const formData = await request.formData();
 	switch (formData.get('intent')) {
 		case 'publish': {

@@ -1,4 +1,8 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from 'react-router';
+import type {
+	ActionFunctionArgs,
+	LoaderFunctionArgs,
+	MetaFunction,
+} from 'react-router';
 import { useFetcher, useLoaderData } from 'react-router';
 import { format } from 'date-fns';
 import { Loader2 } from 'lucide-react';
@@ -11,10 +15,9 @@ import { Button } from '~/components/ui/button';
 import { updateImage } from '~/lib/.server/actions';
 import { ensureRole } from '~/lib/.server/auth';
 import { getImage, getUsers } from '~/lib/.server/data';
+import type { Route } from './+types/image';
 
-export const meta: MetaFunction<typeof loader> = () => [
-	{ title: '🔒DFoto - Image' },
-];
+export const meta: Route.MetaFunction = () => [{ title: '🔒DFoto - Image' }];
 
 export const handle: CrumbHandle<typeof loader> = {
 	breadcrumb: (match) => ({
@@ -23,7 +26,7 @@ export const handle: CrumbHandle<typeof loader> = {
 	}),
 };
 
-export async function loader({ params, context }: LoaderFunctionArgs) {
+export async function loader({ params, context }: Route.LoaderArgs) {
 	ensureRole(['read:album'], context);
 	const imageId = Number(params.imageId);
 	const { image, album } = await getImage(imageId, true);
@@ -35,7 +38,7 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
 	};
 }
 
-export async function action({ request, context }: ActionFunctionArgs) {
+export async function action({ request, context }: Route.ActionArgs) {
 	ensureRole(['write:image'], context);
 	const formData = await request.formData();
 	const result = getParams(

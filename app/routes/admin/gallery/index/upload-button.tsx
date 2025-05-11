@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import type { ButtonProps } from '~/components/ui/button';
 import { Button } from '~/components/ui/button';
 import { cn, maxFileSize } from '~/lib/utils';
-import type { action } from '../api.upload';
+import type { action } from '~/routes/api/upload';
 
 interface Props extends ButtonProps {
 	albumId: number;

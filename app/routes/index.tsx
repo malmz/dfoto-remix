@@ -1,4 +1,3 @@
-import type { LoaderFunctionArgs } from 'react-router';
 import { Await, Form, redirect, useLoaderData } from 'react-router';
 import { Suspense } from 'react';
 import { Album } from '~/components/album';
@@ -6,8 +5,9 @@ import { AutoGrid } from '~/components/autogrid';
 import { Paginator } from '~/components/paginator';
 import { Input } from '~/components/ui/input';
 import { getAlbums, getPagesCount } from '~/lib/.server/data';
+import type { Route } from './+types/index';
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = async ({ request }: Route.LoaderArgs) => {
 	const queryParams = new URL(request.url).searchParams;
 	if (queryParams.get('page') === '1') throw redirect('/');
 	const page = Math.max(

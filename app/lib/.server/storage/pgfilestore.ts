@@ -1,5 +1,5 @@
 import { db } from '../db';
-import { fileTable, imageTable } from '../schema';
+import { fileTable, image } from '../schema';
 import { and, eq } from 'drizzle-orm';
 import path from 'node:path';
 import { mkdirSync, statSync } from 'node:fs';
@@ -79,28 +79,28 @@ export class ImageFileStore {
 	}
 
 	async create(file: File) {
-    const ext = mimetype
-    const id = await this.#index.create({
-      file
-    })
-    const storedFile = await storeFile(this.#directory, file);
-  }
+		const ext = mimetype;
+		const id = await this.#index.create({
+			file,
+		});
+		const storedFile = await storeFile(this.#directory, file);
+	}
 }
 
 async function storeFile(dirname: string, file: File): Promise<string> {
-  let filename: string;
-  let handle: fsp.FileHandle;
-  while (true) {
-    try {
-      filename = randomFilename()
-      handle = await fsp.open(path.join(dirname, filename), 'w');
-      break;
-    } catch (error) {
-      if (!((error as NodeJS.ErrnoException).code === 'EEXIST')) {
-        throw error;
-      }
-    }
-  }
+	let filename: string;
+	let handle: fsp.FileHandle;
+	while (true) {
+		try {
+			filename = randomFilename();
+			handle = await fsp.open(path.join(dirname, filename), 'w');
+			break;
+		} catch (error) {
+			if (!((error as NodeJS.ErrnoException).code === 'EEXIST')) {
+				throw error;
+			}
+		}
+	}
 
 	await writeFile(handle, file);
 

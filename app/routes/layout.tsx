@@ -22,7 +22,7 @@ import {
 	TooltipTrigger,
 } from '~/components/ui/tooltip';
 import { getUserDashboardLink } from '~/lib/.server/auth';
-import type { Route } from './+types/_main';
+import type { Route } from './+types/layout';
 
 export async function loader({ request, context }: Route.LoaderArgs) {
 	const user = context.session.get('user');
@@ -99,13 +99,13 @@ function Header() {
 				</Link>
 				<NavLink
 					to='/'
-					className='text-sm font-medium text-muted-foreground transition-colors hover:text-primary aria-[current=true]:text-foreground'
+					className='text-muted-foreground hover:text-primary aria-[current=true]:text-foreground text-sm font-medium transition-colors'
 				>
 					Album
 				</NavLink>
 				<NavLink
 					to='/about'
-					className='text-sm font-medium text-muted-foreground transition-colors hover:text-primary aria-[current=true]:text-foreground'
+					className='text-muted-foreground hover:text-primary aria-[current=true]:text-foreground text-sm font-medium transition-colors'
 				>
 					Om oss
 				</NavLink>
@@ -131,7 +131,7 @@ function Footer() {
 					Copyright © {getYear(new Date())} - All right reserved
 				</p>
 			</aside>
-			<p className='hidden text-lg font-medium text-muted-foreground sm:block'>
+			<p className='text-muted-foreground hidden text-lg font-medium sm:block'>
 				Vi ses genom kameralinsen!
 			</p>
 			<div className='flex items-center gap-2'>

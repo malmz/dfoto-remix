@@ -11,7 +11,7 @@ import {
 import { createFileSessionStorage } from '@react-router/node';
 import { and, eq, gt, isNull, or, sql } from 'drizzle-orm';
 import { db } from './db';
-import { sessionTable } from './schema';
+import { session } from './schema';
 import { storagePath } from './storage/paths';
 
 // export the whole sessionStorage object
@@ -47,7 +47,7 @@ export const sessionStorage = createSessionStorage({
 		while (true) {
 			const id = generateIdFromEntropySize(25);
 			try {
-				await db.insert(sessionTable).values({ id, data, expires_at: expires });
+				await db.insert(session).values({ id, data, expires_at: expires });
 				return id;
 			} catch (error) {
 				console.error('error creating session', error);
@@ -57,14 +57,11 @@ export const sessionStorage = createSessionStorage({
 	async readData(id) {
 		const [content] = await db
 			.select()
-			.from(sessionTable)
+			.from(session)
 			.where(
 				and(
-					eq(sessionTable.id, id),
-					or(
-						gt(sessionTable.expires_at, sql`now()`),
-						isNull(sessionTable.expires_at),
-					),
+					eq(session.id, id),
+					or(gt(session.expires_at, sql`now()`), isNull(session.expires_at)),
 				),
 			);
 		if (!content) {
@@ -75,12 +72,12 @@ export const sessionStorage = createSessionStorage({
 
 	async updateData(id, data, expires) {
 		await db
-			.update(sessionTable)
+			.update(session)
 			.set({
 				data: data,
 				expires_at: expires,
 			})
-			.where(eq(sessionTable.id, id));
+			.where(eq(session.id, id));
 	},
 
 	async deleteData(id) {
@@ -88,7 +85,7 @@ export const sessionStorage = createSessionStorage({
 		if (!id) {
 			return;
 		}
-		await db.delete(sessionTable).where(eq(sessionTable.id, id));
+		await db.delete(session).where(eq(session.id, id));
 	},
 });
 

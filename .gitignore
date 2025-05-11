@@ -6,3 +6,4 @@ node_modules
 .direnv
 .envrc
 .react-router/
+.DS_Store

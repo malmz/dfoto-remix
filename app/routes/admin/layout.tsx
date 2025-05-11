@@ -6,8 +6,9 @@ import {
 	type CrumbHandle,
 	DynamicBreadcrum,
 } from '~/components/dynamic-breadcrum';
+import type { Route } from './+types/layout';
 
-export const meta: MetaFunction = () => [{ title: '🔒DFoto - Admin' }];
+export const meta: Route.MetaFunction = () => [{ title: '🔒DFoto - Admin' }];
 
 export const handle: CrumbHandle = {
 	breadcrumb: (_, current) =>

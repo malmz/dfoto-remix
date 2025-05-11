@@ -5,11 +5,11 @@ import exif from 'exif-reader';
 import sharp from 'sharp';
 import { ensureRole } from '~/lib/.server/auth';
 import { db } from '~/lib/.server/db';
-import { imageTable } from '~/lib/.server/schema';
+import { image } from '~/lib/.server/schema';
 import { commitUpload } from '~/lib/.server/storage/image';
 import { uploadsPath } from '~/lib/.server/storage/paths';
 import { assertResponse, maxFileSize } from '~/lib/utils';
-import type { Route } from './+types/api.upload';
+import type { Route } from './+types/upload';
 import { extname } from 'node:path';
 import { stat } from 'node:fs/promises';
 import { randomBytes } from 'node:crypto';
@@ -83,7 +83,7 @@ export async function action({ request, context }: Route.ActionArgs) {
 		try {
 			const metadata = await sharp(path).metadata();
 			const exif_data = metadata.exif ? exif(metadata.exif) : (null as any);
-			const file
+			const file;
 			const taken_at = exif_data?.Image?.DateTime ?? new Date();
 
 			const data = {
@@ -93,22 +93,21 @@ export async function action({ request, context }: Route.ActionArgs) {
 				taken_at,
 				created_by: claims?.sub,
 				exif_data,
-			} satisfies InferInsertModel<typeof imageTable>;
+			} satisfies InferInsertModel<typeof image>;
 
 			await db.transaction(async (db) => {
-				const inserted = await db.insert(imageTable).values([data]).returning({
-					id: imageTable.id,
-					mimetype: imageTable.mimetype,
-					album_id: imageTable.album_id,
+				const inserted = await db.insert(image).values([data]).returning({
+					id: image.id,
+					mimetype: image.mimetype,
+					album_id: image.album_id,
 				});
-		
+
 				await Promise.all(
 					inserted.map(async (image, i) => {
 						commitUpload(files[i].getFilePath(), image);
 					}),
 				);
 			});
-
 		} catch (error) {
 			console.error(`Failed to upload file ${path}`);
 			errors.push({ path, msg: 'failed to upload' });
@@ -127,20 +126,20 @@ export async function action({ request, context }: Route.ActionArgs) {
 
 			return {
 				album_id: album_id,
-				mimetype: metadata.,
+				mimetype: metadata,
 				taken_by: claims?.sub,
 				taken_at,
 				created_by: claims?.sub,
 				exif_data,
-			} satisfies InferInsertModel<typeof imageTable>;
+			} satisfies InferInsertModel<typeof image>;
 		}),
 	);
 
 	await db.transaction(async (db) => {
-		const inserted = await db.insert(imageTable).values(insertdata).returning({
-			id: imageTable.id,
-			mimetype: imageTable.mimetype,
-			album_id: imageTable.album_id,
+		const inserted = await db.insert(image).values(insertdata).returning({
+			id: image.id,
+			mimetype: image.mimetype,
+			album_id: image.album_id,
 		});
 
 		await Promise.all(

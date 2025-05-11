@@ -2,7 +2,6 @@ import { Link, useFetcher, useLoaderData, useParams } from 'react-router';
 import { type ReactNode, useMemo, useState } from 'react';
 import 'yet-another-react-lightbox/styles.css';
 import { DialogClose } from '@radix-ui/react-dialog';
-import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 import {
 	ChevronLeft,
 	ChevronRight,
@@ -27,8 +26,9 @@ import { getImage, getTags } from '~/lib/.server/data';
 import { useAlbum } from '~/lib/context';
 import { addTag } from '~/lib/.server/actions';
 import { ensureRole } from '~/lib/.server/auth';
+import type { Route } from './+types/image';
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ params }: Route.LoaderArgs) {
 	const imageId = Number(params.imageId);
 	const image = getImage(imageId);
 	const tags = await getTags(imageId);
@@ -39,7 +39,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 	};
 }
 
-export async function action({ request, context }: ActionFunctionArgs) {
+export async function action({ request, context }: Route.ActionArgs) {
 	const user = ensureRole([], context);
 	const formData = await request.formData();
 	const result = getParams(

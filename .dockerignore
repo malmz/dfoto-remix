@@ -11,3 +11,4 @@ components.json
 Dockerfile
 drizzle.config.ts
 README.md
+.DS_Store

@@ -17,21 +17,21 @@ export default function Page() {
 				Du kan komma i kontakt med oss genom att maila{' '}
 				<Link
 					to='mailto:dfoto@dtek.se'
-					className='font-medium text-primary underline underline-offset-4'
+					className='text-primary font-medium underline underline-offset-4'
 				>
 					dfoto@dtek.se
 				</Link>{' '}
 				eller skriva till vår{' '}
 				<Link
 					to='https://www.facebook.com/dfotochalmers/'
-					className='font-medium text-primary underline underline-offset-4'
+					className='text-primary font-medium underline underline-offset-4'
 				>
 					Facebooksida
 				</Link>
 				.
 			</p>
 
-			<p className='text-xl font-semibold leading-7 [&:not(:first-child)]:mt-6'>
+			<p className='text-xl leading-7 font-semibold [&:not(:first-child)]:mt-6'>
 				Vi ses genom kameralinsen!
 			</p>
 		</section>

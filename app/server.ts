@@ -4,6 +4,18 @@ import { createCookieSessionStorage } from 'react-router';
 import { createHonoServer } from 'react-router-hono-server/node';
 import { getSession, session } from 'remix-hono/session';
 import { extractUserFromToken, keycloak } from './lib/.server/auth';
+import type { Session } from 'react-router';
+import type { SessionState } from './lib/types';
+
+declare module 'react-router' {
+	interface AppLoadContext {
+		session: Session<SessionState>;
+	}
+}
+
+type Variables = Record<symbol, unknown>;
+
+type ContextEnv = { Variables: Variables };
 
 const authMiddleware = createMiddleware(async (c, next) => {
 	const session = getSession(c);
@@ -28,7 +40,7 @@ const authMiddleware = createMiddleware(async (c, next) => {
 
 const sessionMiddleware = session({
 	autoCommit: true,
-	createSessionStorage(c) {
+	createSessionStorage() {
 		const sessionStorage = createCookieSessionStorage({
 			cookie: {
 				name: 'session',
@@ -52,12 +64,12 @@ const sessionMiddleware = session({
 	},
 });
 
-export default await createHonoServer({
+export default await createHonoServer<ContextEnv>({
+	configure(server) {
+		server.use(sessionMiddleware, authMiddleware);
+	},
 	getLoadContext(c, _options) {
 		const session = getSession(c);
 		return { session };
-	},
-	configure(server) {
-		server.use(sessionMiddleware, authMiddleware);
 	},
 });

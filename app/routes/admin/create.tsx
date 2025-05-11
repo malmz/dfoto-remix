@@ -1,4 +1,8 @@
-import { type ActionFunctionArgs, type MetaFunction, redirect } from 'react-router';
+import {
+	type ActionFunctionArgs,
+	type MetaFunction,
+	redirect,
+} from 'react-router';
 import { Form, Link, useActionData } from 'react-router';
 import { getFormData } from 'remix-params-helper';
 import { z } from 'zod';
@@ -17,8 +21,11 @@ import {
 } from '~/components/ui/card';
 import { createAlbum } from '~/lib/.server/actions';
 import { ensureRole } from '~/lib/.server/auth';
+import type { Route } from './+types/create';
 
-export const meta: MetaFunction = () => [{ title: '🔒DFoto - Skapa nytt' }];
+export const meta: Route.MetaFunction = () => [
+	{ title: '🔒DFoto - Skapa nytt' },
+];
 
 export const handle = {
 	breadcrumb: () => ({ to: '/admin/create', title: 'Create' }),
@@ -32,7 +39,7 @@ const schema = z.object({
 	start_at: z.date(),
 });
 
-export async function action({ request, context }: ActionFunctionArgs) {
+export async function action({ request, context }: Route.ActionArgs) {
 	ensureRole(['write:album'], context);
 	const result = await getFormData(request, schema);
 	if (!result.success) {
