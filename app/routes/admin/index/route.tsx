@@ -1,4 +1,3 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 import { useLoaderData } from 'react-router';
 import { getParams } from 'remix-params-helper';
 import { z } from 'zod';

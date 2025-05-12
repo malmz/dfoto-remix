@@ -12,7 +12,7 @@ export class ImageError extends Error {
 export interface ImageStream {
 	id: number;
 	stream: ReadableStream;
-	mimetype: string | null;
+	mimetype: string;
 	size: number | null;
 }
 

@@ -7,6 +7,9 @@ import { getThumbnailStream } from '~/lib/.server/storage/thumbnail';
 import type { ImageStream } from '~/lib/.server/storage/types';
 import { assertResponse } from '~/lib/utils';
 import type { Route } from './+types/image';
+import { getSearchParams } from 'remix-params-helper';
+import { z } from 'zod';
+import { filestore } from '~/lib/.server/storage/filestore';
 
 const ensure = true;
 
@@ -27,29 +30,26 @@ export const loader = async ({
 
 	const data = await getImage(id, passed);
 	assertResponse(data, 'Image not found', { status: 404 });
-
-	await new Promise((resolve) => setTimeout(resolve, 1000));
+	const ext = extension(data.mimetype) || '';
 
 	let imageStream: ImageStream;
 	try {
 		if (thumbnail) {
-			imageStream = await getThumbnailStream(data.image, ensure);
+			imageStream = await filestore.thumbnailStream(data);
 		} else if (preview) {
-			imageStream = await getPreviewStream(data.image, ensure);
+			imageStream = await filestore.previewStream(data);
 		} else {
-			imageStream = await getImageStream(data.image, ensure);
+			imageStream = await filestore.imageStream(data);
 		}
 	} catch (error) {
-		return new Response('Not found', { status: 404 });
+		return new Response('Image file not found', { status: 404 });
 	}
-
-	const ext = data.image.mimetype ? extension(data.image.mimetype) || '' : '';
 
 	return new Response(imageStream.stream, {
 		headers: {
-			'Content-Type': imageStream.mimetype ?? 'application/octet-stream',
+			'Content-Type': imageStream.mimetype,
 			'Content-Length': imageStream.size?.toString() ?? '',
-			'Content-Disposition': `inline; filename="${imageStream.id}.${ext}"`,
+			'Content-Disposition': `inline; filename="${data.album_name}-${data.id}.${ext}"`,
 			'Cache-Control': 'public, max-age=604800, immutable',
 		},
 	});

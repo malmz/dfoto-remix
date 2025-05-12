@@ -1,4 +1,13 @@
-import { and, asc, count, desc, eq, ilike, sql } from 'drizzle-orm';
+import {
+	and,
+	asc,
+	count,
+	desc,
+	eq,
+	getTableColumns,
+	ilike,
+	sql,
+} from 'drizzle-orm';
 import { db } from './db';
 import { album, image, legacyImage, tag, user } from './schema';
 
@@ -55,13 +64,17 @@ export async function getImageWindow(id: number, album_id: number) {
 
 export async function getImage(id: number, unpublished = false) {
 	const publishFilter = unpublished ? undefined : eq(album.published, true);
+	const { taken_by_override, ...cols } = getTableColumns(image);
 	const [res] = await db
 		.select({
-			image: image,
-			album: { id: album.id, name: album.name },
+			...cols,
+			album_id: album.id,
+			album_name: album.name,
+			taken_by: sql<string>`coalesce(${image.taken_by_override}, ${user.name}, "Unknown")`,
 		})
 		.from(image)
 		.innerJoin(album, eq(album.id, image.album_id))
+		.leftJoin(user, eq(user.id, image.taken_by))
 		.where(and(eq(image.id, id), publishFilter))
 		.limit(1);
 
