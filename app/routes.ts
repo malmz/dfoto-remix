@@ -9,7 +9,7 @@ import {
 export default [
 	...prefix('api', [
 		route('upload', './routes/api/upload.ts'),
-		route('image/:id', './routes/api/image.ts'),
+		route('image/:id', './routes/api/image.tsx'),
 	]),
 	...prefix('auth', [
 		route('callback', './routes/auth/callback.tsx'),
@@ -32,4 +32,7 @@ export default [
 			]),
 		]),
 	]),
+	route('gallery/:albumId', './routes/legacy/gallery.ts'),
+	route('gallery/:albumId/image/:imageId', './routes/legacy/image.ts'),
+	route('v1/image/:imageId/fullSize', './routes/legacy/fullsize.ts'),
 ] satisfies RouteConfig;
