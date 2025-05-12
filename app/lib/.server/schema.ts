@@ -58,7 +58,9 @@ export const image = pgTable(
 		exif_data: jsonb().$type<Exif>(),
 		taken_by: integer().references(() => user.id),
 		taken_by_override: text(),
-		taken_at: timestamp({ withTimezone: true }).defaultNow().notNull(),
+		taken_at: timestamp({ mode: 'date', withTimezone: true })
+			.defaultNow()
+			.notNull(),
 		created_by: integer().references(() => user.id),
 		created_at: timestamp({ mode: 'date', withTimezone: true })
 			.defaultNow()
@@ -101,20 +103,16 @@ export const imageRelation = relations(image, ({ one, many }) => ({
 	tags: many(tag),
 }));
 
-export const imageToTags = pgTable('image_to_tags', {
-	image_id: integer()
-		.notNull()
-		.references(() => image.id),
-});
-
 export const tag = pgTable('tag', {
 	id: integer().primaryKey().generatedAlwaysAsIdentity(),
 	text: text().notNull(),
 	image_id: integer()
 		.references(() => image.id, { onDelete: 'cascade' })
 		.notNull(),
-	created_by: text(),
-	created_at: timestamp({ withTimezone: true }).defaultNow().notNull(),
+	created_by: integer().references(() => user.id),
+	created_at: timestamp({ mode: 'date', withTimezone: true })
+		.defaultNow()
+		.notNull(),
 });
 
 export const legacyTag = pgTable('legacy_tag', {
@@ -144,5 +142,5 @@ export const user = pgTable('user', {
 export const session = pgTable('session', {
 	id: text().primaryKey(),
 	data: jsonb().notNull(),
-	expires_at: timestamp({ withTimezone: true }),
+	expires_at: timestamp({ mode: 'date', withTimezone: true }),
 });
