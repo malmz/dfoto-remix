@@ -2,17 +2,17 @@ import sharp from 'sharp';
 
 export async function createThumbnail(input: string, output: string) {
 	await sharp(input)
-		.resize(300, 200, { fit: 'cover', position: sharp.strategy.entropy })
 		.rotate()
 		.webp()
+		.resize(300, 200, { fit: 'cover', position: sharp.strategy.entropy })
 		.toFile(output);
 }
 
 export async function createPreview(input: string, output: string) {
 	await sharp(input)
-		.resize(1200, 800, { fit: 'inside' })
 		.rotate()
 		.webp()
+		.resize(1200, 800, { fit: 'inside' })
 		.toFile(output);
 }
 
@@ -26,6 +26,6 @@ export async function createOptimized(
 		pipeline
 			.resize(300, 200, { fit: 'cover', position: sharp.strategy.entropy })
 			.toFile(thumbnailOutput),
-		pipeline.resize(null, 800).toFile(previewOutput),
+		pipeline.resize(1200, 800, { fit: 'inside' }).toFile(previewOutput),
 	]);
 }
