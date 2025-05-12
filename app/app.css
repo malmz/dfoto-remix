@@ -11,8 +11,6 @@
 
 html,
 body {
-	@apply bg-white dark:bg-gray-950;
-
 	@media (prefers-color-scheme: dark) {
 		color-scheme: dark;
 	}
@@ -90,6 +88,7 @@ body {
 	--sidebar-border: oklch(0.92 0.004 286.32);
 	--sidebar-ring: oklch(0.705 0.213 47.604);
 }
+
 .dark {
 	--background: oklch(0.141 0.005 285.823);
 	--foreground: oklch(0.985 0 0);
