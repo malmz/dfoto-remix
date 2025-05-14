@@ -1,8 +1,3 @@
-import type {
-	ActionFunctionArgs,
-	LoaderFunctionArgs,
-	MetaFunction,
-} from 'react-router';
 import { useFetcher, useLoaderData } from 'react-router';
 import { Loader2 } from 'lucide-react';
 import { useEffect } from 'react';
@@ -23,7 +18,7 @@ import {
 	updateAlbum,
 } from '~/lib/.server/actions';
 import { ensureRole } from '~/lib/.server/auth';
-import { getAlbum, getAlbumAll } from '~/lib/.server/data';
+import { getAlbumAll } from '~/lib/.server/data';
 import { PublishButton } from './publish-button';
 import { ImageTable } from './table';
 import type { Route } from './+types/route';
