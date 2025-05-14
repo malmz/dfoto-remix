@@ -56,7 +56,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
 export default function Admin() {
 	const { albums } = useLoaderData<typeof loader>();
 	return (
-		<div className='container flex flex-col gap-4'>
+		<div className='mx-8 flex flex-col gap-4'>
 			<h1 className='text-3xl font-extrabold tracking-tight'>Album</h1>
 			<AlbumTable data={albums} />
 		</div>
