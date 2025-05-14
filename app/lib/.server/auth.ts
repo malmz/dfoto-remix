@@ -1,26 +1,37 @@
 import { remember } from '@epic-web/remember';
 import { redirect, type AppLoadContext } from 'react-router';
-import { KeyCloak, type OAuth2Tokens, decodeIdToken } from 'arctic';
+import { Authentik, type OAuth2Tokens, decodeIdToken } from 'arctic';
 import { parseJWT } from '@oslojs/jwt';
 import type { UserClaims } from '../types';
 
-const realmURL = process.env.KEYCLOAK_ENDPOINT!;
+/* const realmURL = process.env.KEYCLOAK_ENDPOINT!;
 const clientId = process.env.KEYCLOAK_CLIENTID!;
 const clientSecret = process.env.KEYCLOAK_CLIENTSECRET!;
-const redirectURI = process.env.KEYCLOAK_REDIRECTURI!;
+const redirectURI = process.env.KEYCLOAK_REDIRECTURI!; */
 
-export const keycloak = remember(
+const endpointURL = process.env.AUTHENTIK_ENDPOINT!;
+const clientId = process.env.AUTHENTIK_CLIENTID!;
+const clientSecret = process.env.AUTHENTIK_CLIENTSECRET!;
+const redirectURI = process.env.AUTHENTIK_REDIRECTURI!;
+
+export const authClient = remember(
+	'authentik',
+	() => new Authentik(endpointURL, clientId, clientSecret, redirectURI),
+);
+
+/* export const keycloak = remember(
 	'keycloak',
 	() => new KeyCloak(realmURL, clientId, clientSecret, redirectURI),
-);
+); */
 
 export function extractUserFromToken(tokens: OAuth2Tokens) {
 	const accessToken = tokens.accessToken();
 	const [_header, payload, _signature, _signatureMessage] =
 		parseJWT(accessToken);
 
-	const roles =
-		(payload as Record<string, any>).resource_access?.[clientId].roles ?? [];
+	console.log({ payload });
+
+	const roles = (payload as any)['roles'] ?? [];
 
 	const claims = decodeIdToken(tokens.idToken()) as UserClaims;
 
@@ -35,7 +46,7 @@ export function extractUserFromToken(tokens: OAuth2Tokens) {
 	return {
 		claims,
 		roles,
-		accessToken: tokens.accessToken(),
+		accessToken,
 		accessTokenExpiresAt: tokens.accessTokenExpiresAt(),
 		refreshToken: tokens.refreshToken(),
 		refreshTokenExpiresIn,
@@ -43,7 +54,8 @@ export function extractUserFromToken(tokens: OAuth2Tokens) {
 }
 
 export function getUserDashboardLink() {
-	return `${realmURL}/account`;
+	//return `${endpointURL}/account`;
+	return `${endpointURL}/if/user/#/settings;%7B%22page%22%3A%22page-details%22%7D`;
 }
 
 export const scopes = [

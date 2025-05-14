@@ -41,6 +41,63 @@ const cookie = createCookie('session', {
 	secure: process.env.NODE_ENV === 'production',
 });
 
+interface CreatePostgresSessionStorageOptions {
+	cookie?: SessionIdStorageStrategy['cookie'];
+}
+export function createPostgresSessionStorage({
+	cookie: cookieArg,
+}: CreatePostgresSessionStorageOptions) {
+	const cookie = createCookie(cookieArg?.name ?? 'session', cookieArg);
+	return createSessionStorage({
+		cookie,
+		async createData(data, expires) {
+			console.log('create session');
+			while (true) {
+				const id = generateIdFromEntropySize(25);
+				try {
+					await db.insert(session).values({ id, data, expires_at: expires });
+					return id;
+				} catch (error) {
+					console.error('error creating session', error);
+				}
+			}
+		},
+		async readData(id) {
+			const [content] = await db
+				.select()
+				.from(session)
+				.where(
+					and(
+						eq(session.id, id),
+						or(gt(session.expires_at, sql`now()`), isNull(session.expires_at)),
+					),
+				);
+			if (!content) {
+				return null;
+			}
+			return content.data as any;
+		},
+
+		async updateData(id, data, expires) {
+			await db
+				.update(session)
+				.set({
+					data: data,
+					expires_at: expires,
+				})
+				.where(eq(session.id, id));
+		},
+
+		async deleteData(id) {
+			console.log('deleting session');
+			if (!id) {
+				return;
+			}
+			await db.delete(session).where(eq(session.id, id));
+		},
+	});
+}
+
 export const sessionStorage = createSessionStorage({
 	cookie,
 	async createData(data, expires) {

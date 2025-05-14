@@ -1,6 +1,6 @@
-import { type LoaderFunctionArgs, redirect } from 'react-router';
+import { redirect } from 'react-router';
 import { generateCodeVerifier, generateState } from 'arctic';
-import { keycloak } from '~/lib/.server/auth';
+import { authClient } from '~/lib/.server/auth';
 import type { Route } from './+types/sign-in';
 
 export async function loader({ request, context }: Route.LoaderArgs) {
@@ -10,11 +10,12 @@ export async function loader({ request, context }: Route.LoaderArgs) {
 	const state = generateState();
 	const codeVerifier = generateCodeVerifier();
 
-	const url = keycloak.createAuthorizationURL(state, codeVerifier, [
+	const url = authClient.createAuthorizationURL(state, codeVerifier, [
 		'profile',
 		'email',
 		'offline_access',
 		'openid',
+		'entitlements',
 	]);
 
 	session.set('state', state);

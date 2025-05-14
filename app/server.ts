@@ -3,9 +3,10 @@ import { createMiddleware } from 'hono/factory';
 import { createCookieSessionStorage } from 'react-router';
 import { createHonoServer } from 'react-router-hono-server/node';
 import { getSession, session } from 'remix-hono/session';
-import { extractUserFromToken, keycloak } from './lib/.server/auth';
+import { extractUserFromToken, authClient } from './lib/.server/auth';
 import type { Session } from 'react-router';
 import type { SessionState } from './lib/types';
+import { createPostgresSessionStorage } from './lib/.server/session';
 
 declare module 'react-router' {
 	interface AppLoadContext {
@@ -24,7 +25,7 @@ const authMiddleware = createMiddleware(async (c, next) => {
 
 	if (user.refreshToken) {
 		try {
-			const tokens = await keycloak.refreshAccessToken(user.refreshToken);
+			const tokens = await authClient.refreshAccessToken(user.refreshToken);
 			const newUser = extractUserFromToken(tokens);
 			session.set('user', newUser);
 		} catch (error) {
@@ -41,7 +42,18 @@ const authMiddleware = createMiddleware(async (c, next) => {
 const sessionMiddleware = session({
 	autoCommit: true,
 	createSessionStorage() {
-		const sessionStorage = createCookieSessionStorage({
+		/* const sessionStorage = createCookieSessionStorage({
+			cookie: {
+				name: 'session',
+				httpOnly: true,
+				path: '/',
+				sameSite: 'lax',
+				secrets: [process.env.COOKIE_SECRET!],
+				secure: process.env.NODE_ENV === 'production',
+			},
+		}); */
+
+		const sessionStorage = createPostgresSessionStorage({
 			cookie: {
 				name: 'session',
 				httpOnly: true,

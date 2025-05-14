@@ -1,5 +1,5 @@
 import { redirect } from 'react-router';
-import { extractUserFromToken, keycloak } from '~/lib/.server/auth';
+import { extractUserFromToken, authClient } from '~/lib/.server/auth';
 import { db } from '~/lib/.server/db';
 import { user } from '~/lib/.server/schema';
 import type { Route } from './+types/callback';
@@ -23,7 +23,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
 		throw new Error('Invalid request');
 	}
 
-	const tokens = await keycloak.validateAuthorizationCode(
+	const tokens = await authClient.validateAuthorizationCode(
 		code,
 		storedCodeVerifier,
 	);
