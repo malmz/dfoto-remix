@@ -52,7 +52,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<Meta />
 				<Links />
 			</head>
-			<body className={cn('flex min-h-screen flex-col gap-4 antialiased')}>
+			<body className={cn('flex min-h-screen flex-col antialiased')}>
 				<Providers>{children}</Providers>
 				<Toaster />
 				<ScrollRestoration />

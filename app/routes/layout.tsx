@@ -157,7 +157,7 @@ export default function Layout() {
 	return (
 		<>
 			<Header />
-			<main className='flex grow flex-col'>
+			<main className='my-4 flex grow flex-col'>
 				<Outlet />
 			</main>
 			<Footer />
